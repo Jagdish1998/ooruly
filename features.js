@@ -204,6 +204,30 @@
         return base + '#/plan/' + encodeURIComponent(ids.join(','));
     }
 
+    /* ---------- compare (getaways) ---------- */
+    /* A small in-memory + localStorage list of getaway slugs to compare side by side (max 3). */
+    const CMP_KEY = 'ooruly:compare';
+    const CMP_MAX = 3;
+    function readCompare() {
+        try { return JSON.parse(localStorage.getItem(CMP_KEY) || '[]'); } catch (e) { return []; }
+    }
+    function writeCompare(list) {
+        try { localStorage.setItem(CMP_KEY, JSON.stringify(list.slice(0, CMP_MAX))); } catch (e) { /* ignore */ }
+        emit('comparechange');
+    }
+    function inCompare(slug) { return readCompare().indexOf(slug) !== -1; }
+    function compareCount() { return readCompare().length; }
+    function compareFull() { return readCompare().length >= CMP_MAX; }
+    function toggleCompare(slug) {
+        const list = readCompare();
+        const at = list.indexOf(slug);
+        if (at !== -1) { list.splice(at, 1); writeCompare(list); return { on: false, full: false }; }
+        if (list.length >= CMP_MAX) return { on: false, full: true }; // at capacity, not added
+        list.push(slug); writeCompare(list); return { on: true, full: false };
+    }
+    function clearCompare() { writeCompare([]); }
+    function compareSlugs() { return readCompare(); }
+
     /* ---------- geolocation + distance ---------- */
     let lastPos = null;
     function getPosition() {
@@ -324,6 +348,72 @@
     }
     function isSpeaking() { return canSpeak() && window.speechSynthesis.speaking; }
 
+    /* ---------- learning progress (explored places, quiz results, streaks, badges) ---------- */
+    /* All progress lives in localStorage under one object, so it's private to the device and needs
+       no backend. Shape:
+         { explored: { 'key:slug': ts }, quizzes: { themeSlug: {score, total, ts} },
+           streak: { count, lastDay }, seenFacts: [factHash...] }  */
+    const PROG_KEY = 'ooruly:progress';
+    function readProgress() {
+        try {
+            const p = JSON.parse(localStorage.getItem(PROG_KEY) || '{}');
+            p.explored = p.explored || {};
+            p.quizzes = p.quizzes || {};
+            p.streak = p.streak || { count: 0, lastDay: null };
+            return p;
+        } catch (e) { return { explored: {}, quizzes: {}, streak: { count: 0, lastDay: null } }; }
+    }
+    function writeProgress(p) {
+        try { localStorage.setItem(PROG_KEY, JSON.stringify(p)); } catch (e) { /* ignore */ }
+        emit('progresschange');
+    }
+
+    /* Mark a place explored (idempotent). Returns true if it was newly explored. */
+    function markExplored(key, slug) {
+        const p = readProgress();
+        const id = key + ':' + slug;
+        if (p.explored[id]) return false;
+        p.explored[id] = Date.now();
+        writeProgress(p);
+        return true;
+    }
+    function isExplored(key, slug) { return !!readProgress().explored[key + ':' + slug]; }
+    function exploredCount() { return Object.keys(readProgress().explored).length; }
+    function exploredIn(ids) {
+        const ex = readProgress().explored;
+        return (ids || []).filter((id) => ex[id]).length;
+    }
+
+    /* Record a quiz result (keeps the best score for a theme). */
+    function recordQuiz(themeSlug, score, total) {
+        const p = readProgress();
+        const prev = p.quizzes[themeSlug];
+        if (!prev || score > prev.score) p.quizzes[themeSlug] = { score, total, ts: Date.now() };
+        writeProgress(p);
+    }
+    function quizResult(themeSlug) { return readProgress().quizzes[themeSlug] || null; }
+    function quizzesPassed() {
+        const q = readProgress().quizzes;
+        return Object.keys(q).filter((k) => q[k].score === q[k].total).length;
+    }
+
+    /* Daily streak: call touchStreak() once per session. Increments if consecutive days, resets if
+       a day was missed, no-op if already counted today. Returns the current streak count. */
+    function dayStamp(d) { d = d || new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+    function touchStreak() {
+        const p = readProgress();
+        const today = dayStamp();
+        if (p.streak.lastDay === today) return p.streak.count;
+        const yesterday = dayStamp(new Date(Date.now() - 864e5));
+        p.streak.count = (p.streak.lastDay === yesterday) ? (p.streak.count + 1) : 1;
+        p.streak.lastDay = today;
+        writeProgress(p);
+        return p.streak.count;
+    }
+    function streakCount() { return readProgress().streak.count; }
+
+    function resetProgress() { writeProgress({ explored: {}, quizzes: {}, streak: { count: 0, lastDay: null } }); }
+
     /* ---------- one-time flags (onboarding "seen" etc.) ---------- */
     function flagSeen(key) {
         try { return localStorage.getItem('ooruly:seen:' + key) === '1'; } catch (e) { return false; }
@@ -346,6 +436,8 @@
         readPlan, inPlan, togglePlan, movePlan, removeFromPlan, setPlan, planEntries, planCount, planShareUrl, planFromHash,
         // discovery
         nearby,
+        // compare
+        readCompare, inCompare, compareCount, compareFull, toggleCompare, clearCompare, compareSlugs, CMP_MAX,
         // geo
         getPosition, haversineKm, get lastPos() { return lastPos; },
         // season / open
@@ -354,6 +446,9 @@
         share,
         // audio narration
         canSpeak, speak, stopSpeech, isSpeaking,
+        // learning progress + gamification
+        readProgress, markExplored, isExplored, exploredCount, exploredIn,
+        recordQuiz, quizResult, quizzesPassed, touchStreak, streakCount, resetProgress,
         // a11y + one-time flags
         trapFocus, flagSeen, markSeen,
         // events

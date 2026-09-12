@@ -231,6 +231,12 @@
             </div>`;
     }
 
+    /* A small "Explored" tick shown on cards for places the user has already opened. */
+    function exploredTickHTML(key, slug) {
+        if (!F || !F.isExplored(key, slug)) return '';
+        return `<span class="explored-tick" title="Explored"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>`;
+    }
+
     function tagPillsHTML(tags) {
         if (!Array.isArray(tags) || !tags.length || typeof INTENTS === 'undefined') return '';
         const byId = {};
@@ -267,6 +273,9 @@
         const cafeAll = (typeof CAFES !== 'undefined' ? CAFES : []);
         const eatAll = (typeof EATERIES !== 'undefined' ? EATERIES : []);
         const doAll = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []);
+
+        // Daily "learn something new" fact + streak nudge.
+        const dailyFact = dailyFactHTML();
 
         // Ready-made itineraries teaser (top 3), linking to the full page.
         const itinTeaser = itinerariesData().slice(0, 3).map(itineraryCardHTML).join('');
@@ -355,6 +364,8 @@
                     </div>
                 </div>
             </section>
+
+            ${dailyFact ? `<div class="container">${dailyFact}</div>` : ''}
 
             ${itinTeaser ? `
             <section class="section section--itin" id="itineraries">
@@ -466,6 +477,11 @@
                 </div>
             </section>`;
 
+        // Micro-interactions: reveal section heads on scroll, and count up the hero stats.
+        view.querySelectorAll('.section .section-head').forEach((el) => el.classList.add('reveal'));
+        wireScrollReveal();
+        countUpStats();
+
         // Getaway type chips (existing behaviour).
         view.querySelectorAll('.chip[data-type]').forEach((btn) => {
             btn.addEventListener('click', () => {
@@ -504,6 +520,7 @@
         const dist = F && F.lastPos && typeof d.lat === 'number'
             ? `<span class="card-dist">${Math.round(F.haversineKm(F.lastPos, { lat: d.lat, lng: d.lng }))} km away</span>`
             : `<span class="card-dist">${d.distanceKm} km</span>`;
+        const cmpOn = F && F.inCompare(d.slug);
         return `
             <a class="card" href="#/place/${d.slug}">
                 <div class="card-media">
@@ -512,7 +529,14 @@
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(typeLabel(d.type))}</span>
                     ${favBtnHTML('place', d.slug)}
+                    ${exploredTickHTML('place', d.slug)}
                     <span class="card-badges">${seasonBadgeHTML(d.seasons)}</span>
+                    <button class="compare-toggle ${cmpOn ? 'is-on' : ''}" type="button"
+                        data-compare="${esc(d.slug)}" aria-pressed="${cmpOn ? 'true' : 'false'}"
+                        aria-label="${cmpOn ? 'Remove from compare' : 'Add to compare'}">
+                        <i class="fa-solid ${cmpOn ? 'fa-check' : 'fa-scale-balanced'}" aria-hidden="true"></i>
+                        <span>Compare</span>
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -538,6 +562,7 @@
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(p.category)}</span>
                     ${favBtnHTML('city', p.slug)}
+                    ${exploredTickHTML('city', p.slug)}
                     <span class="card-badges">${openBadgeHTML(p)}</span>
                 </div>
                 <div class="card-body">
@@ -563,6 +588,7 @@
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(t.category)}</span>
                     ${favBtnHTML('temple', t.slug)}
+                    ${exploredTickHTML('temple', t.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -592,6 +618,7 @@
                         onerror="this.style.display='none'">` : ''}
                     <span class="card-type">${esc(c.area)}</span>
                     ${favBtnHTML('cafe', c.slug)}
+                    ${exploredTickHTML('cafe', c.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -621,6 +648,7 @@
                         onerror="this.style.display='none'">` : ''}
                     ${e.since ? `<span class="card-type card-type--since">Since ${esc(e.since)}</span>` : ''}
                     ${favBtnHTML('eat', e.slug)}
+                    ${exploredTickHTML('eat', e.slug)}
                     <span class="card-badges">${openBadgeHTML(e)}</span>
                 </div>
                 <div class="card-body">
@@ -652,6 +680,7 @@
                         onerror="this.style.display='none'">` : ''}
                     <span class="card-type">${esc(a.category)}</span>
                     ${favBtnHTML('do', a.slug)}
+                    ${exploredTickHTML('do', a.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -673,6 +702,7 @@
     function renderDetail(slug) {
         const d = bySlug(slug);
         if (!d) { location.hash = '#/'; return; }
+        if (F) F.markExplored('place', slug);
 
         const reach = [
             { icon: 'fa-plane', label: 'By air', text: d.howToReach.flight },
@@ -773,6 +803,7 @@
 
     function renderAttractionDetail(p, backHref, backLabel, key) {
         if (!p) { location.hash = '#/'; return; }
+        if (F) F.markExplored(key, p.slug);
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
             + encodeURIComponent(p.maps || `${p.name}, Bengaluru`);
@@ -871,6 +902,7 @@
     function renderCafeDetail(slug) {
         const c = byCafeSlug(slug);
         if (!c) { location.hash = '#/'; return; }
+        if (F) F.markExplored('cafe', slug);
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
             + encodeURIComponent(c.maps || `${c.name}, Bengaluru`);
@@ -958,6 +990,7 @@
     function renderEatDetail(slug) {
         const e = byEatSlug(slug);
         if (!e) { location.hash = '#/'; return; }
+        if (F) F.markExplored('eat', slug);
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
             + encodeURIComponent(e.maps || `${e.name}, Bengaluru`);
@@ -1045,6 +1078,7 @@
     function renderActivityDetail(slug) {
         const a = byActivitySlug(slug);
         if (!a) { location.hash = '#/'; return; }
+        if (F) F.markExplored('do', slug);
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
             + encodeURIComponent(a.maps || `${a.name}, Bengaluru`);
@@ -1508,13 +1542,90 @@
                         </div>
                         <p class="theme-intro">${esc(t.intro || t.blurb || '')}</p>
                     </div>
+                    ${storyHTML(t)}
                     <h2 class="theme-places-head">Places in this theme</h2>
                     <div class="grid">${cards}</div>
                     ${quizHTML(t)}
                 </div>
             </section>`;
         wireQuiz();
+        wireScrollReveal();
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* Scrollytelling "story mode" for a theme: alternating image + text panels that reveal on
+       scroll. `story` is an array of { image?, heading, text }. Renders nothing if absent. */
+    function storyHTML(t) {
+        const story = Array.isArray(t.story) ? t.story : [];
+        if (!story.length) return '';
+        const panels = story.map((p, i) => `
+            <div class="story-panel reveal ${i % 2 ? 'story-panel--alt' : ''}">
+                ${p.image ? `<div class="story-media">
+                    <img src="${esc(p.image)}" alt="${esc(p.heading || '')}" loading="lazy" decoding="async"
+                        onerror="this.classList.add('img-fallback')">
+                </div>` : ''}
+                <div class="story-copy">
+                    ${p.heading ? `<h3>${esc(p.heading)}</h3>` : ''}
+                    <p>${esc(p.text)}</p>
+                </div>
+            </div>`).join('');
+        return `<div class="story">${panels}</div>`;
+    }
+
+    /* Daily fact banner: one rotating fact per day + the learning streak. Touches the streak once. */
+    function dailyFactHTML() {
+        const facts = typeof DAILY_FACTS !== 'undefined' ? DAILY_FACTS : [];
+        if (!facts.length) return '';
+        // Day-of-year index so the fact is stable for the whole day and rotates daily.
+        const now = new Date();
+        const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+        const fact = facts[doy % facts.length];
+        const streak = F ? F.touchStreak() : 0;
+        const streakChip = streak > 1
+            ? `<span class="daily-streak"><i class="fa-solid fa-fire" aria-hidden="true"></i> ${streak}-day streak</span>` : '';
+        return `
+            <div class="daily-fact reveal">
+                <span class="daily-icon"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></span>
+                <p class="daily-text"><strong>Did you know?</strong> ${esc(fact)}</p>
+                ${streakChip}
+            </div>`;
+    }
+
+    /* Count-up animation for the hero stat numbers (respects reduced-motion). */
+    function countUpStats() {
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const nums = view.querySelectorAll('.hero-stats strong');
+        nums.forEach((el) => {
+            const target = parseInt(el.textContent, 10);
+            if (isNaN(target)) return;
+            if (reduce) { el.textContent = target; return; }
+            const dur = 900, start = performance.now();
+            function tick(now) {
+                const t = Math.min((now - start) / dur, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+                el.textContent = Math.round(target * eased);
+                if (t < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        });
+    }
+
+    /* Reveal-on-scroll: adds .is-visible to .reveal elements as they enter the viewport. Respects
+       reduced-motion (shows everything immediately). Uses IntersectionObserver, no library. */
+    function wireScrollReveal() {
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const els = view.querySelectorAll('.reveal');
+        if (!els.length) return;
+        if (reduce || !('IntersectionObserver' in window)) {
+            els.forEach((el) => el.classList.add('is-visible'));
+            return;
+        }
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+        els.forEach((el) => io.observe(el));
     }
 
     /* Per-theme "test what you learned" quiz. `quiz` is an array of { q, options, answer } where
@@ -1534,22 +1645,36 @@
                     <p class="quiz-feedback" role="status" aria-live="polite"></p>
                 </li>`;
         }).join('');
+        const prev = F ? F.quizResult(t.slug) : null;
+        const prevLine = prev
+            ? `<p class="quiz-prev">Your best: <strong>${prev.score}/${prev.total}</strong></p>` : '';
         return `
-            <section class="quiz" aria-label="Test what you learned">
+            <section class="quiz" aria-label="Test what you learned" data-quiz-theme="${esc(t.slug)}" data-quiz-count="${quiz.length}">
                 <h2 class="theme-places-head"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Test what you learned</h2>
+                ${prevLine}
                 <ol class="quiz-list">${qs}</ol>
+                <div class="quiz-result" role="status" aria-live="polite" hidden></div>
             </section>`;
     }
 
-    /* Wire quiz option clicks: mark correct/incorrect, lock the question once answered. */
+    /* Wire quiz option clicks: mark correct/incorrect, lock the question, tally the score, and once
+       every question is answered, show a summary and record the result to learning progress. */
     function wireQuiz() {
-        view.querySelectorAll('.quiz-opt').forEach((btn) => {
+        const quizEl = view.querySelector('.quiz[data-quiz-theme]');
+        if (!quizEl) return;
+        const themeSlug = quizEl.dataset.quizTheme;
+        const total = Number(quizEl.dataset.quizCount);
+        let answered = 0, score = 0;
+        quizEl.querySelectorAll('.quiz-opt').forEach((btn) => {
             btn.addEventListener('click', () => {
                 const item = btn.closest('.quiz-item');
                 if (!item || item.classList.contains('is-answered')) return;
                 const chosen = Number(btn.dataset.quizOpt);
                 const answer = Number(btn.dataset.quizAnswer);
                 item.classList.add('is-answered');
+                const correct = chosen === answer;
+                answered += 1;
+                if (correct) score += 1;
                 const feedback = item.querySelector('.quiz-feedback');
                 item.querySelectorAll('.quiz-opt').forEach((o) => {
                     const oi = Number(o.dataset.quizOpt);
@@ -1558,11 +1683,52 @@
                     o.disabled = true;
                 });
                 if (feedback) {
-                    feedback.textContent = chosen === answer ? 'Correct!' : 'Not quite — the highlighted answer is right.';
-                    feedback.classList.add(chosen === answer ? 'is-right' : 'is-wrong');
+                    feedback.textContent = correct ? 'Correct!' : 'Not quite — the highlighted answer is right.';
+                    feedback.classList.add(correct ? 'is-right' : 'is-wrong');
                 }
+                if (answered === total) finishQuiz();
             });
         });
+
+        function finishQuiz() {
+            if (F) F.recordQuiz(themeSlug, score, total);
+            const box = quizEl.querySelector('.quiz-result');
+            if (!box) return;
+            const perfect = score === total;
+            const msg = perfect ? 'Perfect score! You know your stuff.'
+                : score >= Math.ceil(total * 0.6) ? 'Nicely done.' : 'Good try — revisit the story and go again.';
+            box.hidden = false;
+            box.innerHTML = `
+                <div class="quiz-score ${perfect ? 'is-perfect' : ''}">
+                    <i class="fa-solid ${perfect ? 'fa-award' : 'fa-circle-check'}" aria-hidden="true"></i>
+                    <div>
+                        <strong>${score} / ${total}</strong>
+                        <span>${esc(msg)}</span>
+                    </div>
+                </div>`;
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (perfect) confetti();
+        }
+    }
+
+    /* A tiny, dependency-free confetti burst for perfect quiz scores / badge unlocks. Respects
+       reduced-motion (does nothing). */
+    function confetti() {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const layer = document.createElement('div');
+        layer.className = 'confetti-layer';
+        const colors = ['#ff004f', '#5a3cff', '#34d399', '#f4f4f5'];
+        for (let i = 0; i < 40; i++) {
+            const bit = document.createElement('span');
+            bit.className = 'confetti-bit';
+            bit.style.left = Math.random() * 100 + 'vw';
+            bit.style.background = colors[i % colors.length];
+            bit.style.animationDelay = (Math.random() * 0.3) + 's';
+            bit.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            layer.appendChild(bit);
+        }
+        document.body.appendChild(layer);
+        setTimeout(() => layer.remove(), 2600);
     }
 
     /* ---------- glossary ---------- */
@@ -1586,6 +1752,377 @@
                 </div>
             </section>`;
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- "Plan a trip" wizard ---------- */
+    /* A short guided flow: time available -> interests -> tailored suggestions. State is kept in a
+       module-level object and each step re-renders. Recommendations are computed from existing data
+       (itineraries matched by their stops' intent tags; getaways by type + in-season). No backend. */
+    const wizard = { step: 1, time: null, interests: [] };
+
+    const WIZ_TIME = [
+        { id: 'evening', label: 'An evening', icon: 'fa-moon', sub: 'A few hours out' },
+        { id: 'day', label: 'A day', icon: 'fa-sun', sub: 'In and around the city' },
+        { id: 'weekend', label: 'A weekend', icon: 'fa-calendar-week', sub: 'Time for a getaway' },
+    ];
+    const WIZ_INTERESTS = [
+        { id: 'heritage', label: 'History & heritage', icon: 'fa-landmark' },
+        { id: 'nature', label: 'Nature & outdoors', icon: 'fa-tree' },
+        { id: 'food', label: 'Food & cafes', icon: 'fa-utensils' },
+        { id: 'family', label: 'Family time', icon: 'fa-people-roof' },
+        { id: 'date', label: 'A date', icon: 'fa-heart' },
+        { id: 'photo', label: 'Photo spots', icon: 'fa-camera' },
+    ];
+
+    function renderWizard() {
+        const shell = (inner) => `
+            <section class="section section--page">
+                <div class="container container--narrow">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Plan a Trip</h1>
+                        <p class="section-sub">Answer two quick questions and we'll suggest where to go.</p>
+                    </div>
+                    <div class="wiz-steps" aria-hidden="true">
+                        <span class="wiz-dot ${wizard.step >= 1 ? 'is-on' : ''}"></span>
+                        <span class="wiz-dot ${wizard.step >= 2 ? 'is-on' : ''}"></span>
+                        <span class="wiz-dot ${wizard.step >= 3 ? 'is-on' : ''}"></span>
+                    </div>
+                    ${inner}
+                </div>
+            </section>`;
+
+        let inner = '';
+        if (wizard.step === 1) {
+            inner = `
+                <div class="wiz-panel">
+                    <h2 class="wiz-q">How much time do you have?</h2>
+                    <div class="wiz-choices">
+                        ${WIZ_TIME.map((t) => `
+                            <button class="wiz-choice ${wizard.time === t.id ? 'is-sel' : ''}" type="button" data-wiz-time="${t.id}">
+                                <span class="wiz-choice-icon"><i class="fa-solid ${t.icon}" aria-hidden="true"></i></span>
+                                <strong>${esc(t.label)}</strong>
+                                <span>${esc(t.sub)}</span>
+                            </button>`).join('')}
+                    </div>
+                </div>`;
+        } else if (wizard.step === 2) {
+            inner = `
+                <div class="wiz-panel">
+                    <h2 class="wiz-q">What are you in the mood for?</h2>
+                    <p class="wiz-hint">Pick one or more.</p>
+                    <div class="wiz-tags">
+                        ${WIZ_INTERESTS.map((i) => `
+                            <button class="wiz-tag ${wizard.interests.indexOf(i.id) !== -1 ? 'is-sel' : ''}" type="button" data-wiz-interest="${i.id}">
+                                <i class="fa-solid ${i.icon}" aria-hidden="true"></i> ${esc(i.label)}
+                            </button>`).join('')}
+                    </div>
+                    <div class="wiz-actions">
+                        <button class="btn btn-ghost btn-sm" type="button" data-wiz-back>Back</button>
+                        <button class="btn btn-primary btn-sm" type="button" data-wiz-next ${wizard.interests.length ? '' : 'disabled'}>
+                            See suggestions <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>`;
+        } else {
+            inner = `<div class="wiz-panel">${wizardResultsHTML()}</div>`;
+        }
+
+        view.innerHTML = shell(inner);
+        wireWizard();
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* Compute and render recommendations from the wizard's time + interests. */
+    function wizardResultsHTML() {
+        const interests = wizard.interests;
+        const wantsGetaway = wizard.time === 'weekend';
+
+        // Map interest ids to the intent tags used in data + getaway types.
+        const intentSet = new Set();
+        interests.forEach((i) => {
+            if (i === 'food') { intentSet.add('budget'); intentSet.add('quick'); intentSet.add('groups'); }
+            else intentSet.add(i); // heritage, nature, family, date, photo align with tags
+        });
+
+        // Score a place by how many of its tags match the chosen interests.
+        function scorePlace(item) {
+            const tags = item.tags || [];
+            let s = 0;
+            tags.forEach((t) => { if (intentSet.has(t)) s += 1; });
+            return s;
+        }
+
+        let getawayCards = '';
+        if (wantsGetaway) {
+            const ranked = DESTINATIONS
+                .map((d) => ({ d, s: scorePlace(d) + (F && F.isInSeason(d.seasons) ? 1 : 0) }))
+                .sort((a, b) => b.s - a.s)
+                .slice(0, 3)
+                .map((x) => x.d);
+            getawayCards = `
+                <h2 class="theme-places-head">Getaways for you</h2>
+                <div class="grid">${ranked.map(cardHTML).join('')}</div>`;
+        }
+
+        // Rank itineraries by how well their stops' tags match, and filter by rough time fit.
+        const itineraries = itinerariesData();
+        function itinScore(it) {
+            let s = 0;
+            (it.stops || []).forEach((id) => {
+                const [key, slug] = id.split(':');
+                const e = F ? F.lookup(key, slug) : null;
+                if (e && Array.isArray(e.tags)) e.tags.forEach((t) => { if (intentSet.has(t)) s += 1; });
+            });
+            // Nudge by time fit: evening -> short plans, day -> day plans.
+            const dur = (it.duration || '').toLowerCase();
+            if (wizard.time === 'evening' && (dur.includes('evening') || dur.includes('half'))) s += 2;
+            if (wizard.time === 'day' && (dur.includes('day') && !dur.includes('half'))) s += 1;
+            return s;
+        }
+        const rankedItins = itineraries
+            .map((it) => ({ it, s: itinScore(it) }))
+            .sort((a, b) => b.s - a.s)
+            .slice(0, 3)
+            .map((x) => x.it);
+        const itinCards = rankedItins.length
+            ? `<h2 class="theme-places-head">Itineraries to try</h2>
+               <div class="grid itin-grid">${rankedItins.map(itineraryCardHTML).join('')}</div>`
+            : '';
+
+        const chosen = wizard.interests.map((id) => {
+            const meta = WIZ_INTERESTS.find((x) => x.id === id);
+            return meta ? meta.label : id;
+        }).join(', ');
+        const timeLabel = (WIZ_TIME.find((t) => t.id === wizard.time) || {}).label || '';
+
+        return `
+            <div class="wiz-summary">
+                <p><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                   Based on <strong>${esc(timeLabel.toLowerCase())}</strong> and <strong>${esc(chosen.toLowerCase())}</strong>:</p>
+                <button class="btn btn-ghost btn-sm" type="button" data-wiz-restart>
+                    <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Start over
+                </button>
+            </div>
+            ${itinCards}
+            ${getawayCards}`;
+    }
+
+    function wireWizard() {
+        view.querySelectorAll('[data-wiz-time]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                wizard.time = btn.dataset.wizTime;
+                wizard.step = 2;
+                renderWizard();
+            });
+        });
+        view.querySelectorAll('[data-wiz-interest]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.wizInterest;
+                const at = wizard.interests.indexOf(id);
+                if (at === -1) wizard.interests.push(id); else wizard.interests.splice(at, 1);
+                renderWizard();
+            });
+        });
+        const back = view.querySelector('[data-wiz-back]');
+        if (back) back.addEventListener('click', () => { wizard.step = 1; renderWizard(); });
+        const next = view.querySelector('[data-wiz-next]');
+        if (next) next.addEventListener('click', () => { if (wizard.interests.length) { wizard.step = 3; renderWizard(); } });
+        const restart = view.querySelector('[data-wiz-restart]');
+        if (restart) restart.addEventListener('click', () => { wizard.step = 1; wizard.time = null; wizard.interests = []; renderWizard(); });
+    }
+
+    /* ---------- "Your journey": learning progress + badges ---------- */
+    function badgesData() { return typeof BADGES !== 'undefined' ? BADGES : []; }
+
+    function progressCtx() {
+        const p = F ? F.readProgress() : { explored: {}, quizzes: {} };
+        const byKey = { place: 0, city: 0, temple: 0, cafe: 0, eat: 0, do: 0 };
+        Object.keys(p.explored).forEach((id) => { const k = id.split(':')[0]; if (k in byKey) byKey[k] += 1; });
+        return {
+            explored: F ? F.exploredCount() : 0,
+            byKey,
+            quizzesPassed: F ? F.quizzesPassed() : 0,
+            streak: F ? F.streakCount() : 0,
+        };
+    }
+
+    function renderJourney() {
+        const ctx = progressCtx();
+        const totalPlaces = (F ? F.buildIndex().length : 0);
+        const collections = [
+            { key: 'place', label: 'Getaways', icon: 'fa-mountain-sun', total: DESTINATIONS.length },
+            { key: 'city', label: 'City sights', icon: 'fa-city', total: (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS.length : 0) },
+            { key: 'temple', label: 'Temples', icon: 'fa-gopuram', total: (typeof TEMPLES !== 'undefined' ? TEMPLES.length : 0) },
+            { key: 'cafe', label: 'Cafes', icon: 'fa-mug-saucer', total: (typeof CAFES !== 'undefined' ? CAFES.length : 0) },
+            { key: 'eat', label: 'Eats', icon: 'fa-utensils', total: (typeof EATERIES !== 'undefined' ? EATERIES.length : 0) },
+            { key: 'do', label: 'Things to do', icon: 'fa-person-hiking', total: (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES.length : 0) },
+        ];
+
+        const bars = collections.map((c) => {
+            const done = ctx.byKey[c.key] || 0;
+            const pct = c.total ? Math.round((done / c.total) * 100) : 0;
+            return `
+                <div class="prog-row">
+                    <span class="prog-label"><i class="fa-solid ${c.icon}" aria-hidden="true"></i> ${esc(c.label)}</span>
+                    <div class="prog-track"><span class="prog-fill" style="width:${pct}%"></span></div>
+                    <span class="prog-count">${done}/${c.total}</span>
+                </div>`;
+        }).join('');
+
+        const badges = badgesData().map((b) => {
+            const earned = b.check(ctx);
+            return `
+                <div class="badge-card ${earned ? 'is-earned' : 'is-locked'}" title="${esc(b.desc)}">
+                    <span class="badge-medal"><i class="fa-solid ${earned ? b.icon : 'fa-lock'}" aria-hidden="true"></i></span>
+                    <strong>${esc(b.title)}</strong>
+                    <span class="badge-desc">${esc(b.desc)}</span>
+                </div>`;
+        }).join('');
+        const earnedCount = badgesData().filter((b) => b.check(ctx)).length;
+
+        const pctOverall = totalPlaces ? Math.round((ctx.explored / totalPlaces) * 100) : 0;
+
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Your Journey</h1>
+                        <p class="section-sub">Explore places, pass theme quizzes and keep a daily streak to
+                            earn badges. Everything here is saved privately on this device.</p>
+                    </div>
+
+                    <div class="journey-stats">
+                        <div class="jstat"><strong>${ctx.explored}</strong><span>places explored</span></div>
+                        <div class="jstat"><strong>${pctOverall}%</strong><span>of the guide</span></div>
+                        <div class="jstat"><strong>${ctx.quizzesPassed}</strong><span>quizzes aced</span></div>
+                        <div class="jstat"><strong>${ctx.streak}</strong><span>day streak</span></div>
+                    </div>
+
+                    <h2 class="theme-places-head">Progress by category</h2>
+                    <div class="prog-list">${bars}</div>
+
+                    <h2 class="theme-places-head">Badges <span class="badge-tally">${earnedCount}/${badgesData().length}</span></h2>
+                    <div class="badge-grid">${badges}</div>
+
+                    <button class="btn btn-ghost btn-sm journey-reset" id="journey-reset" type="button">
+                        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset progress
+                    </button>
+                </div>
+            </section>`;
+
+        const resetBtn = document.getElementById('journey-reset');
+        if (resetBtn) resetBtn.addEventListener('click', () => {
+            if (F) F.resetProgress();
+            renderJourney();
+            toast('Progress reset');
+        });
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- compare getaways side by side ---------- */
+    function renderCompare() {
+        const slugs = F ? F.compareSlugs() : [];
+        const places = slugs.map(bySlug).filter(Boolean);
+        if (!places.length) {
+            view.innerHTML = `
+                <section class="section section--page">
+                    <div class="container">
+                        <div class="section-head page-head">
+                            <a class="back back--inline" href="#nearby"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Getaways</a>
+                            <h1 class="section-title">Compare getaways</h1>
+                        </div>
+                        <div class="empty-state">
+                            <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                            <h2>Nothing to compare yet</h2>
+                            <p>Tap "Compare" on up to ${F ? F.CMP_MAX : 3} getaways, then come back here to see them side by side.</p>
+                            <a class="btn btn-primary" href="#nearby">Browse getaways</a>
+                        </div>
+                    </div>
+                </section>`;
+            window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+            return;
+        }
+
+        // Rows: each row is one attribute compared across the selected places.
+        const rows = [
+            { label: 'Type', get: (d) => typeLabel(d.type) },
+            { label: 'Distance', get: (d) => `${d.distanceKm} km` },
+            { label: 'By road', get: (d) => `${d.driveHours} hrs` },
+            { label: 'Best time', get: (d) => d.bestMonths },
+            { label: 'In season now?', get: (d) => {
+                const s = F ? F.isInSeason(d.seasons) : null;
+                return s === null ? '—' : s ? '✓ Yes' : 'Off-season';
+            } },
+            { label: 'Effort', get: (d) => d.effort || '—' },
+            { label: 'Good for', get: (d) => Array.isArray(d.bestFor) ? d.bestFor.join(', ') : '—' },
+        ];
+
+        const headCols = places.map((d) => `
+            <th scope="col">
+                <a class="cmp-place" href="#/place/${d.slug}">
+                    <img src="${esc(d.image)}" alt="${esc(d.name)}" loading="lazy" decoding="async"
+                        onerror="this.classList.add('img-fallback')">
+                    <span>${esc(d.name)}</span>
+                </a>
+                <button class="cmp-remove" type="button" data-compare="${esc(d.slug)}" aria-label="Remove ${esc(d.name)}">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </th>`).join('');
+
+        const bodyRows = rows.map((r) => `
+            <tr>
+                <th scope="row">${esc(r.label)}</th>
+                ${places.map((d) => `<td>${esc(r.get(d))}</td>`).join('')}
+            </tr>`).join('');
+
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#nearby"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Getaways</a>
+                        <h1 class="section-title">Compare getaways</h1>
+                        <p class="section-sub">Side by side, so you can pick the trip that fits your time and mood.</p>
+                    </div>
+                    <div class="cmp-wrap">
+                        <table class="cmp-table">
+                            <thead><tr><td class="cmp-corner"></td>${headCols}</tr></thead>
+                            <tbody>${bodyRows}</tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-ghost btn-sm cmp-clear" id="cmp-clear" type="button">
+                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Clear all
+                    </button>
+                </div>
+            </section>`;
+        const clearBtn = document.getElementById('cmp-clear');
+        if (clearBtn) clearBtn.addEventListener('click', () => { F.clearCompare(); renderCompare(); });
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* Floating compare bar (fixed, appears when items are selected). Injected once into <body>. */
+    function refreshCompareBar() {
+        if (!F) return;
+        let bar = document.getElementById('compare-bar');
+        const n = F.compareCount();
+        if (n === 0) { if (bar) bar.remove(); return; }
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'compare-bar';
+            bar.className = 'compare-bar';
+            document.body.appendChild(bar);
+            bar.addEventListener('click', (e) => {
+                if (e.target.closest('[data-cmp-go]')) { location.hash = '#/compare'; }
+                else if (e.target.closest('[data-cmp-clear]')) { F.clearCompare(); }
+            });
+        }
+        bar.innerHTML = `
+            <span class="compare-bar-count"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> ${n} selected</span>
+            <span class="compare-bar-actions">
+                <button class="btn btn-primary btn-sm" type="button" data-cmp-go>Compare</button>
+                <button class="compare-bar-clear" type="button" data-cmp-clear aria-label="Clear compare">Clear</button>
+            </span>`;
     }
 
     /* ---------- map view (Leaflet + OpenStreetMap, loaded on demand) ---------- */
@@ -1726,6 +2263,13 @@
         if (hash === '#/itineraries') { renderItineraries(); currentView = 'itineraries'; return; }
         if (hash === '#/themes') { renderThemes(); currentView = 'themes'; return; }
         if (hash === '#/glossary') { renderGlossary(); currentView = 'glossary'; return; }
+        if (hash === '#/compare') { renderCompare(); currentView = 'compare'; return; }
+        if (hash === '#/journey') { renderJourney(); currentView = 'journey'; return; }
+        if (hash === '#/wizard') {
+            // Fresh entry from elsewhere resets to step 1; re-entry while already on it keeps state.
+            if (currentView !== 'wizard') { wizard.step = 1; wizard.time = null; wizard.interests = []; }
+            renderWizard(); currentView = 'wizard'; return;
+        }
         const themeMatch = hash.match(/^#\/theme\/(.+)$/);
         if (themeMatch) { renderThemeDetail(themeMatch[1]); currentView = 'theme'; return; }
 
@@ -1979,6 +2523,26 @@
                     return;
                 }
 
+                // Compare toggle (on getaway cards and the compare page's remove buttons).
+                const cmpBtn = e.target.closest('[data-compare]');
+                if (cmpBtn && view.contains(cmpBtn)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const slug = cmpBtn.dataset.compare;
+                    const res = F.toggleCompare(slug);
+                    if (res.full) {
+                        toast(`Compare up to ${F.CMP_MAX} at a time`);
+                    } else if (cmpBtn.classList.contains('cmp-remove')) {
+                        renderCompare(); // on the compare page, re-render to drop the column
+                    } else {
+                        cmpBtn.classList.toggle('is-on', res.on);
+                        cmpBtn.setAttribute('aria-pressed', res.on ? 'true' : 'false');
+                        const icon = cmpBtn.querySelector('i');
+                        if (icon) icon.className = 'fa-solid ' + (res.on ? 'fa-check' : 'fa-scale-balanced');
+                    }
+                    return;
+                }
+
                 // "Listen to this place": toggle speech narration of the description.
                 const listenBtn = e.target.closest('[data-listen]');
                 if (listenBtn && view.contains(listenBtn)) {
@@ -2084,6 +2648,9 @@
         }
         if (F) { F.on('favschange', refreshBadges); F.on('planchange', refreshBadges); }
         refreshBadges();
+
+        // Floating compare bar reacts to compare changes.
+        if (F) { F.on('comparechange', refreshCompareBar); refreshCompareBar(); }
 
         /* ---------- "near me" — sort getaways by real distance (button lives in the Getaways
            section now, and is re-created on each home render, so it's wired via delegation). ---- */

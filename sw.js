@@ -14,7 +14,7 @@
  *
  * Bump VERSION whenever the shell list changes to force a clean re-cache.
  */
-const VERSION = 'ooruly-v15';
+const VERSION = 'ooruly-v19';
 const SHELL = [
     './',
     './index.html',

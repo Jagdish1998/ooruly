@@ -952,7 +952,9 @@ img.img-fallback { visibility: hidden; }
 .nav-mega {
     position: absolute; left: 50%; transform: translateX(-50%);
     top: calc(100% + 0.7rem); z-index: 60;
-    display: grid; grid-template-columns: repeat(2, minmax(11rem, 1fr)); gap: 0.4rem 1.6rem;
+    /* Columns size to their content (max-content) so long labels like "Ready-made itineraries"
+       can't overflow their track and bleed over the next column. */
+    display: grid; grid-template-columns: repeat(2, max-content); gap: 0.4rem 2rem;
     padding: 1.1rem 1.3rem;
     background: var(--bg-elev); border: 1px solid var(--border-strong);
     border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
@@ -1307,3 +1309,260 @@ img.img-fallback { visibility: hidden; }
 .quiz-feedback { margin-top: 0.6rem; font-size: var(--step--1); font-weight: 600; min-height: 1.2em; }
 .quiz-feedback.is-right { color: var(--success); }
 .quiz-feedback.is-wrong { color: var(--accent-ink); }
+
+/* ============================================================
+   Compare, scrollytelling story mode, and micro-interactions.
+   ============================================================ */
+
+/* ---------- compare toggle on getaway cards ---------- */
+.compare-toggle {
+    position: absolute; left: 0.6rem; bottom: 0.6rem; z-index: 3;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 0.7rem; border-radius: var(--radius-pill);
+    font-size: 0.72rem; font-weight: 600; color: #fff;
+    background: rgba(8, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform var(--dur-fast) var(--ease), background var(--dur-fast);
+}
+.compare-toggle:hover { transform: translateY(-2px); }
+.compare-toggle.is-on { background: var(--accent-strong); border-color: transparent; }
+/* When a season badge is present it sits bottom-left too; nudge the compare toggle up if both show.
+   The badge container is small, so keep compare above it via a small offset when needed. */
+.card-media .card-badges { bottom: 2.6rem; }
+
+/* ---------- floating compare bar ---------- */
+.compare-bar {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: clamp(1rem, 4vw, 2rem); z-index: 150;
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.6rem 0.7rem 0.6rem 1.1rem; border-radius: var(--radius-pill);
+    background: var(--bg-elev); border: 1px solid var(--border-strong); box-shadow: var(--shadow-lg);
+    animation: cmp-rise var(--dur-base) var(--ease);
+}
+@keyframes cmp-rise { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.compare-bar-count { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; font-size: var(--step--1); }
+.compare-bar-count i { color: var(--accent-ink); }
+.compare-bar-actions { display: inline-flex; align-items: center; gap: 0.6rem; }
+.compare-bar-clear { color: var(--text-dim); font-size: var(--step--1); font-weight: 600; }
+.compare-bar-clear:hover { color: var(--accent-ink); }
+
+/* ---------- compare table ---------- */
+.cmp-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.cmp-table { border-collapse: collapse; width: 100%; min-width: 520px; }
+.cmp-table th, .cmp-table td {
+    padding: 0.85rem 1rem; text-align: left; vertical-align: top;
+    border-bottom: 1px solid var(--border); font-size: var(--step-0);
+}
+.cmp-table thead td, .cmp-table thead th { border-bottom: 2px solid var(--border-strong); vertical-align: bottom; }
+.cmp-table tbody th { color: var(--text-dim); font-weight: 600; font-size: var(--step--1); white-space: nowrap; }
+.cmp-table td { color: var(--text-muted); }
+.cmp-corner { width: 8rem; }
+.cmp-place { display: flex; flex-direction: column; gap: 0.5rem; font-weight: 600; color: var(--text); }
+.cmp-place img { width: 100%; max-width: 160px; aspect-ratio: 16/10; object-fit: cover; border-radius: var(--radius); }
+.cmp-place:hover { color: var(--accent-ink); }
+.cmp-remove {
+    margin-top: 0.4rem; width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--text-muted);
+    background: var(--bg-elev-2); border: 1px solid var(--border);
+}
+.cmp-remove:hover { color: var(--accent); border-color: var(--accent); }
+.cmp-clear { margin-top: 1.2rem; }
+
+/* ---------- scrollytelling story mode ---------- */
+.story { display: grid; gap: clamp(1.5rem, 4vw, 3rem); margin: 1.5rem 0 2.5rem; }
+.story-panel {
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.2rem, 4vw, 2.5rem);
+    align-items: center;
+}
+.story-panel--alt { direction: rtl; }
+.story-panel--alt > * { direction: ltr; }
+.story-media { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.story-media img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+.story-copy h3 { font-size: var(--step-2); margin-bottom: 0.5rem; }
+.story-copy p { color: var(--text-muted); font-size: var(--step-1); max-width: 52ch; }
+@media (max-width: 700px) {
+    .story-panel, .story-panel--alt { grid-template-columns: 1fr; direction: ltr; }
+}
+
+/* ---------- reveal-on-scroll micro-interaction ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- hero ambient motion (subtle Ken Burns) ---------- */
+.hero-tile img { animation: kenburns 22s ease-in-out infinite alternate; }
+.hero-tile:nth-child(2) img { animation-duration: 26s; }
+.hero-tile:nth-child(3) img { animation-duration: 30s; }
+.hero-tile:nth-child(4) img { animation-duration: 24s; }
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.08); } }
+.hero-tile:hover img { animation-play-state: paused; }
+
+/* Respect reduced motion for all of the above (belt-and-suspenders over the global rule). */
+@media (prefers-reduced-motion: reduce) {
+    .hero-tile img { animation: none; }
+    .reveal { opacity: 1; transform: none; }
+    .compare-bar { animation: none; }
+}
+
+/* ============================================================
+   Gamified learning: daily fact, journey/progress, badges,
+   quiz scoring, confetti, explored tick.
+   ============================================================ */
+
+/* ---------- daily "learn something new" banner ---------- */
+.daily-fact {
+    display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+    margin: 1.25rem 0 0; padding: 0.9rem 1.1rem;
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: var(--radius);
+}
+.daily-icon { color: var(--accent-ink); font-size: 1.1rem; flex: 0 0 auto; }
+.daily-text { color: var(--text-muted); font-size: var(--step-0); flex: 1 1 240px; margin: 0; }
+.daily-text strong { color: var(--text); }
+.daily-streak {
+    display: inline-flex; align-items: center; gap: 0.4rem; flex: 0 0 auto;
+    font-size: var(--step--1); font-weight: 700; color: #fff;
+    background: linear-gradient(90deg, #ff7a18, var(--accent-strong));
+    padding: 0.3rem 0.7rem; border-radius: var(--radius-pill);
+}
+
+/* ---------- explored tick on cards ---------- */
+.explored-tick {
+    position: absolute; top: 0.6rem; left: 0.6rem; z-index: 3;
+    width: 26px; height: 26px; display: grid; place-items: center;
+    border-radius: 50%; color: #fff; background: rgba(52, 211, 153, 0.92);
+    box-shadow: 0 0 0 2px rgba(8,8,10,0.35); font-size: 0.8rem;
+}
+/* If a card-type label is top-left, shift the tick to top-right-ish under the fav button instead. */
+.card-media .card-type + .fav-btn + .explored-tick,
+.card-media .explored-tick { top: 0.6rem; left: 0.6rem; }
+
+/* ---------- journey / progress page ---------- */
+.journey-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem;
+    margin-bottom: 2rem;
+}
+.jstat {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1rem; text-align: center;
+}
+.jstat strong { display: block; font-size: var(--step-3); color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+.jstat span { color: var(--text-muted); font-size: var(--step--1); }
+
+.prog-list { display: grid; gap: 0.7rem; margin-bottom: 1rem; }
+.prog-row { display: grid; grid-template-columns: 9rem 1fr 3rem; gap: 0.9rem; align-items: center; }
+.prog-label { display: inline-flex; align-items: center; gap: 0.5rem; font-size: var(--step--1); font-weight: 600; }
+.prog-label i { color: var(--accent-ink); width: 1.1em; text-align: center; }
+.prog-track { height: 9px; background: var(--bg-elev-2); border-radius: var(--radius-pill); overflow: hidden; }
+.prog-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: var(--radius-pill); transition: width 0.6s var(--ease); }
+.prog-count { text-align: right; color: var(--text-dim); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+    .prog-row { grid-template-columns: 7rem 1fr 2.6rem; gap: 0.5rem; }
+    .prog-label span { display: none; }
+}
+
+/* ---------- badges ---------- */
+.badge-tally { font-size: var(--step-0); color: var(--text-dim); font-weight: 500; }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.8rem; }
+.badge-card {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem;
+    padding: 1.1rem 0.9rem; border-radius: var(--radius-lg);
+    background: var(--bg-elev); border: 1px solid var(--border);
+}
+.badge-card.is-locked { opacity: 0.55; }
+.badge-medal {
+    width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%;
+    font-size: 1.3rem; margin-bottom: 0.2rem;
+}
+.badge-card.is-earned .badge-medal {
+    color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: var(--glow);
+}
+.badge-card.is-locked .badge-medal { color: var(--text-dim); background: var(--bg-elev-2); }
+.badge-card strong { font-size: var(--step-0); }
+.badge-desc { color: var(--text-muted); font-size: var(--step--1); }
+.journey-reset { margin-top: 1.5rem; }
+
+/* ---------- quiz score summary ---------- */
+.quiz-prev { color: var(--text-dim); font-size: var(--step--1); margin-bottom: 1rem; }
+.quiz-prev strong { color: var(--accent-ink); }
+.quiz-result { margin-top: 1.2rem; }
+.quiz-score {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 1rem 1.2rem; border-radius: var(--radius);
+    background: var(--bg-elev-2); border: 1px solid var(--border-strong);
+}
+.quiz-score i { font-size: 1.6rem; color: var(--accent-ink); }
+.quiz-score.is-perfect i { color: var(--success); }
+.quiz-score strong { display: block; font-size: var(--step-2); font-variant-numeric: tabular-nums; }
+.quiz-score span { color: var(--text-muted); font-size: var(--step--1); }
+
+/* ---------- confetti ---------- */
+.confetti-layer { position: fixed; inset: 0; z-index: 260; pointer-events: none; overflow: hidden; }
+.confetti-bit {
+    position: absolute; top: -12px; width: 9px; height: 14px; border-radius: 2px;
+    animation: confetti-fall 2.4s linear forwards;
+}
+@keyframes confetti-fall {
+    to { transform: translateY(105vh) rotate(720deg); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .confetti-layer { display: none; }
+    .prog-fill { transition: none; }
+}
+
+/* ============================================================
+   Plan a trip wizard
+   ============================================================ */
+.container--narrow { max-width: 760px; }
+
+/* Step dots */
+.wiz-steps { display: flex; justify-content: center; gap: 0.5rem; margin: 0 0 1.75rem; }
+.wiz-dot { width: 34px; height: 5px; border-radius: var(--radius-pill); background: var(--bg-elev-2); transition: background var(--dur-base); }
+.wiz-dot.is-on { background: var(--accent); }
+
+.wiz-panel { animation: wiz-in var(--dur-base) var(--ease); }
+@keyframes wiz-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.wiz-q { font-size: var(--step-3); text-align: center; margin-bottom: 0.4rem; }
+.wiz-hint { text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* Time choices (big buttons) */
+.wiz-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.9rem; margin-top: 1.5rem; }
+.wiz-choice {
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.35rem;
+    padding: 1.6rem 1rem; border-radius: var(--radius-lg);
+    background: var(--bg-elev); border: 1px solid var(--border);
+    transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast), background var(--dur-fast);
+}
+.wiz-choice:hover { transform: translateY(-3px); border-color: var(--accent-ring); }
+.wiz-choice.is-sel { border-color: var(--accent); background: var(--accent-soft); }
+.wiz-choice-icon {
+    width: 56px; height: 56px; display: grid; place-items: center; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent-ink); font-size: 1.4rem; margin-bottom: 0.3rem;
+}
+.wiz-choice strong { font-size: var(--step-1); }
+.wiz-choice span { color: var(--text-muted); font-size: var(--step--1); }
+
+/* Interest tags */
+.wiz-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+.wiz-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.1rem; border-radius: var(--radius-pill);
+    background: var(--bg-elev); border: 1px solid var(--border); color: var(--text);
+    font-size: var(--step-0); transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
+}
+.wiz-tag i { color: var(--accent-ink); }
+.wiz-tag:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.wiz-tag.is-sel { background: var(--accent-strong); color: #fff; border-color: transparent; }
+.wiz-tag.is-sel i { color: #fff; }
+
+.wiz-actions { display: flex; justify-content: center; gap: 0.7rem; margin-top: 2rem; }
+
+/* Results */
+.wiz-summary {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;
+    padding: 1rem 1.2rem; margin-bottom: 1.5rem;
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.wiz-summary p { color: var(--text-muted); }
+.wiz-summary p i { color: var(--accent-ink); margin-right: 0.4rem; }
+.wiz-summary strong { color: var(--text); }

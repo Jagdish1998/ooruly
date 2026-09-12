@@ -2301,6 +2301,23 @@ const THEMES = [
             'commissioning temples and watchtowers that survive today. Following his mark across the ' +
             'city is one of the best ways to understand how Bengaluru began.',
         members: ['temple:bull-temple', 'temple:gavi-gangadhareshwara', 'city:lalbagh', 'city:tipu-summer-palace'],
+        story: [
+            {
+                image: 'images/bull-temple.jpg',
+                heading: 'A chieftain founds a city',
+                text: 'In 1537, Kempegowda I — a feudatory of the Vijayanagara Empire — laid out a fortified market town he called Bengaluru. He built a mud fort and, according to legend, marked the town\'s future boundaries with four watchtowers.',
+            },
+            {
+                image: 'images/gavi-gangadhareshwara.jpg',
+                heading: 'Temples in stone',
+                text: 'He endowed temples that still stand, from the giant monolithic Nandi of the Bull Temple to the rock-cut cave shrine of Gavi Gangadhareshwara — early anchors of the growing town\'s spiritual life.',
+            },
+            {
+                image: 'images/lalbagh.jpg',
+                heading: 'A legacy woven through the city',
+                text: 'Centuries later, one of his original watchtowers survives on the ancient rock inside Lalbagh. To trace Kempegowda\'s marks is to read the opening chapter of Bengaluru\'s story.',
+            },
+        ],
     },
     {
         slug: 'hoysala-vijayanagara',
@@ -2313,6 +2330,23 @@ const THEMES = [
             'Belur and Halebidu to the vast temple-city of Hampi. Seen together, they tell the story ' +
             'of medieval South India\'s wealth, faith and craftsmanship.',
         members: ['place:hampi', 'place:belur-halebidu', 'place:shravanabelagola'],
+        story: [
+            {
+                image: 'images/belur-halebidu.jpg',
+                heading: 'The Hoysalas raise the bar',
+                text: 'From the 12th century, Hoysala sculptors carved soft soapstone into astonishingly fine detail — jewel-box temples at Belur and Halebidu covered in gods, dancers and stories, some even signed by their makers.',
+            },
+            {
+                image: 'images/hampi.jpg',
+                heading: 'Vijayanagara: a city of victory',
+                text: 'Two centuries on, the Vijayanagara Empire built Hampi into one of the richest cities on Earth — a vast landscape of temples, bazaars and royal enclosures scattered among surreal boulders.',
+            },
+            {
+                image: 'images/shravanabelagola.jpg',
+                heading: 'Faith carved from single stones',
+                text: 'Across the region, monoliths tell of devotion at scale — from Hampi\'s stone chariot to the towering Gomateshwara at Shravanabelagola, anointed in a grand ceremony every twelve years.',
+            },
+        ],
         quiz: [
             {
                 q: 'Which empire built Hampi as its capital?',
@@ -2414,4 +2448,76 @@ const GLOSSARY = [
     { term: 'Kesari bath', meaning: 'A sweet, saffron-tinted semolina dish, often paired with khara bath.' },
     { term: 'Ghat', meaning: 'A mountain pass or the stepped, winding roads of the Western Ghats.' },
     { term: 'Kodava', meaning: 'The indigenous people of Coorg (Kodagu), with their own language and customs.' },
+];
+
+/*
+ * BADGES — earned as you explore and learn. Each badge has a `check(progress, ctx)` predicate that
+ * returns true once earned. `ctx` gives helper counts (explored by collection, quizzes passed, etc.)
+ * so criteria stay declarative. Shown on the "Your journey" page. Purely client-side.
+ */
+const BADGES = [
+    {
+        id: 'first-steps', icon: 'fa-shoe-prints', title: 'First Steps',
+        desc: 'Explored your first place.',
+        check: (ctx) => ctx.explored >= 1,
+    },
+    {
+        id: 'curious-ten', icon: 'fa-compass', title: 'Curious Explorer',
+        desc: 'Explored 10 places.',
+        check: (ctx) => ctx.explored >= 10,
+    },
+    {
+        id: 'temple-explorer', icon: 'fa-gopuram', title: 'Temple Explorer',
+        desc: 'Explored 5 temples.',
+        check: (ctx) => ctx.byKey.temple >= 5,
+    },
+    {
+        id: 'coffee-connoisseur', icon: 'fa-mug-hot', title: 'Coffee Connoisseur',
+        desc: 'Explored 4 cafes.',
+        check: (ctx) => ctx.byKey.cafe >= 4,
+    },
+    {
+        id: 'foodie', icon: 'fa-utensils', title: 'Local Foodie',
+        desc: 'Explored 5 iconic eateries.',
+        check: (ctx) => ctx.byKey.eat >= 5,
+    },
+    {
+        id: 'wanderer', icon: 'fa-mountain-sun', title: 'Weekend Wanderer',
+        desc: 'Explored 5 getaways.',
+        check: (ctx) => ctx.byKey.place >= 5,
+    },
+    {
+        id: 'history-buff', icon: 'fa-landmark', title: 'History Buff',
+        desc: 'Passed a heritage-themed quiz.',
+        check: (ctx) => ctx.quizzesPassed >= 1,
+    },
+    {
+        id: 'scholar', icon: 'fa-graduation-cap', title: 'Bengaluru Scholar',
+        desc: 'Passed 3 theme quizzes.',
+        check: (ctx) => ctx.quizzesPassed >= 3,
+    },
+    {
+        id: 'streak-3', icon: 'fa-fire', title: 'On a Roll',
+        desc: 'A 3-day learning streak.',
+        check: (ctx) => ctx.streak >= 3,
+    },
+];
+
+/*
+ * DAILY_FACTS — a small pool for the "learn something new" nudge on the home page. One is shown per
+ * day (rotated by day-of-year), independent of any place so it always has something to say.
+ */
+const DAILY_FACTS = [
+    'Bengaluru is often called the "Garden City" for its many parks and tree-lined avenues.',
+    'The rava idli was invented at MTR during World War II, when rice was scarce.',
+    'Lalbagh\'s peninsular gneiss rock is around 3,000 million years old — among the oldest on Earth.',
+    'Kempegowda founded Bengaluru in 1537 and is said to have marked its boundaries with four towers.',
+    'Bengaluru is widely regarded as the craft-beer capital of India.',
+    'Vidhana Soudha, the granite seat of Karnataka\'s legislature, is floodlit on Sunday evenings.',
+    'Coffee was first grown in India in the hills of Chikmagalur.',
+    'Hampi\'s stone chariot at the Vittala Temple appears on the ₹50 note.',
+    'Gavi Gangadhareshwara temple has a solar alignment that lights the linga each Makar Sankranti.',
+    'Cubbon Park, laid out in 1884, is the green heart of central Bengaluru.',
+    'The Bull Temple\'s giant Nandi is carved from a single block of granite.',
+    'Vidyarthi Bhavan in Basavanagudi has served its ghee-roast masala dosa since 1943.',
 ];
