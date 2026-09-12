@@ -25,14 +25,33 @@
 
     let activeType = 'all';
 
-    /* Per-collection filter state: { area, intent } for each home section that has filters. */
+    /* Per-collection filter + sort state for each home section that has filters. */
     const collFilter = {
-        city: { area: 'all', intent: 'all' },
-        temples: { area: 'all', intent: 'all' },
-        cafes: { area: 'all', intent: 'all' },
-        eats: { area: 'all', intent: 'all' },
-        do: { area: 'all', intent: 'all' },
+        city: { area: 'all', intent: 'all', sort: 'default' },
+        temples: { area: 'all', intent: 'all', sort: 'default' },
+        cafes: { area: 'all', intent: 'all', sort: 'default' },
+        eats: { area: 'all', intent: 'all', sort: 'default' },
+        do: { area: 'all', intent: 'all', sort: 'default' },
     };
+
+    /* Sort a filtered collection per the chosen mode. 'near' uses geolocation if available. */
+    function applySort(list, mode) {
+        const arr = list.slice();
+        if (mode === 'az') {
+            arr.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+        } else if (mode === 'open') {
+            // Open-today first (true), then unknown, then closed.
+            const rank = (x) => { const o = F ? F.isOpenToday(x) : null; return o === true ? 0 : o === null ? 1 : 2; };
+            arr.sort((a, b) => rank(a) - rank(b));
+        } else if (mode === 'near' && F && F.lastPos) {
+            arr.sort((a, b) => {
+                const da = typeof a.lat === 'number' ? F.haversineKm(F.lastPos, { lat: a.lat, lng: a.lng }) : Infinity;
+                const db = typeof b.lat === 'number' ? F.haversineKm(F.lastPos, { lat: b.lat, lng: b.lng }) : Infinity;
+                return da - db;
+            });
+        }
+        return arr;
+    }
 
     /* Distinct areas within a collection, for the area filter chips. */
     function areasOf(list) {
@@ -50,8 +69,9 @@
         });
     }
 
-    /* Build an area + intent filter bar for a section. `sec` keys into collFilter. */
-    function filterBarHTML(sec, list) {
+    /* Build an area + intent + sort bar for a section, plus a live result count. `sec` keys into
+       collFilter; `shownCount`/`totalCount` drive the "Showing X of Y" line. */
+    function filterBarHTML(sec, list, shownCount, totalCount) {
         const f = collFilter[sec];
         const areas = areasOf(list);
         const areaOpts = ['all'].concat(areas).map((a) =>
@@ -71,13 +91,34 @@
                 </select>
             </label>` : '';
 
-        // A "Clear" link only shows when a filter is active, so the row stays clean by default.
-        const active = f.area !== 'all' || f.intent !== 'all';
+        // Sort options; "Nearest" only makes sense once we have the user's location.
+        const hasGeo = F && F.lastPos;
+        const sortOpts = [
+            { id: 'default', label: 'Featured' },
+            { id: 'az', label: 'A–Z' },
+        ];
+        if (sec === 'eats' || sec === 'city') sortOpts.push({ id: 'open', label: 'Open today' });
+        if (hasGeo) sortOpts.push({ id: 'near', label: 'Nearest' });
+        const sortSelect = `
+            <label class="filter-select">
+                <span class="filter-select-label"><i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i> Sort</span>
+                <select class="select" data-filter-sec="${sec}" data-filter-kind="sort" aria-label="Sort">
+                    ${sortOpts.map((o) => `<option value="${o.id}" ${f.sort === o.id ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}
+                </select>
+            </label>`;
+
+        const active = f.area !== 'all' || f.intent !== 'all' || f.sort !== 'default';
         const clear = active
             ? `<button class="filter-clear" type="button" data-filter-sec="${sec}" data-filter-kind="clear">
                     <i class="fa-solid fa-xmark" aria-hidden="true"></i> Clear
                </button>`
             : '';
+
+        // Live result count, announced to screen readers.
+        const filtered = f.area !== 'all' || f.intent !== 'all';
+        const count = `<p class="filter-count" role="status" aria-live="polite">${
+            filtered ? `Showing <strong>${shownCount}</strong> of ${totalCount}` : `${totalCount} places`
+        }</p>`;
 
         return `<div class="filters filters--select" data-filter-bar="${sec}">
                     <label class="filter-select">
@@ -87,7 +128,9 @@
                         </select>
                     </label>
                     ${intentSelect}
+                    ${sortSelect}
                     ${clear}
+                    ${count}
                 </div>`;
     }
 
@@ -225,22 +268,28 @@
         const eatAll = (typeof EATERIES !== 'undefined' ? EATERIES : []);
         const doAll = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []);
 
-        const cityBar = filterBarHTML('city', cityAll);
-        const templeBar = filterBarHTML('temples', templeAll);
-        const cafeBar = filterBarHTML('cafes', cafeAll);
-        const eatBar = filterBarHTML('eats', eatAll);
-        const doBar = filterBarHTML('do', doAll);
+        // Ready-made itineraries teaser (top 3), linking to the full page.
+        const itinTeaser = itinerariesData().slice(0, 3).map(itineraryCardHTML).join('');
 
         const emptyMsg = '<p class="grid-empty">Nothing matches those filters yet — try clearing one.</p>';
-        const cityFiltered = applyFilter(cityAll, collFilter.city);
+
+        // Filter, then sort, then render — and pass the shown/total counts into each bar.
+        const cityFiltered = applySort(applyFilter(cityAll, collFilter.city), collFilter.city.sort);
+        const templeFiltered = applySort(applyFilter(templeAll, collFilter.temples), collFilter.temples.sort);
+        const cafeFiltered = applySort(applyFilter(cafeAll, collFilter.cafes), collFilter.cafes.sort);
+        const eatFiltered = applySort(applyFilter(eatAll, collFilter.eats), collFilter.eats.sort);
+        const doFiltered = applySort(applyFilter(doAll, collFilter.do), collFilter.do.sort);
+
+        const cityBar = filterBarHTML('city', cityAll, cityFiltered.length, cityAll.length);
+        const templeBar = filterBarHTML('temples', templeAll, templeFiltered.length, templeAll.length);
+        const cafeBar = filterBarHTML('cafes', cafeAll, cafeFiltered.length, cafeAll.length);
+        const eatBar = filterBarHTML('eats', eatAll, eatFiltered.length, eatAll.length);
+        const doBar = filterBarHTML('do', doAll, doFiltered.length, doAll.length);
+
         const cityList = cityFiltered.length ? cityFiltered.map(cityCardHTML).join('') : emptyMsg;
-        const templeFiltered = applyFilter(templeAll, collFilter.temples);
         const templeList = templeFiltered.length ? templeFiltered.map(templeCardHTML).join('') : emptyMsg;
-        const cafeFiltered = applyFilter(cafeAll, collFilter.cafes);
         const cafeList = cafeFiltered.length ? cafeFiltered.map(cafeCardHTML).join('') : emptyMsg;
-        const eatFiltered = applyFilter(eatAll, collFilter.eats);
         const eatList = eatFiltered.length ? eatFiltered.map(eatCardHTML).join('') : emptyMsg;
-        const doFiltered = applyFilter(doAll, collFilter.do);
         const doList = doFiltered.length ? doFiltered.map(activityCardHTML).join('') : emptyMsg;
 
         // Counts for the hero stat row (proof of how much is inside).
@@ -303,6 +352,21 @@
                     </div>
                 </div>
             </section>
+
+            ${itinTeaser ? `
+            <section class="section section--itin" id="itineraries">
+                <div class="container">
+                    <div class="section-head section-head--row">
+                        <div>
+                            <h2 class="section-title">Ready-made itineraries</h2>
+                            <p class="section-sub">Not sure where to start? Use a curated day plan as-is,
+                                or tweak it in the planner.</p>
+                        </div>
+                        <a class="near-btn" href="#/itineraries">All itineraries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="grid itin-grid">${itinTeaser}</div>
+                </div>
+            </section>` : ''}
 
             <section class="section section--city" id="city">
                 <div class="container">
@@ -411,7 +475,7 @@
         view.querySelectorAll('.filter-clear[data-filter-sec]').forEach((btn) => {
             btn.addEventListener('click', () => {
                 const sec = btn.dataset.filterSec;
-                collFilter[sec] = { area: 'all', intent: 'all' };
+                collFilter[sec] = { area: 'all', intent: 'all', sort: 'default' };
                 renderHome();
                 anchorTo(sec);
             });
@@ -754,6 +818,8 @@
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
 
+                    ${nearbyHTML(key, p.slug, 'Nearby places')}
+
                     <section class="block book">
                         <h2>Get directions</h2>
                         <p class="book-intro">Open the location in Google Maps for live directions
@@ -834,6 +900,8 @@
                         <h2>Good to know</h2>
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
+
+                    ${nearbyHTML('cafe', c.slug, 'Nearby places')}
 
                     <section class="block book">
                         <h2>Get directions</h2>
@@ -916,6 +984,8 @@
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
 
+                    ${nearbyHTML('eat', e.slug, 'Nearby places')}
+
                     <section class="block book">
                         <h2>Get directions</h2>
                         <p class="book-intro">Open the eatery in Google Maps for live directions from
@@ -997,6 +1067,8 @@
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
 
+                    ${nearbyHTML('do', a.slug, 'Nearby places')}
+
                     <section class="block book">
                         <h2>Find it near you</h2>
                         <p class="book-intro">Ooruly points you to the kind of experience, not one
@@ -1015,6 +1087,28 @@
             </article>`;
 
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* Cross-linking block for detail pages: the closest few places to this one, across the whole
+       guide. Reuses the generic entry card. Renders nothing if the place has no coordinates. */
+    function nearbyHTML(key, slug, headline) {
+        if (!F) return '';
+        const items = F.nearby(key, slug, { limit: 4 });
+        if (!items.length) return '';
+        const cards = items.map((e) =>
+            `<a class="near-card" href="${esc(e.route)}">
+                <span class="near-card-icon"><i class="fa-solid ${esc(e.icon)}" aria-hidden="true"></i></span>
+                <span class="near-card-text">
+                    <span class="near-card-name">${esc(e.name)}</span>
+                    <span class="near-card-meta">${esc(e.label)} · ${e.km} km away</span>
+                </span>
+                <i class="fa-solid fa-arrow-right near-card-go" aria-hidden="true"></i>
+            </a>`).join('');
+        return `
+            <section class="block">
+                <h2>${esc(headline || 'Nearby')}</h2>
+                <div class="near-list">${cards}</div>
+            </section>`;
     }
 
     /* ---------- generic card for saved/plan/search (works across collections) ---------- */
@@ -1112,6 +1206,61 @@
             const res = await F.share({ title: 'My Bengaluru plan — Ooruly', text: 'Here\'s a day out I planned on Ooruly', url });
             toast(res === 'copied' ? 'Plan link copied' : res === 'shared' ? 'Shared' : 'Could not share');
         });
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- ready-made itineraries ---------- */
+    function itinerariesData() {
+        return typeof ITINERARIES !== 'undefined' ? ITINERARIES : [];
+    }
+
+    function itineraryCardHTML(it) {
+        const stops = (it.stops || []).map((id) => {
+            const [key, slug] = id.split(':');
+            return F ? F.lookup(key, slug) : null;
+        }).filter(Boolean);
+        const preview = stops.slice(0, 4).map((e) =>
+            `<li><i class="fa-solid ${esc(e.icon)}" aria-hidden="true"></i> ${esc(e.name)}</li>`).join('');
+        const more = stops.length > 4 ? `<li class="itin-more">+${stops.length - 4} more</li>` : '';
+        return `
+            <article class="itin-card">
+                <div class="itin-head">
+                    <span class="itin-icon"><i class="fa-solid ${esc(it.icon || 'fa-route')}" aria-hidden="true"></i></span>
+                    <div>
+                        <h3>${esc(it.title)}</h3>
+                        <span class="itin-meta">${esc(it.duration || '')} · ${stops.length} stops</span>
+                    </div>
+                </div>
+                <p class="itin-summary">${esc(it.summary || '')}</p>
+                <ul class="itin-stops">${preview}${more}</ul>
+                <div class="itin-actions">
+                    <button class="btn btn-primary btn-sm" type="button" data-use-itin="${esc(it.slug)}">
+                        <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Use this plan
+                    </button>
+                    <a class="btn btn-ghost btn-sm" href="#/plan/${encodeURIComponent((it.stops || []).join(','))}">Preview</a>
+                </div>
+            </article>`;
+    }
+
+    function renderItineraries() {
+        const list = itinerariesData();
+        const body = list.length
+            ? `<div class="grid itin-grid">${list.map(itineraryCardHTML).join('')}</div>`
+            : `<div class="empty-state"><i class="fa-solid fa-route" aria-hidden="true"></i>
+                    <h2>No itineraries yet</h2></div>`;
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Ready-made itineraries</h1>
+                        <p class="section-sub">Curated day plans you can use as-is or tweak. "Use this plan"
+                            drops all the stops into your weekend planner, where you can reorder, share, or
+                            open the whole route in Maps.</p>
+                    </div>
+                    ${body}
+                </div>
+            </section>`;
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
@@ -1247,6 +1396,7 @@
         if (hash === '#/plan' || hash.indexOf('#/plan/') === 0) { renderPlan(); currentView = 'plan'; return; }
         if (hash === '#/map') { renderMap(); currentView = 'map'; return; }
         if (hash === '#/phrases') { renderPhrases(); currentView = 'phrases'; return; }
+        if (hash === '#/itineraries') { renderItineraries(); currentView = 'itineraries'; return; }
 
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
@@ -1492,6 +1642,19 @@
                     e.preventDefault();
                     F.removeFromPlan(rmBtn.dataset.planId);
                     renderPlan();
+                    return;
+                }
+
+                // "Use this plan" on a ready-made itinerary: replace the working plan and open it.
+                const useItin = e.target.closest('[data-use-itin]');
+                if (useItin && view.contains(useItin)) {
+                    e.preventDefault();
+                    const it = itinerariesData().find((x) => x.slug === useItin.dataset.useItin);
+                    if (it) {
+                        const n = F.setPlan(it.stops || []);
+                        toast(`Added ${n} stops to your plan`);
+                        location.hash = '#/plan';
+                    }
                     return;
                 }
 

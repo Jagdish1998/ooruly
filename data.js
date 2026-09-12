@@ -1967,3 +1967,76 @@ const PHRASES = [
         ],
     },
 ];
+
+/*
+ * ITINERARIES — ready-made, curated day plans. Each stop is a "key:slug" id matching the plan
+ * format used by features.js (keys: place, city, temple, cafe, eat, do), so "Use this plan" can
+ * drop the whole list straight into the weekend planner. Edit or add a plan here and it appears
+ * on the Itineraries page and home teaser with no code change. Route: #/itineraries.
+ */
+const ITINERARIES = [
+    {
+        slug: 'weekend-in-the-city',
+        title: 'A weekend in the city',
+        icon: 'fa-city',
+        duration: '2 days',
+        summary: 'The essential first-timer\'s loop — palaces, gardens, iconic dosas and a hidden cafe.',
+        stops: [
+            'eat:mtr', 'city:lalbagh', 'city:bangalore-palace',
+            'city:cubbon-park', 'cafe:matteo-coffea', 'city:vidhana-soudha',
+        ],
+    },
+    {
+        slug: 'heritage-day',
+        title: 'Heritage day',
+        icon: 'fa-landmark',
+        duration: '1 day',
+        summary: 'Palaces, forts and old-city history, wrapped around a legendary Basavanagudi breakfast.',
+        stops: [
+            'eat:vidyarthi-bhavan', 'city:tipu-summer-palace', 'temple:kote-venkataramana',
+            'city:kr-market', 'city:bangalore-palace',
+        ],
+    },
+    {
+        slug: 'temple-trail',
+        title: 'Temple trail',
+        icon: 'fa-gopuram',
+        duration: '1 day',
+        summary: 'From the oldest shrines to a modern landmark — a spread across eras and faiths.',
+        stops: [
+            'temple:bull-temple', 'temple:dodda-ganapathi', 'temple:gavi-gangadhareshwara',
+            'temple:ragigudda-anjaneya', 'temple:iskcon',
+        ],
+    },
+    {
+        slug: 'cafe-crawl',
+        title: 'Cafe crawl',
+        icon: 'fa-mug-saucer',
+        duration: 'Half day',
+        summary: 'A slow, caffeinated wander through the city\'s best independent coffee rooms.',
+        stops: [
+            'cafe:third-wave-jayanagar', 'cafe:dyu-art-cafe', 'cafe:roastery-coffee-house',
+            'cafe:matteo-coffea', 'cafe:ela-matcha',
+        ],
+    },
+    {
+        slug: 'family-day-out',
+        title: 'Family day out',
+        icon: 'fa-people-roof',
+        duration: '1 day',
+        summary: 'Animals, science and a big green park — an easy, all-ages day without leaving the city.',
+        stops: [
+            'city:bannerghatta', 'city:vitm', 'city:cubbon-park', 'eat:corner-house',
+        ],
+    },
+    {
+        slug: 'foodie-evening',
+        title: 'A foodie evening',
+        icon: 'fa-utensils',
+        duration: 'Evening',
+        summary: 'Old-school tiffin, a street-food graze and dessert — the taste of Bengaluru in one night.',
+        stops: [
+            'eat:brahmins-coffee-bar', 'do:vv-puram-food-walk', 'city:vv-puram-food-street', 'eat:corner-house',
+        ],
+    },
+];

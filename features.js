@@ -88,6 +88,25 @@
         return buildIndex().find((e) => e.key === key && e.slug === slug) || null;
     }
 
+    /* Nearby places to a given item (for detail-page cross-linking). Ranks other indexed entries
+       by haversine distance from the source's coordinates. `opts.keys` optionally restricts the
+       result to certain collections; `opts.limit` caps the count. Items without coords are skipped.
+       Returns entries with an added `.km` (rounded) so the UI can show "1.2 km away". */
+    function nearby(sourceKey, sourceSlug, opts) {
+        opts = opts || {};
+        const src = lookup(sourceKey, sourceSlug);
+        if (!src || typeof src.item.lat !== 'number') return [];
+        const from = { lat: src.item.lat, lng: src.item.lng };
+        const limit = opts.limit || 4;
+        return buildIndex()
+            .filter((e) => !(e.key === sourceKey && e.slug === sourceSlug))
+            .filter((e) => typeof e.item.lat === 'number')
+            .filter((e) => !opts.keys || opts.keys.indexOf(e.key) !== -1)
+            .map((e) => Object.assign({}, e, { km: Math.round(haversineKm(from, { lat: e.item.lat, lng: e.item.lng }) * 10) / 10 }))
+            .sort((a, b) => a.km - b.km)
+            .slice(0, limit);
+    }
+
     /* ---------- favorites (localStorage) ---------- */
     const FAV_KEY = 'ooruly:favs';
     function readFavs() {
@@ -156,6 +175,20 @@
     function removeFromPlan(id) {
         const list = readPlan().filter((x) => x !== id);
         writePlan(list);
+    }
+    /* Replace the whole working plan (used by "Use this plan" on a ready-made itinerary). Keeps
+       only ids that resolve to a real place, so a stale itinerary entry can't poison the plan. */
+    function setPlan(ids) {
+        const clean = (ids || []).filter((id) => {
+            const [key, slug] = String(id).split(':');
+            return !!lookup(key, slug);
+        });
+        // Clear any shared-link hash plan so the saved working plan takes over.
+        if ((location.hash || '').indexOf('#/plan/') === 0) {
+            history.replaceState(null, '', location.pathname + location.search + '#/plan');
+        }
+        writePlan(clean);
+        return clean.length;
     }
     function planEntries() {
         return readPlan().map((id) => {
@@ -248,7 +281,9 @@
         // favorites
         isFav, toggleFav, favEntries, favCount,
         // plan
-        readPlan, inPlan, togglePlan, movePlan, removeFromPlan, planEntries, planCount, planShareUrl, planFromHash,
+        readPlan, inPlan, togglePlan, movePlan, removeFromPlan, setPlan, planEntries, planCount, planShareUrl, planFromHash,
+        // discovery
+        nearby,
         // geo
         getPosition, haversineKm, get lastPos() { return lastPos; },
         // season / open

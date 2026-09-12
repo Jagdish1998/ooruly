@@ -995,3 +995,64 @@ img.img-fallback { visibility: hidden; }
 .near-btn i { color: var(--accent-ink); }
 .near-btn:hover { transform: translateY(-2px); border-color: var(--accent-ring); color: var(--accent-ink); }
 .near-btn.is-loading { opacity: 0.55; pointer-events: none; }
+
+/* ============================================================
+   Ready-made itineraries, filter result count, and detail-page
+   "Nearby" cross-linking. Theme-aware and responsive.
+   ============================================================ */
+
+/* ---------- filter result count ---------- */
+.filter-count { color: var(--text-dim); font-size: var(--step--1); align-self: center; margin-left: auto; }
+.filter-count strong { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) {
+    .filter-count { margin-left: 0; flex: 1 1 100%; }
+}
+
+/* ---------- itineraries section + cards ---------- */
+.section--itin {
+    background: radial-gradient(60% 55% at 0% 0%, rgba(90, 60, 255, 0.08), transparent 60%);
+    border-bottom: 1px solid var(--border);
+}
+.itin-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.itin-card {
+    display: flex; flex-direction: column; gap: 0.8rem;
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.3rem 1.35rem;
+    box-shadow: var(--edge-highlight);
+    transition: transform var(--dur-base) var(--ease), border-color var(--dur-base), box-shadow var(--dur-base);
+}
+.itin-card:hover { transform: translateY(-4px); border-color: var(--border-strong); box-shadow: var(--shadow-lg); }
+.itin-head { display: flex; align-items: center; gap: 0.85rem; }
+.itin-icon {
+    width: 44px; height: 44px; flex: 0 0 auto; display: grid; place-items: center;
+    border-radius: var(--radius); background: var(--accent-soft); color: var(--accent-ink);
+    font-size: 1.15rem;
+}
+.itin-head h3 { font-size: var(--step-2); }
+.itin-meta { color: var(--text-dim); font-size: var(--step--1); }
+.itin-summary { color: var(--text-muted); font-size: var(--step-0); }
+.itin-stops { display: flex; flex-direction: column; gap: 0.35rem; }
+.itin-stops li { display: flex; align-items: center; gap: 0.55rem; color: var(--text-muted); font-size: var(--step--1); }
+.itin-stops li i { color: var(--accent-ink); width: 1.1em; text-align: center; font-size: 0.9em; }
+.itin-more { color: var(--text-dim) !important; font-style: italic; }
+.itin-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: auto; padding-top: 0.4rem; }
+.btn-sm { padding: 0.5rem 0.95rem; font-size: var(--step--1); }
+
+/* ---------- detail-page "Nearby" cross-links ---------- */
+.near-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.7rem; }
+.near-card {
+    display: flex; align-items: center; gap: 0.8rem;
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.8rem 0.9rem;
+    transition: border-color var(--dur-fast), transform var(--dur-fast) var(--ease), background var(--dur-fast);
+}
+.near-card:hover { transform: translateY(-2px); border-color: var(--border-strong); background: var(--bg-elev-2); }
+.near-card-icon {
+    width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center;
+    border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-ink);
+}
+.near-card-text { display: flex; flex-direction: column; min-width: 0; }
+.near-card-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.near-card-meta { font-size: var(--step--1); color: var(--text-dim); }
+.near-card-go { margin-left: auto; color: var(--text-dim); opacity: 0; transition: opacity var(--dur-fast); }
+.near-card:hover .near-card-go { opacity: 1; }
