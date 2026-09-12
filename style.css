@@ -1147,7 +1147,7 @@ img.img-fallback { visibility: hidden; }
     .onboard-panel { margin-top: auto; margin-bottom: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         position: fixed; left: 0; right: 0; bottom: 0; width: 100%;
         max-height: 88dvh; overflow-y: auto; }
-    .onboard-overlay { display: flex; align-items: flex-end; }
+    .onboard-overlay:not([hidden]) { display: flex; align-items: flex-end; }
 }
 
 /* ============================================================
