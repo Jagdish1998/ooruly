@@ -540,6 +540,7 @@ const CAFES = [
         priceHint: '₹₹ · cash & UPI',
         bestTime: 'Weekday afternoon',
         tagline: 'A rustic bungalow art-café with courtyard seating and slow, calm afternoons.',
+        image: 'images/cafe-latte.jpg',
         description:
             'One of Bengaluru\'s most-loved hidden cafés, Dyu Art Café is set in an old bungalow with ' +
             'open courtyards, gabled roofs and walls hung with rotating artwork. The mood is unhurried ' +
@@ -562,6 +563,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Late morning',
         tagline: 'A warm, wood-lined coffee bar with corner tables made for lingering.',
+        image: 'images/cafe-cappuccino.jpg',
         description:
             'Matteo Coffea is a cosy, wood-toned coffee bar that quietly does the basics very well. ' +
             'Small tables and corner nooks make it easy to settle in for a long coffee or a bit of ' +
@@ -583,6 +585,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Weekday breakfast',
         tagline: 'A snug, no-frills spot famous for all-day breakfast and big pancakes.',
+        image: 'images/food-dosa-sambar.jpg',
         description:
             'A long-running favourite that started small and stayed unpretentious, The Hole in the ' +
             'Wall is best known for its all-day breakfast — pancakes, waffles, big skillets and ' +
@@ -604,6 +607,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Morning',
         tagline: 'A laid-back Jayanagar roaster corner for a serious cup close to home.',
+        image: 'images/cafe-beans.jpg',
         description:
             'Away from the busier Indiranagar and CBD outlets, the Jayanagar corner of this homegrown ' +
             'specialty roaster is an easy neighbourhood spot for a properly made coffee. Minimal decor, ' +
@@ -625,6 +629,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Morning to early afternoon',
         tagline: 'An airy, plant-filled coffee house built around single-origin brews.',
+        image: 'images/cafe-coffee.jpg',
         description:
             'Roastery Coffee House is a bright, plant-filled space that takes its coffee seriously, ' +
             'with a menu built around single-origin beans and a range of brew methods. The high ' +
@@ -647,6 +652,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Afternoon',
         tagline: 'A minimalist, matcha-first room inspired by a Kerala tea shop.',
+        image: 'images/cafe-matcha.jpg',
         description:
             'Ela Matcha is a small, minimalist café in Indiranagar built around matcha and slow, ' +
             'intentional sipping. Its design nods to a Kerala tea shop, tying into the meaning of its ' +
@@ -659,6 +665,151 @@ const CAFES = [
             'Afternoons suit the mood of the place best.',
         ],
         maps: 'Ela Matcha, Indiranagar, Bengaluru',
+    },
+];
+
+/*
+ * Authentic eats — Bengaluru's legendary, decades-old food institutions: the tiffin rooms, the
+ * benne-dosa joints and the colonial-era cafes locals grew up on. Same card + detail pattern as the
+ * cafes (monogram tile, no per-place photo, honest and copyright-safe), but an institution model:
+ * the year it started, what to order, the story behind it, tips, and a Google Maps link.
+ * Route: #/eat/<slug>.
+ */
+const EATERIES = [
+    {
+        slug: 'mtr',
+        name: 'MTR (Mavalli Tiffin Rooms)',
+        area: 'Lalbagh Road',
+        since: 1924,
+        signature: 'Rava idli & masala dosa',
+        priceHint: '₹₹ · veg',
+        tagline: 'The tiffin room that invented rava idli — old-school South Indian breakfast.',
+        image: 'images/eat-mtr.jpg',
+        description:
+            'Mavalli Tiffin Rooms, universally MTR, is arguably Bengaluru\'s most famous eating house. ' +
+            'Founded in 1924 near Lalbagh, it is the place credited with inventing the rava idli during ' +
+            'World War II rice shortages. Little has changed over the decades — the same kitchen, the ' +
+            'same unhurried service, and a set of classics done with rare consistency. It is a piece ' +
+            'of living Bengaluru history as much as a meal.',
+        mustTry: ['Rava idli (invented here)', 'Masala dosa with a mound of butter', 'Filter coffee', 'The full Sunday breakfast'],
+        tips: [
+            'Come early, especially on weekends — the wait for a table can be long by mid-morning.',
+            'It is pure vegetarian and cash/UPI friendly; go hungry, portions are hearty.',
+            'The Lalbagh Road original is the one to visit for the full heritage experience.',
+        ],
+        maps: 'MTR Mavalli Tiffin Rooms, Lalbagh Road, Bengaluru',
+    },
+    {
+        slug: 'vidyarthi-bhavan',
+        name: 'Vidyarthi Bhavan',
+        area: 'Gandhi Bazaar, Basavanagudi',
+        since: 1943,
+        signature: 'Masala dosa',
+        priceHint: '₹ · veg',
+        tagline: 'A dosa temple since 1943, in the old lanes of Gandhi Bazaar.',
+        image: 'images/food-masala-dosa.jpg',
+        description:
+            'Founded in 1943 to feed students around Basavanagudi\'s colleges, Vidyarthi Bhavan has ' +
+            'become a heritage food landmark famous for one thing above all: its crisp, ghee-roasted ' +
+            'masala dosa, browned dark and served fast in a cramped, wood-panelled hall. Long queues, ' +
+            'shared tables and waiters weaving through with towers of dosas are all part of the ritual.',
+        mustTry: ['The signature crisp masala dosa', 'Kesari bath (sweet)', 'Strong filter coffee'],
+        tips: [
+            'Expect a queue, especially on weekends; it moves fast and is worth the wait.',
+            'Seating is shared and tight — it is about the food, not lingering.',
+            'Cash is handy; go early morning or late afternoon to dodge the peak.',
+        ],
+        maps: 'Vidyarthi Bhavan, Gandhi Bazaar, Basavanagudi, Bengaluru',
+    },
+    {
+        slug: 'ctr',
+        name: 'CTR (Central Tiffin Room)',
+        area: 'Malleswaram',
+        since: 1920,
+        signature: 'Benne masala dosa',
+        priceHint: '₹ · veg',
+        tagline: 'Home of the gold-standard benne (butter) masala dosa in Malleswaram.',
+        image: 'images/food-masala-dosa-vada.jpg',
+        description:
+            'CTR, also known as Shri Sagar, is a Malleswaram institution whose benne (butter) masala ' +
+            'dosa is considered by many the finest in the city — evenly browned, impossibly crisp and ' +
+            'generously buttered. Dating back to the 1920s, it is a small, no-frills joint where the ' +
+            'dosa does all the talking, best chased with a strong filter coffee.',
+        mustTry: ['Benne masala dosa (the one to get)', 'Kharabath / idli', 'Filter coffee'],
+        tips: [
+            'Weekend mornings are packed — arrive early or expect to wait outside.',
+            'It is small and casual; be ready for shared, quick-turnover seating.',
+            'Malleswaram around it is great for a post-dosa walk.',
+        ],
+        maps: 'CTR Shri Sagar, Malleswaram, Bengaluru',
+    },
+    {
+        slug: 'koshys',
+        name: 'Koshy\'s',
+        area: 'St. Mark\'s Road',
+        since: 1940,
+        signature: 'Breakfast & roast chicken',
+        priceHint: '₹₹ · veg & non-veg',
+        tagline: 'The colonial-era cafe where old Bengaluru still gathers over coffee.',
+        image: 'images/food-south-indian.jpg',
+        description:
+            'Koshy\'s, on St. Mark\'s Road, began as a bakery around 1940 and grew into a restaurant ' +
+            'that became a legendary hangout for writers, journalists, politicians and artists. With ' +
+            'its high ceilings, worn wooden chairs and unchanged interiors, it trades in old-school ' +
+            'charm and unhurried café culture. Come for breakfast, coffee and long conversations rather ' +
+            'than anything fancy.',
+        mustTry: ['Breakfast spread and mutton cutlets', 'Roast chicken', 'Coffee, and just soaking in the room'],
+        tips: [
+            'It is as much about the atmosphere as the food — settle in, don\'t rush.',
+            'Serves both veg and non-veg; the mood is relaxed and conversational.',
+            'Central location near MG Road / Cubbon Park makes it an easy add-on.',
+        ],
+        maps: 'Koshy\'s, St Marks Road, Bengaluru',
+    },
+    {
+        slug: 'airlines-hotel',
+        name: 'Airlines Hotel',
+        area: 'Lavelle Road',
+        since: 1969,
+        signature: 'Filter coffee under the trees',
+        priceHint: '₹₹ · veg',
+        tagline: 'Bengaluru\'s classic open-air drive-in — coffee and dosas under old trees.',
+        image: 'images/cafe-coffee.jpg',
+        description:
+            'Airlines Hotel on Lavelle Road is a beloved open-air, drive-in restaurant where you sit ' +
+            'under a canopy of old rain trees with a tumbler of filter coffee. Long a Bengaluru ' +
+            'institution, its garden setting, unhurried pace and dependable South Indian fare make it ' +
+            'a favourite for morning coffee, a plate of dosas, or simply passing a slow hour outdoors ' +
+            'in the middle of the city.',
+        mustTry: ['Filter coffee under the trees', 'Masala dosa and idli-vada', 'A leisurely open-air breakfast'],
+        tips: [
+            'The charm is the garden seating — go when the weather is pleasant.',
+            'Mornings are the nicest and least crowded.',
+            'It is pure vegetarian; expect a relaxed, no-rush vibe.',
+        ],
+        maps: 'Airlines Hotel, Lavelle Road, Bengaluru',
+    },
+    {
+        slug: 'brahmins-coffee-bar',
+        name: 'Brahmin\'s Coffee Bar',
+        area: 'Basavanagudi',
+        since: 1965,
+        signature: 'Idli-vada & chutney',
+        priceHint: '₹ · veg',
+        tagline: 'A tiny counter legend for soft idlis and a chutney people crave.',
+        image: 'images/food-idli-vada.jpg',
+        description:
+            'Brahmin\'s Coffee Bar is a tiny, standing-room Basavanagudi institution that has done a ' +
+            'short, perfect menu since the 1960s: pillow-soft idlis, crisp vadas, khara bath and a ' +
+            'coconut chutney locals rave about, plus strong filter coffee. There is no dosa and barely ' +
+            'any seating — just a fast-moving counter and a queue that speaks for itself.',
+        mustTry: ['Idli-vada with the famous chutney', 'Khara bath / kesari bath', 'Filter coffee'],
+        tips: [
+            'Menu is tiny and there is no dosa — come for the idli, vada and chutney.',
+            'It is largely stand-and-eat with a queue; it moves quickly.',
+            'Closes by early afternoon and stays busy — go in the morning.',
+        ],
+        maps: 'Brahmins Coffee Bar, Basavanagudi, Bengaluru',
     },
 ];
 

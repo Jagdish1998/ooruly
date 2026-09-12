@@ -5,7 +5,8 @@
  *   #/place/<slug>     -> one getaway: overview, how to reach, best months, precautions, booking
  *   #/city/<slug>      -> one city sight: overview, what to see, getting there, timings, tips, map
  *   #/cafe/<slug>      -> one hidden cafe: the vibe, what to order, good to know, directions
- *   #city/#cafes/#nearby -> scroll to a section of the home view
+ *   #/eat/<slug>       -> one iconic eatery: the story, what to order, good to know, directions
+ *   #city/#cafes/#eats/#nearby -> scroll to a section of the home view
  *
  * There is no framework and no build step. Everything renders from data.js, so the site is entirely
  * content-driven: add a destination there and it appears here with no code change.
@@ -45,6 +46,11 @@
         return list.find((c) => c.slug === slug);
     }
 
+    function byEatSlug(slug) {
+        const list = typeof EATERIES !== 'undefined' ? EATERIES : [];
+        return list.find((e) => e.slug === slug);
+    }
+
     function typeLabel(id) {
         const t = TYPES.find((x) => x.id === id);
         return t ? t.label : id;
@@ -77,6 +83,10 @@
             .map(cafeCardHTML)
             .join('');
 
+        const eatList = (typeof EATERIES !== 'undefined' ? EATERIES : [])
+            .map(eatCardHTML)
+            .join('');
+
         view.innerHTML = `
             <section class="hero">
                 <div class="hero-aura" aria-hidden="true"></div>
@@ -93,6 +103,9 @@
                         </a>
                         <a class="jump-link" href="#cafes">
                             <i class="fa-solid fa-mug-saucer" aria-hidden="true"></i> Hidden cafes
+                        </a>
+                        <a class="jump-link" href="#eats">
+                            <i class="fa-solid fa-utensils" aria-hidden="true"></i> Authentic eats
                         </a>
                         <a class="jump-link" href="#nearby">
                             <i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Nearby Bengaluru
@@ -119,6 +132,18 @@
                             known for, what to order, and directions.</p>
                     </div>
                     <div class="grid">${cafeList}</div>
+                </div>
+            </section>
+
+            <section class="section section--eats" id="eats">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Authentic eats</h2>
+                        <p class="section-sub">The legendary, decades-old institutions locals grew up
+                            on — tiffin rooms, benne-dosa joints and colonial-era cafes. Tap one for
+                            what to order, the story behind it, and directions.</p>
+                    </div>
+                    <div class="grid">${eatList}</div>
                 </div>
             </section>
 
@@ -193,9 +218,14 @@
         const initial = esc((c.name || '?').trim().charAt(0).toUpperCase());
         return `
             <a class="card" href="#/cafe/${c.slug}">
-                <div class="card-media cafe-media" aria-hidden="true">
-                    <span class="cafe-initial">${initial}</span>
-                    <i class="fa-solid fa-mug-saucer cafe-cup"></i>
+                <div class="card-media cafe-media">
+                    <span class="cafe-fallback" aria-hidden="true">
+                        <span class="cafe-initial">${initial}</span>
+                        <i class="fa-solid fa-mug-saucer cafe-cup"></i>
+                    </span>
+                    ${c.image ? `<img src="${esc(c.image)}" alt="${esc(c.name)}, ${esc(c.area)}"
+                        loading="lazy" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
                     <span class="card-type">${esc(c.area)}</span>
                 </div>
                 <div class="card-body">
@@ -206,6 +236,33 @@
                     <p class="card-meta">
                         <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
                         ${esc(c.knownFor)}
+                    </p>
+                </div>
+            </a>`;
+    }
+
+    function eatCardHTML(e) {
+        const initial = esc((e.name || '?').trim().charAt(0).toUpperCase());
+        return `
+            <a class="card" href="#/eat/${e.slug}">
+                <div class="card-media cafe-media">
+                    <span class="cafe-fallback" aria-hidden="true">
+                        <span class="cafe-initial">${initial}</span>
+                        <i class="fa-solid fa-utensils cafe-cup"></i>
+                    </span>
+                    ${e.image ? `<img src="${esc(e.image)}" alt="${esc(e.name)}, ${esc(e.area)}"
+                        loading="lazy" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
+                    ${e.since ? `<span class="card-type card-type--since">Since ${esc(e.since)}</span>` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="card-head">
+                        <h3>${esc(e.name)}</h3>
+                    </div>
+                    <p class="card-tag">${esc(e.tagline)}</p>
+                    <p class="card-meta">
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        ${esc(e.signature)}
                     </p>
                 </div>
             </a>`;
@@ -414,6 +471,9 @@
                         <span class="cafe-hero-initial">${initial}</span>
                         <i class="fa-solid fa-mug-saucer"></i>
                     </div>
+                    ${c.image ? `<img class="detail-hero-img" src="${esc(c.image)}"
+                        alt="${esc(c.name)}, ${esc(c.area)}" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
                         <a class="back" href="#cafes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Hidden cafes</a>
@@ -462,12 +522,91 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
+    /* ---------- eatery detail view ---------- */
+
+    function renderEatDetail(slug) {
+        const e = byEatSlug(slug);
+        if (!e) { location.hash = '#/'; return; }
+
+        const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent(e.maps || `${e.name}, Bengaluru`);
+
+        const initial = esc((e.name || '?').trim().charAt(0).toUpperCase());
+        const mustTry = (e.mustTry || []).map((m) => `<li>${esc(m)}</li>`).join('');
+        const tips = (e.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
+
+        const facts = [
+            { icon: 'fa-location-dot', text: e.area },
+            { icon: 'fa-clock-rotate-left', text: e.since ? `Since ${e.since}` : '' },
+            { icon: 'fa-star', text: e.signature },
+            { icon: 'fa-wallet', text: e.priceHint },
+        ].filter((f) => f.text).map((f) =>
+            `<li><i class="fa-solid ${f.icon}" aria-hidden="true"></i> ${esc(f.text)}</li>`).join('');
+
+        view.innerHTML = `
+            <article class="detail">
+                <div class="detail-hero detail-hero--cafe">
+                    <div class="cafe-hero-art" aria-hidden="true">
+                        <span class="cafe-hero-initial">${initial}</span>
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    ${e.image ? `<img class="detail-hero-img" src="${esc(e.image)}"
+                        alt="${esc(e.name)}, ${esc(e.area)}" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
+                    <div class="detail-hero-overlay"></div>
+                    <div class="container detail-hero-inner">
+                        <a class="back" href="#eats"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Authentic eats</a>
+                        <span class="detail-type">Iconic eatery</span>
+                        <h1>${esc(e.name)}</h1>
+                        <p class="detail-tag">${esc(e.tagline)}</p>
+                        <ul class="detail-facts">${facts}</ul>
+                    </div>
+                </div>
+
+                <div class="container detail-body">
+                    <section class="block">
+                        <h2>The story</h2>
+                        <p>${esc(e.description)}</p>
+                    </section>
+
+                    ${mustTry ? `
+                    <section class="block">
+                        <h2>What to order</h2>
+                        <ul class="cautions cautions--plain">${mustTry}</ul>
+                    </section>` : ''}
+
+                    ${tips ? `
+                    <section class="block">
+                        <h2>Good to know</h2>
+                        <ul class="cautions">${tips}</ul>
+                    </section>` : ''}
+
+                    <section class="block book">
+                        <h2>Get directions</h2>
+                        <p class="book-intro">Open the eatery in Google Maps for live directions from
+                            wherever you are in the city.</p>
+                        <div class="book-grid">
+                            <a class="book-btn" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer">
+                                <span class="book-btn-top">
+                                    <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Directions
+                                    <i class="fa-solid fa-arrow-up-right-from-square book-ext" aria-hidden="true"></i>
+                                </span>
+                                <span class="book-note">Open ${esc(e.name)} in Google Maps</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </article>`;
+
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
     /* ---------- router ---------- */
 
     // Section anchors on the home page should scroll, not re-render the home view.
-    const HOME_ANCHORS = ['#city', '#cafes', '#nearby'];
+    const HOME_ANCHORS = ['#city', '#cafes', '#eats', '#nearby'];
 
-    let currentView = null; // 'home' | 'place' | 'city' | 'cafe'
+    let currentView = null; // 'home' | 'place' | 'city' | 'cafe' | 'eat'
 
     function route() {
         const hash = location.hash || '#/';
@@ -483,6 +622,7 @@
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
         const cafeMatch = hash.match(/^#\/cafe\/(.+)$/);
+        const eatMatch = hash.match(/^#\/eat\/(.+)$/);
 
         if (placeMatch) {
             renderDetail(placeMatch[1]);
@@ -493,6 +633,9 @@
         } else if (cafeMatch) {
             renderCafeDetail(cafeMatch[1]);
             currentView = 'cafe';
+        } else if (eatMatch) {
+            renderEatDetail(eatMatch[1]);
+            currentView = 'eat';
         } else {
             renderHome();
             currentView = 'home';
