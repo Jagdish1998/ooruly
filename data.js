@@ -524,6 +524,144 @@ const CITY_ATTRACTIONS = [
     },
 ];
 
+/*
+ * Hidden cafes across Bengaluru's neighbourhoods — independent, lesser-known spots rather than the
+ * big chains, in areas like JP Nagar, Jayanagar, Indiranagar and around. Same card + detail pattern,
+ * but a cafe model: neighbourhood, what it's known for, the vibe, an overview, what to order, tips,
+ * and a Google Maps link. No verified photo per cafe, so cards use a themed tile (see app.js), which
+ * keeps things honest — we don't want to attach a wrong or copyrighted image to a real small business.
+ */
+const CAFES = [
+    {
+        slug: 'dyu-art-cafe',
+        name: 'Dyu Art Café',
+        area: 'Koramangala',
+        knownFor: 'Art-café in an old bungalow',
+        priceHint: '₹₹ · cash & UPI',
+        bestTime: 'Weekday afternoon',
+        tagline: 'A rustic bungalow art-café with courtyard seating and slow, calm afternoons.',
+        description:
+            'One of Bengaluru\'s most-loved hidden cafés, Dyu Art Café is set in an old bungalow with ' +
+            'open courtyards, gabled roofs and walls hung with rotating artwork. The mood is unhurried ' +
+            'and analogue — low chairs, plants and warm light — which makes it a favourite for reading, ' +
+            'sketching or a long, quiet coffee. The food leans comfort-Continental, and the verandah ' +
+            'is the seat to grab on a pleasant day.',
+        order: ['Filter coffee and cold coffee', 'Sandwiches and the sizzler brownie', 'Whatever cake is fresh that day'],
+        tips: [
+            'Weekday afternoons are calmest; weekends fill up and the wait can be long.',
+            'Seating is limited and cosy — go in a small group rather than a large one.',
+            'Carry a book or sketchpad; it is that kind of place. Photography is welcome, but be gentle around the art.',
+        ],
+        maps: 'Dyu Art Cafe, Koramangala, Bengaluru',
+    },
+    {
+        slug: 'matteo-coffea',
+        name: 'Matteo Coffea',
+        area: 'Church Street / Indiranagar',
+        knownFor: 'Warm-wood specialty coffee bar',
+        priceHint: '₹₹ · card & UPI',
+        bestTime: 'Late morning',
+        tagline: 'A warm, wood-lined coffee bar with corner tables made for lingering.',
+        description:
+            'Matteo Coffea is a cosy, wood-toned coffee bar that quietly does the basics very well. ' +
+            'Small tables and corner nooks make it easy to settle in for a long coffee or a bit of ' +
+            'reading, away from the noise of the main strip. It is a dependable specialty-coffee stop ' +
+            'that regulars return to precisely because it does not try too hard.',
+        order: ['A well-pulled cappuccino or flat white', 'Cold brew on a warm afternoon', 'A croissant or a slice of cake'],
+        tips: [
+            'Grab a corner table if you want privacy for a long sit.',
+            'Late mornings are quietest, before the lunch and evening crowd.',
+            'Great as a work or reading stop — pace your order to keep the table.',
+        ],
+        maps: 'Matteo Coffea, Church Street, Bengaluru',
+    },
+    {
+        slug: 'the-hole-in-the-wall',
+        name: 'The Hole in the Wall Café',
+        area: 'Koramangala / Sahakar Nagar',
+        knownFor: 'All-day breakfast',
+        priceHint: '₹₹ · card & UPI',
+        bestTime: 'Weekday breakfast',
+        tagline: 'A snug, no-frills spot famous for all-day breakfast and big pancakes.',
+        description:
+            'A long-running favourite that started small and stayed unpretentious, The Hole in the ' +
+            'Wall is best known for its all-day breakfast — pancakes, waffles, big skillets and ' +
+            'generous plates. It is compact and often busy, with a homely, student-friendly feel and ' +
+            'portions that punch above the bill. Come hungry.',
+        order: ['Stuffed pancakes or waffles', 'The breakfast skillet', 'A big mug of hot chocolate'],
+        tips: [
+            'Go on a weekday morning to skip the notorious weekend brunch wait.',
+            'Portions are large — share if you want to try more than one thing.',
+            'Seating is tight; small groups fare best.',
+        ],
+        maps: 'The Hole in the Wall Cafe, Koramangala, Bengaluru',
+    },
+    {
+        slug: 'third-wave-jayanagar',
+        name: 'Third Wave Coffee (Jayanagar)',
+        area: 'Jayanagar',
+        knownFor: 'Neighbourhood specialty roaster',
+        priceHint: '₹₹ · card & UPI',
+        bestTime: 'Morning',
+        tagline: 'A laid-back Jayanagar roaster corner for a serious cup close to home.',
+        description:
+            'Away from the busier Indiranagar and CBD outlets, the Jayanagar corner of this homegrown ' +
+            'specialty roaster is an easy neighbourhood spot for a properly made coffee. Minimal decor, ' +
+            'comfortable seating and reliable brews make it a calm morning stop or a low-key work ' +
+            'perch in the leafy south of the city.',
+        order: ['Single-origin pour-over or a cappuccino', 'Their cold coffee / cold brew', 'A cookie or a small bake'],
+        tips: [
+            'Mornings are the calmest; it picks up later in the day.',
+            'Ask what single-origin is on — the pour-over is worth it.',
+            'A good work or catch-up spot in south Bengaluru, away from the busier branches.',
+        ],
+        maps: 'Third Wave Coffee, Jayanagar, Bengaluru',
+    },
+    {
+        slug: 'roastery-coffee-house',
+        name: 'Roastery Coffee House',
+        area: 'Bellandur / Koramangala',
+        knownFor: 'Sunlit specialty coffee',
+        priceHint: '₹₹ · card & UPI',
+        bestTime: 'Morning to early afternoon',
+        tagline: 'An airy, plant-filled coffee house built around single-origin brews.',
+        description:
+            'Roastery Coffee House is a bright, plant-filled space that takes its coffee seriously, ' +
+            'with a menu built around single-origin beans and a range of brew methods. The high ' +
+            'ceilings and daylight make it feel calm and open, and it is as good for a slow solo ' +
+            'coffee as for a quiet catch-up. A solid pick for anyone who wants to taste the difference ' +
+            'between origins.',
+        order: ['A pour-over or AeroPress of the featured single origin', 'Signature cold coffee', 'Avocado toast or a bake'],
+        tips: [
+            'Come in daylight hours to enjoy the airy, sunlit room at its best.',
+            'Tell the barista how you like your coffee — they will guide you to a bean.',
+            'Weekday mornings are the quietest for a work session.',
+        ],
+        maps: 'Roastery Coffee House, Bengaluru',
+    },
+    {
+        slug: 'ela-matcha',
+        name: 'Ela Matcha',
+        area: 'Indiranagar',
+        knownFor: 'Matcha-forward tea room',
+        priceHint: '₹₹ · card & UPI',
+        bestTime: 'Afternoon',
+        tagline: 'A minimalist, matcha-first room inspired by a Kerala tea shop.',
+        description:
+            'Ela Matcha is a small, minimalist café in Indiranagar built around matcha and slow, ' +
+            'intentional sipping. Its design nods to a Kerala tea shop, tying into the meaning of its ' +
+            'name, and the menu is matcha-forward rather than coffee-first — a refreshing change of ' +
+            'pace among the city\'s coffee bars. It is a calm, unhurried spot for an afternoon break.',
+        order: ['Classic iced or hot matcha latte', 'A matcha dessert or bake', 'Try it with an alternative milk'],
+        tips: [
+            'If you are new to matcha, ask for a lighter, sweeter version to start.',
+            'It is small and quiet — ideal for a solo break rather than a big group.',
+            'Afternoons suit the mood of the place best.',
+        ],
+        maps: 'Ela Matcha, Indiranagar, Bengaluru',
+    },
+];
+
 // Filterable "type" values, with readable labels for the filter bar.
 const TYPES = [
     { id: 'all', label: 'All places' },

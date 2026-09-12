@@ -219,6 +219,7 @@ img.img-fallback { visibility: hidden; }
     background: rgba(8, 8, 10, 0.72); color: #fff; backdrop-filter: blur(4px);
     font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
     padding: 0.3rem 0.6rem; border-radius: var(--radius-pill);
+    max-width: calc(100% - 1.4rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .card-body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
@@ -228,8 +229,8 @@ img.img-fallback { visibility: hidden; }
 .card-meta { color: var(--text-dim); font-size: var(--step--1); display: flex; align-items: center; gap: 0.5rem; }
 .card-meta i { color: var(--accent-ink); }
 
-/* Section anchors (#city, #nearby) should clear the sticky header when jumped to. */
-#city, #nearby { scroll-margin-top: calc(var(--header-h) + 1rem); }
+/* Section anchors should clear the sticky header when jumped to. */
+#city, #cafes, #nearby { scroll-margin-top: calc(var(--header-h) + 1rem); }
 
 /* The "Inside Bengaluru" band sits above the getaways with a soft tinted background. */
 .section--city {
@@ -237,6 +238,53 @@ img.img-fallback { visibility: hidden; }
     background:
         radial-gradient(70% 60% at 100% 0%, var(--accent-soft), transparent 60%);
     border-bottom: 1px solid var(--border);
+}
+
+/* ---------- hidden cafes ---------- */
+.section--cafes {
+    position: relative;
+    background:
+        radial-gradient(60% 55% at 0% 0%, rgba(90, 60, 255, 0.10), transparent 60%);
+    border-bottom: 1px solid var(--border);
+}
+/* Photo-less card tile: a themed gradient with the cafe initial and a coffee cup. */
+.cafe-media {
+    display: grid; place-items: center; position: relative;
+    background:
+        radial-gradient(120% 120% at 30% 0%, var(--accent-soft), transparent 55%),
+        linear-gradient(140deg, var(--bg-elev-2), var(--bg-elev));
+}
+.cafe-initial {
+    font-size: clamp(3.2rem, 12vw, 4.6rem); font-weight: 700; line-height: 1;
+    color: var(--text); opacity: 0.14; letter-spacing: -0.04em;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.cafe-cup {
+    position: absolute; font-size: 1.6rem; color: var(--accent-ink);
+    opacity: 0.9; filter: drop-shadow(0 4px 12px var(--accent-ring));
+}
+.card:hover .cafe-cup { transform: scale(1.08); transition: transform var(--dur-base) var(--ease); }
+
+/*
+ * Cafe detail hero: same shape as a photo hero, but a gradient + monogram instead of an image.
+ * The hero text is white (like over a photo), so we keep a consistently dark backdrop in both
+ * themes for reliable contrast.
+ */
+.detail-hero--cafe { background: linear-gradient(140deg, #1b1b24, #0c0c12); }
+.cafe-hero-art {
+    position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden;
+    background:
+        radial-gradient(60% 80% at 80% 0%, rgba(255, 0, 79, 0.16), transparent 60%),
+        radial-gradient(50% 70% at 0% 100%, rgba(90, 60, 255, 0.18), transparent 60%);
+}
+.cafe-hero-initial {
+    font-size: clamp(9rem, 40vw, 20rem); font-weight: 700; line-height: 1;
+    color: #fff; opacity: 0.07; letter-spacing: -0.05em;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.cafe-hero-art > i {
+    position: absolute; font-size: clamp(3rem, 10vw, 5rem); color: var(--accent-ink);
+    opacity: 0.85; filter: drop-shadow(0 8px 24px var(--accent-ring));
 }
 
 /* ---------- detail ---------- */
@@ -331,7 +379,71 @@ img.img-fallback { visibility: hidden; }
 .to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
 .to-top:hover { background: var(--accent-hover); }
 
+/* ============================================================
+   Responsive / mobile
+   The base layout is fluid (clamps + auto-fill grids), so these
+   breakpoints mostly tune spacing and stacking for small screens.
+   ============================================================ */
+
+/* Tablets and small laptops */
+@media (max-width: 820px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .reach { grid-template-columns: 1fr; }
+    .book-grid { grid-template-columns: 1fr; }
+}
+
+/* Phones */
 @media (max-width: 560px) {
+    :root { --header-h: 62px; }
+
     .nav-portfolio { display: none; }
-    .detail-facts { gap: 0.8rem; }
+
+    /* One clean column of cards, comfortable gutters */
+    .grid { grid-template-columns: 1fr; gap: 1rem; }
+
+    /* Hero: tighter, and the jump nav becomes full-width tappable rows */
+    .hero { padding: 2.25rem 0 1.5rem; }
+    .hero-title { max-width: 100%; }
+    .jump-nav { gap: 0.5rem; }
+    .jump-link { flex: 1 1 100%; justify-content: center; padding: 0.7rem 1rem; }
+
+    /* Section spacing */
+    .section { padding: 1.5rem 0 2.5rem; }
+    .section-head { margin-bottom: 1.1rem; }
+
+    /* Filters scroll horizontally instead of wrapping into tall stacks */
+    .filters {
+        flex-wrap: nowrap; overflow-x: auto; margin-bottom: 1.25rem;
+        padding-bottom: 0.35rem; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+    .chip { flex: 0 0 auto; }
+
+    /* Detail hero and body scale down */
+    .detail-hero { min-height: 300px; }
+    .detail-hero-inner { padding-bottom: 1.5rem; }
+    .detail-facts { gap: 0.7rem 1rem; }
+    .detail-facts li { font-size: var(--step--1); }
+    .detail-body { gap: 1.5rem; padding: 1.75rem 0 2.5rem; }
+
+    /* Bigger, easier back-to-top target away from the thumb zone edge */
+    .to-top { right: 1rem; bottom: 1rem; width: 46px; height: 46px; }
+
+    /* Footer breathes a little less */
+    .site-footer { padding: 1.5rem 0; }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .brand { font-size: var(--step-0); }
+    .card-head { flex-wrap: wrap; }
+    .card-dist { white-space: normal; }
+}
+
+/* Users who prefer reduced motion: drop the transforms and smooth scroll */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+    .card:hover, .jump-link:hover, .book-btn:hover { transform: none; }
 }

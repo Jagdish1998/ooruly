@@ -4,7 +4,8 @@
  *   #/                 -> home: hero, jump nav, "Inside Bengaluru" grid, "Nearby Bengaluru" grid
  *   #/place/<slug>     -> one getaway: overview, how to reach, best months, precautions, booking
  *   #/city/<slug>      -> one city sight: overview, what to see, getting there, timings, tips, map
- *   #city / #nearby    -> scroll to a section of the home view
+ *   #/cafe/<slug>      -> one hidden cafe: the vibe, what to order, good to know, directions
+ *   #city/#cafes/#nearby -> scroll to a section of the home view
  *
  * There is no framework and no build step. Everything renders from data.js, so the site is entirely
  * content-driven: add a destination there and it appears here with no code change.
@@ -39,6 +40,11 @@
         return list.find((p) => p.slug === slug);
     }
 
+    function byCafeSlug(slug) {
+        const list = typeof CAFES !== 'undefined' ? CAFES : [];
+        return list.find((c) => c.slug === slug);
+    }
+
     function typeLabel(id) {
         const t = TYPES.find((x) => x.id === id);
         return t ? t.label : id;
@@ -67,6 +73,10 @@
             .map(cityCardHTML)
             .join('');
 
+        const cafeList = (typeof CAFES !== 'undefined' ? CAFES : [])
+            .map(cafeCardHTML)
+            .join('');
+
         view.innerHTML = `
             <section class="hero">
                 <div class="hero-aura" aria-hidden="true"></div>
@@ -80,6 +90,9 @@
                     <nav class="jump-nav" aria-label="Jump to section">
                         <a class="jump-link" href="#city">
                             <i class="fa-solid fa-city" aria-hidden="true"></i> Inside Bengaluru
+                        </a>
+                        <a class="jump-link" href="#cafes">
+                            <i class="fa-solid fa-mug-saucer" aria-hidden="true"></i> Hidden cafes
                         </a>
                         <a class="jump-link" href="#nearby">
                             <i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Nearby Bengaluru
@@ -95,6 +108,18 @@
                         Tap any place for how to reach it, the best time to go, and travel tips.</p>
                 </div>
                 <div class="grid">${cityList}</div>
+            </section>
+
+            <section class="section section--cafes" id="cafes">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Hidden cafes</h2>
+                        <p class="section-sub">Independent, under-the-radar cafes tucked across the
+                            city — Indiranagar, Jayanagar, Koramangala and beyond. Tap one for what it's
+                            known for, what to order, and directions.</p>
+                    </div>
+                    <div class="grid">${cafeList}</div>
+                </div>
             </section>
 
             <section class="section" id="nearby">
@@ -159,6 +184,28 @@
                     <p class="card-meta">
                         <i class="fa-solid fa-clock" aria-hidden="true"></i>
                         Best: ${esc(p.bestTime)}
+                    </p>
+                </div>
+            </a>`;
+    }
+
+    function cafeCardHTML(c) {
+        const initial = esc((c.name || '?').trim().charAt(0).toUpperCase());
+        return `
+            <a class="card" href="#/cafe/${c.slug}">
+                <div class="card-media cafe-media" aria-hidden="true">
+                    <span class="cafe-initial">${initial}</span>
+                    <i class="fa-solid fa-mug-saucer cafe-cup"></i>
+                    <span class="card-type">${esc(c.area)}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-head">
+                        <h3>${esc(c.name)}</h3>
+                    </div>
+                    <p class="card-tag">${esc(c.tagline)}</p>
+                    <p class="card-meta">
+                        <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
+                        ${esc(c.knownFor)}
                     </p>
                 </div>
             </a>`;
@@ -339,12 +386,88 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
+    /* ---------- cafe detail view ---------- */
+
+    function renderCafeDetail(slug) {
+        const c = byCafeSlug(slug);
+        if (!c) { location.hash = '#/'; return; }
+
+        const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent(c.maps || `${c.name}, Bengaluru`);
+
+        const initial = esc((c.name || '?').trim().charAt(0).toUpperCase());
+        const order = (c.order || []).map((o) => `<li>${esc(o)}</li>`).join('');
+        const tips = (c.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
+
+        const facts = [
+            { icon: 'fa-location-dot', text: c.area },
+            { icon: 'fa-mug-hot', text: c.knownFor },
+            { icon: 'fa-clock', text: c.bestTime ? `Best time: ${c.bestTime}` : '' },
+            { icon: 'fa-wallet', text: c.priceHint },
+        ].filter((f) => f.text).map((f) =>
+            `<li><i class="fa-solid ${f.icon}" aria-hidden="true"></i> ${esc(f.text)}</li>`).join('');
+
+        view.innerHTML = `
+            <article class="detail">
+                <div class="detail-hero detail-hero--cafe">
+                    <div class="cafe-hero-art" aria-hidden="true">
+                        <span class="cafe-hero-initial">${initial}</span>
+                        <i class="fa-solid fa-mug-saucer"></i>
+                    </div>
+                    <div class="detail-hero-overlay"></div>
+                    <div class="container detail-hero-inner">
+                        <a class="back" href="#cafes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Hidden cafes</a>
+                        <span class="detail-type">Cafe</span>
+                        <h1>${esc(c.name)}</h1>
+                        <p class="detail-tag">${esc(c.tagline)}</p>
+                        <ul class="detail-facts">${facts}</ul>
+                    </div>
+                </div>
+
+                <div class="container detail-body">
+                    <section class="block">
+                        <h2>The vibe</h2>
+                        <p>${esc(c.description)}</p>
+                    </section>
+
+                    ${order ? `
+                    <section class="block">
+                        <h2>What to order</h2>
+                        <ul class="cautions cautions--plain">${order}</ul>
+                    </section>` : ''}
+
+                    ${tips ? `
+                    <section class="block">
+                        <h2>Good to know</h2>
+                        <ul class="cautions">${tips}</ul>
+                    </section>` : ''}
+
+                    <section class="block book">
+                        <h2>Get directions</h2>
+                        <p class="book-intro">Open the cafe in Google Maps for live directions from
+                            wherever you are in the city.</p>
+                        <div class="book-grid">
+                            <a class="book-btn" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer">
+                                <span class="book-btn-top">
+                                    <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Directions
+                                    <i class="fa-solid fa-arrow-up-right-from-square book-ext" aria-hidden="true"></i>
+                                </span>
+                                <span class="book-note">Open ${esc(c.name)} in Google Maps</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </article>`;
+
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
     /* ---------- router ---------- */
 
-    // Section anchors on the home page (#city, #nearby) should scroll, not re-render the home view.
-    const HOME_ANCHORS = ['#city', '#nearby'];
+    // Section anchors on the home page should scroll, not re-render the home view.
+    const HOME_ANCHORS = ['#city', '#cafes', '#nearby'];
 
-    let currentView = null; // 'home' | 'place' | 'city'
+    let currentView = null; // 'home' | 'place' | 'city' | 'cafe'
 
     function route() {
         const hash = location.hash || '#/';
@@ -359,6 +482,7 @@
 
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
+        const cafeMatch = hash.match(/^#\/cafe\/(.+)$/);
 
         if (placeMatch) {
             renderDetail(placeMatch[1]);
@@ -366,6 +490,9 @@
         } else if (cityMatch) {
             renderCityDetail(cityMatch[1]);
             currentView = 'city';
+        } else if (cafeMatch) {
+            renderCafeDetail(cafeMatch[1]);
+            currentView = 'cafe';
         } else {
             renderHome();
             currentView = 'home';
