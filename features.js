@@ -270,6 +270,47 @@
         }
     }
 
+    /* ---------- focus trap (for modal dialogs: search palette, drawer, onboarding) ---------- */
+    /* Keeps Tab/Shift+Tab cycling within `container` while a modal is open, and restores focus to
+       the element that was focused before opening. Returns a release() function to tear it down. */
+    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]),' +
+        ' textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    function trapFocus(container, initial) {
+        if (!container) return function () {};
+        const prevActive = document.activeElement;
+        function nodes() {
+            return Array.prototype.filter.call(
+                container.querySelectorAll(FOCUSABLE),
+                (el) => el.offsetParent !== null || el === document.activeElement
+            );
+        }
+        function onKey(e) {
+            if (e.key !== 'Tab') return;
+            const items = nodes();
+            if (!items.length) return;
+            const first = items[0];
+            const last = items[items.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+        container.addEventListener('keydown', onKey);
+        // Move focus into the dialog.
+        const target = initial || nodes()[0];
+        if (target && target.focus) setTimeout(() => target.focus(), 0);
+        return function release() {
+            container.removeEventListener('keydown', onKey);
+            if (prevActive && prevActive.focus) setTimeout(() => prevActive.focus(), 0);
+        };
+    }
+
+    /* ---------- one-time flags (onboarding "seen" etc.) ---------- */
+    function flagSeen(key) {
+        try { return localStorage.getItem('ooruly:seen:' + key) === '1'; } catch (e) { return false; }
+    }
+    function markSeen(key) {
+        try { localStorage.setItem('ooruly:seen:' + key, '1'); } catch (e) { /* ignore */ }
+    }
+
     /* ---------- tiny event bus (favs/plan changes -> UI badges) ---------- */
     const bus = document.createElement('span');
     function on(name, fn) { bus.addEventListener(name, fn); }
@@ -290,6 +331,8 @@
         isInSeason, currentMonthId, isOpenToday,
         // share
         share,
+        // a11y + one-time flags
+        trapFocus, flagSeen, markSeen,
         // events
         on, emit,
     };

@@ -1056,3 +1056,86 @@ img.img-fallback { visibility: hidden; }
 .near-card-meta { font-size: var(--step--1); color: var(--text-dim); }
 .near-card-go { margin-left: auto; color: var(--text-dim); opacity: 0; transition: opacity var(--dur-fast); }
 .near-card:hover .near-card-go { opacity: 1; }
+
+/* ============================================================
+   Accessibility helpers: screen-reader-only text, and stronger
+   focus rings for keyboard users on interactive controls.
+   ============================================================ */
+.sr-only {
+    position: absolute !important; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+}
+
+/* Make keyboard focus obvious on the newer interactive elements too. */
+.select:focus-visible,
+.filter-clear:focus-visible,
+.near-btn:focus-visible,
+.nav-drop-btn:focus-visible,
+.nav-mega a:focus-visible,
+.itin-card a:focus-visible,
+.near-card:focus-visible,
+.search-result:focus-visible,
+.fav-btn:focus-visible,
+.plan-btn:focus-visible,
+.share-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Slightly stronger dim text in light theme so small metadata clears WCAG AA contrast. */
+[data-theme="light"] { --text-dim: #5f5f6b; }
+
+/* ============================================================
+   First-visit onboarding nudge
+   ============================================================ */
+.onboard-overlay { position: fixed; inset: 0; z-index: 220; }
+.onboard-backdrop {
+    position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    opacity: 0; transition: opacity var(--dur-base) var(--ease);
+}
+.onboard-overlay.is-open .onboard-backdrop { opacity: 1; }
+.onboard-panel {
+    position: relative; z-index: 1;
+    width: min(560px, 92vw); margin: clamp(4rem, 14vh, 10rem) auto 0;
+    background: var(--bg-elev); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+    padding: clamp(1.5rem, 4vw, 2.4rem);
+    transform: translateY(-12px) scale(0.98); opacity: 0;
+    transition: transform var(--dur-base) var(--ease), opacity var(--dur-base) var(--ease);
+}
+.onboard-overlay.is-open .onboard-panel { transform: translateY(0) scale(1); opacity: 1; }
+.onboard-close { position: absolute; top: 0.9rem; right: 0.9rem; width: 36px; height: 36px; }
+.onboard-eyebrow {
+    text-transform: uppercase; letter-spacing: 0.14em; font-size: var(--step--1);
+    color: var(--accent-ink); font-weight: 600; margin-bottom: 0.4rem;
+}
+.onboard-title { font-size: var(--step-3); }
+.onboard-sub { color: var(--text-muted); margin: 0.4rem 0 1.4rem; }
+.onboard-choices { display: flex; flex-direction: column; gap: 0.7rem; }
+.onboard-choice {
+    display: flex; align-items: center; gap: 1rem; text-align: left;
+    padding: 0.9rem 1rem; border-radius: var(--radius);
+    background: var(--bg-elev-2); border: 1px solid var(--border);
+    transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast), background var(--dur-fast);
+}
+.onboard-choice:hover { transform: translateY(-2px); border-color: var(--accent-ring); }
+.onboard-choice-icon {
+    width: 46px; height: 46px; flex: 0 0 auto; display: grid; place-items: center;
+    border-radius: var(--radius); background: var(--accent-soft); color: var(--accent-ink);
+    font-size: 1.2rem;
+}
+.onboard-choice-text { display: flex; flex-direction: column; gap: 0.1rem; }
+.onboard-choice-text strong { font-size: var(--step-1); font-weight: 600; }
+.onboard-choice-text span { color: var(--text-muted); font-size: var(--step--1); }
+.onboard-skip {
+    display: block; margin: 1.2rem auto 0; color: var(--text-dim);
+    font-size: var(--step--1); text-decoration: underline; text-underline-offset: 3px;
+}
+.onboard-skip:hover { color: var(--text); }
+@media (max-width: 560px) {
+    .onboard-panel { margin-top: auto; margin-bottom: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        position: fixed; left: 0; right: 0; bottom: 0; width: 100%; }
+    .onboard-overlay { display: flex; align-items: flex-end; }
+}

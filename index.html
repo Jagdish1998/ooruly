@@ -122,7 +122,7 @@
     <!-- Mobile drawer + backdrop live OUTSIDE the header: the header's backdrop-filter
          blur would otherwise blur the drawer (its descendant). -->
     <div class="nav-backdrop" id="nav-backdrop" hidden></div>
-    <nav id="primary-nav" class="nav-drawer" aria-label="Primary (mobile)">
+    <nav id="primary-nav" class="nav-drawer" aria-label="Primary (mobile)" role="dialog" aria-modal="true">
         <button class="nav-close icon-btn" type="button" aria-label="Close menu">
             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
@@ -157,6 +157,44 @@
         </a>
     </nav>
 
+    <!-- First-visit onboarding: a one-time nudge that routes newcomers to a starting path.
+         Shown by app.js only if it hasn't been seen before (localStorage). -->
+    <div class="onboard-overlay" id="onboard-overlay" hidden>
+        <div class="onboard-backdrop" id="onboard-backdrop"></div>
+        <div class="onboard-panel" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+            <button class="onboard-close icon-btn" id="onboard-close" type="button" aria-label="Close">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <p class="onboard-eyebrow">Welcome to Ooruly</p>
+            <h2 class="onboard-title" id="onboard-title">What brings you here?</h2>
+            <p class="onboard-sub">Pick a starting point — you can explore everything else anytime.</p>
+            <div class="onboard-choices">
+                <button class="onboard-choice" type="button" data-onboard="#nearby">
+                    <span class="onboard-choice-icon"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i></span>
+                    <span class="onboard-choice-text">
+                        <strong>Planning a weekend trip</strong>
+                        <span>Getaways around Bengaluru</span>
+                    </span>
+                </button>
+                <button class="onboard-choice" type="button" data-onboard="#city">
+                    <span class="onboard-choice-icon"><i class="fa-solid fa-city" aria-hidden="true"></i></span>
+                    <span class="onboard-choice-text">
+                        <strong>A day in the city</strong>
+                        <span>Sights, cafes, eats and things to do</span>
+                    </span>
+                </button>
+                <button class="onboard-choice" type="button" data-onboard="#/itineraries">
+                    <span class="onboard-choice-icon"><i class="fa-solid fa-route" aria-hidden="true"></i></span>
+                    <span class="onboard-choice-text">
+                        <strong>Just show me around</strong>
+                        <span>Ready-made itineraries</span>
+                    </span>
+                </button>
+            </div>
+            <button class="onboard-skip" id="onboard-skip" type="button">Skip, I'll explore myself</button>
+        </div>
+    </div>
+
     <!-- Global search palette (⌘K / Ctrl-K, or the header search button). Filters every collection. -->
     <div class="search-overlay" id="search-overlay" hidden>
         <div class="search-backdrop" id="search-backdrop"></div>
@@ -170,7 +208,8 @@
                     <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
-            <ul class="search-results" id="search-results" role="listbox"></ul>
+            <ul class="search-results" id="search-results" role="listbox" aria-label="Search results"></ul>
+            <p class="sr-only" id="search-status" role="status" aria-live="polite"></p>
             <p class="search-hint">Type to search across the whole guide. Press Esc to close.</p>
         </div>
     </div>

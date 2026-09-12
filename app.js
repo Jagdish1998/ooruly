@@ -1481,12 +1481,14 @@
         const closeBtn = nav && nav.querySelector('.nav-close');
         const backdrop = document.getElementById('nav-backdrop');
 
+        let releaseDrawerTrap = null;
         function openMenu() {
             if (!nav) return;
             nav.classList.add('is-open');
             if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
             if (backdrop) { backdrop.hidden = false; requestAnimationFrame(() => backdrop.classList.add('is-open')); }
             document.body.style.overflow = 'hidden';
+            if (F && F.trapFocus) releaseDrawerTrap = F.trapFocus(nav, closeBtn);
         }
         function closeMenu() {
             if (!nav) return;
@@ -1497,6 +1499,7 @@
                 setTimeout(() => { backdrop.hidden = true; }, 280);
             }
             document.body.style.overflow = '';
+            if (releaseDrawerTrap) { releaseDrawerTrap(); releaseDrawerTrap = null; }
         }
 
         if (openBtn) openBtn.addEventListener('click', openMenu);
@@ -1751,6 +1754,7 @@
         let activeResult = -1;
         let results = [];
 
+        let releaseSearchTrap = null;
         function openSearch() {
             if (!overlay) return;
             overlay.hidden = false;
@@ -1758,6 +1762,8 @@
                 overlay.classList.add('is-open');
                 if (searchInput) { searchInput.value = ''; searchInput.focus(); }
                 renderResults('');
+                // Trap focus inside the palette; focus starts on the input.
+                if (F && F.trapFocus) releaseSearchTrap = F.trapFocus(overlay, searchInput);
             });
             document.body.style.overflow = 'hidden';
         }
@@ -1767,19 +1773,25 @@
             setTimeout(() => { overlay.hidden = true; }, 220);
             document.body.style.overflow = '';
             activeResult = -1;
+            if (releaseSearchTrap) { releaseSearchTrap(); releaseSearchTrap = null; }
         }
+        const searchStatus = document.getElementById('search-status');
+        function announce(msg) { if (searchStatus) searchStatus.textContent = msg; }
         function renderResults(q) {
             if (!F || !searchResults) return;
             results = F.search(q);
             if (searchInput) searchInput.setAttribute('aria-expanded', results.length ? 'true' : 'false');
             if (!q) {
                 searchResults.innerHTML = `<li class="search-empty">Try “dosa”, “Indiranagar”, “sunrise”, “work-friendly”…</li>`;
+                announce('');
                 return;
             }
             if (!results.length) {
                 searchResults.innerHTML = `<li class="search-empty">No matches for “${escHtml(q)}”.</li>`;
+                announce('No matches found');
                 return;
             }
+            announce(results.length + (results.length === 1 ? ' result' : ' results'));
             searchResults.innerHTML = results.map((r, i) => `
                 <li role="option" id="search-opt-${i}" class="search-result ${i === activeResult ? 'is-active' : ''}"
                     data-route="${escHtml(r.route)}">
@@ -1840,5 +1852,52 @@
                 closeSearch();
             }
         });
+
+        /* ---------- first-visit onboarding nudge ---------- */
+        const onboard = document.getElementById('onboard-overlay');
+        if (onboard && F) {
+            let releaseOnboardTrap = null;
+            const closeOnboard = (markDone) => {
+                onboard.classList.remove('is-open');
+                setTimeout(() => { onboard.hidden = true; }, 220);
+                document.body.style.overflow = '';
+                if (releaseOnboardTrap) { releaseOnboardTrap(); releaseOnboardTrap = null; }
+                if (markDone) F.markSeen('onboarding');
+            };
+            const openOnboard = () => {
+                onboard.hidden = false;
+                requestAnimationFrame(() => {
+                    onboard.classList.add('is-open');
+                    const first = onboard.querySelector('.onboard-choice');
+                    releaseOnboardTrap = F.trapFocus(onboard, first);
+                });
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Show once, only on a fresh landing at home, and never on a shared deep link.
+            const freshLanding = !location.hash || location.hash === '#/' || location.hash === '';
+            if (!F.flagSeen('onboarding') && freshLanding) {
+                // Small delay so the page paints first — feels less abrupt.
+                setTimeout(openOnboard, 700);
+            }
+
+            onboard.querySelectorAll('.onboard-choice').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const dest = btn.dataset.onboard;
+                    closeOnboard(true);
+                    if (dest.indexOf('#/') === 0) { location.hash = dest; }
+                    else { goSection(dest.slice(1)); }
+                });
+            });
+            const skip = document.getElementById('onboard-skip');
+            const oClose = document.getElementById('onboard-close');
+            const oBackdrop = document.getElementById('onboard-backdrop');
+            if (skip) skip.addEventListener('click', () => closeOnboard(true));
+            if (oClose) oClose.addEventListener('click', () => closeOnboard(true));
+            if (oBackdrop) oBackdrop.addEventListener('click', () => closeOnboard(true));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !onboard.hidden) closeOnboard(true);
+            });
+        }
     });
 })();
