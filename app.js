@@ -42,6 +42,11 @@
         return list.find((p) => p.slug === slug);
     }
 
+    function byTempleSlug(slug) {
+        const list = typeof TEMPLES !== 'undefined' ? TEMPLES : [];
+        return list.find((t) => t.slug === slug);
+    }
+
     function byCafeSlug(slug) {
         const list = typeof CAFES !== 'undefined' ? CAFES : [];
         return list.find((c) => c.slug === slug);
@@ -85,6 +90,10 @@
             .map(cityCardHTML)
             .join('');
 
+        const templeList = (typeof TEMPLES !== 'undefined' ? TEMPLES : [])
+            .map(templeCardHTML)
+            .join('');
+
         const cafeList = (typeof CAFES !== 'undefined' ? CAFES : [])
             .map(cafeCardHTML)
             .join('');
@@ -99,10 +108,11 @@
 
         // Counts for the hero stat row (proof of how much is inside).
         const cityCount = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []).length;
+        const templeCount = (typeof TEMPLES !== 'undefined' ? TEMPLES : []).length;
         const cafeCount = (typeof CAFES !== 'undefined' ? CAFES : []).length;
         const eatCount = (typeof EATERIES !== 'undefined' ? EATERIES : []).length;
         const doCount = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []).length;
-        const totalCount = DESTINATIONS.length + cityCount + cafeCount + eatCount + doCount;
+        const totalCount = DESTINATIONS.length + cityCount + templeCount + cafeCount + eatCount + doCount;
 
         view.innerHTML = `
             <section class="hero">
@@ -127,7 +137,8 @@
                             <li><strong>${totalCount}</strong> curated spots</li>
                             <li><strong>${DESTINATIONS.length}</strong> weekend getaways</li>
                             <li><strong>${cityCount}</strong> city sights</li>
-                            <li>cafes, eats &amp; things to do</li>
+                            <li><strong>${templeCount}</strong> temples</li>
+                            <li>cafes, eats &amp; more</li>
                         </ul>
                     </div>
 
@@ -164,6 +175,18 @@
                             Tap any place for how to reach it, the best time to go, and travel tips.</p>
                     </div>
                     <div class="grid">${cityList}</div>
+                </div>
+            </section>
+
+            <section class="section section--temples" id="temples">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Temples</h2>
+                        <p class="section-sub">Famous temples across the city — from the oldest
+                            Chola-era shrines and a 16th-century cave temple to a modern landmark.
+                            Tap one for its story, how to reach it, timings and tips.</p>
+                    </div>
+                    <div class="grid">${templeList}</div>
                 </div>
             </section>
 
@@ -265,6 +288,28 @@
                     <p class="card-meta">
                         <i class="fa-solid fa-clock" aria-hidden="true"></i>
                         Best: ${esc(p.bestTime)}
+                    </p>
+                </div>
+            </a>`;
+    }
+
+    function templeCardHTML(t) {
+        return `
+            <a class="card" href="#/temple/${t.slug}">
+                <div class="card-media">
+                    <img src="${esc(t.image)}" alt="${esc(t.name)}, Bengaluru"
+                        loading="lazy" decoding="async"
+                        onerror="this.classList.add('img-fallback')">
+                    <span class="card-type">${esc(t.category)}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-head">
+                        <h3>${esc(t.name)}</h3>
+                    </div>
+                    <p class="card-tag">${esc(t.tagline)}</p>
+                    <p class="card-meta">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        ${esc(t.area)}
                     </p>
                 </div>
             </a>`;
@@ -437,10 +482,19 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
-    /* ---------- city detail view ---------- */
+    /* ---------- city / temple detail view ---------- */
+    /* Shared renderer for the Bengaluru "attraction" model (city sights and temples share fields).
+       backHref / backLabel point the back link at whichever section the item came from. */
 
     function renderCityDetail(slug) {
-        const p = byCitySlug(slug);
+        renderAttractionDetail(byCitySlug(slug), '#city', 'Inside Bengaluru');
+    }
+
+    function renderTempleDetail(slug) {
+        renderAttractionDetail(byTempleSlug(slug), '#temples', 'Temples');
+    }
+
+    function renderAttractionDetail(p, backHref, backLabel) {
         if (!p) { location.hash = '#/'; return; }
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
@@ -466,7 +520,7 @@
                         decoding="async" onerror="this.classList.add('img-fallback')">
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
-                        <a class="back" href="#city"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Inside Bengaluru</a>
+                        <a class="back" href="${esc(backHref)}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(backLabel)}</a>
                         <span class="detail-type">${esc(p.category)}</span>
                         <h1>${esc(p.name)}</h1>
                         <p class="detail-tag">${esc(p.tagline)}</p>
@@ -767,7 +821,7 @@
     /* ---------- router ---------- */
 
     // Section anchors on the home page should scroll, not re-render the home view.
-    const HOME_ANCHORS = ['#city', '#cafes', '#eats', '#do', '#nearby'];
+    const HOME_ANCHORS = ['#city', '#temples', '#cafes', '#eats', '#do', '#nearby'];
 
     let currentView = null; // 'home' | 'place' | 'city' | 'cafe' | 'eat' | 'do'
 
@@ -784,6 +838,7 @@
 
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
+        const templeMatch = hash.match(/^#\/temple\/(.+)$/);
         const cafeMatch = hash.match(/^#\/cafe\/(.+)$/);
         const eatMatch = hash.match(/^#\/eat\/(.+)$/);
         const doMatch = hash.match(/^#\/do\/(.+)$/);
@@ -794,6 +849,9 @@
         } else if (cityMatch) {
             renderCityDetail(cityMatch[1]);
             currentView = 'city';
+        } else if (templeMatch) {
+            renderTempleDetail(templeMatch[1]);
+            currentView = 'temple';
         } else if (cafeMatch) {
             renderCafeDetail(cafeMatch[1]);
             currentView = 'cafe';
@@ -929,6 +987,10 @@
         const brand = document.querySelector('.brand');
         if (brand) brand.addEventListener('click', (e) => handleNavClick(e, brand.getAttribute('href')));
 
+        // The drawer's portfolio link opens a new tab; close the drawer behind it.
+        const drawerPortfolio = document.querySelector('.nav-drawer-portfolio');
+        if (drawerPortfolio) drawerPortfolio.addEventListener('click', closeMenu);
+
         /*
          * Hero CTAs (and any future in-page # link inside the rendered view) are delegated here so
          * they smooth-scroll like the nav — and still work when the target hash is already current.
@@ -956,7 +1018,7 @@
                 navAnchors.forEach((a) => a.classList.remove('is-active'));
                 return;
             }
-            const ids = ['city', 'cafes', 'eats', 'do', 'nearby'];
+            const ids = ['city', 'temples', 'cafes', 'eats', 'do', 'nearby'];
             const mark = window.innerHeight * 0.35;
             let active = '#/';
             // If we're near the very top, Home is active; otherwise the last section whose top passed the mark.

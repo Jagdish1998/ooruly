@@ -525,6 +525,205 @@ const CITY_ATTRACTIONS = [
 ];
 
 /*
+ * Famous temples of Bengaluru — a spread across eras and faiths: ancient Chola- and Vijayanagara-era
+ * shrines, a 16th-century cave temple, and a modern landmark. Same city-attraction model (area,
+ * best time, highlights, getting there, entry, tips, a Maps link) so they reuse the city detail view.
+ */
+const TEMPLES = [
+    {
+        slug: 'iskcon',
+        name: 'ISKCON Sri Radha Krishna Temple',
+        category: 'Krishna temple',
+        area: 'Rajajinagar, North Bengaluru',
+        bestTime: 'Early morning darshan, or evening aarti',
+        tagline: 'One of the world\'s largest Krishna temples, on Hare Krishna Hill.',
+        image: 'images/iskcon.jpg',
+        description:
+            'Completed in 1997 atop the seven-acre Hare Krishna Hill in Rajajinagar, ISKCON Bengaluru ' +
+            'is one of the largest Krishna temples in the world. It blends classic Dravidian form with ' +
+            'modern construction: four gopurams linked by a glazed-glass canopy, a gold-plated flag ' +
+            'mast and shikara, and a soaring main hall for Sri Radha Krishnachandra. Beyond darshan it ' +
+            'runs a huge kitchen and the Akshaya Patra mid-day-meal programme, and the complex includes ' +
+            'a multimedia show and a busy prasadam and shopping arcade.',
+        highlights: [
+            'The gold-plated shikara and flag mast, and the glass-canopied gopurams',
+            'Evening aarti and bhajans in the main hall',
+            'Janmashtami, when the temple is at its most spectacular (and most crowded)',
+        ],
+        gettingThere: {
+            metro: 'Mahalakshmi station (Green Line) is the nearest; then a short auto ride up the hill.',
+            road: 'Well signposted off the Chord Road / Mahalakshmi Layout area; cabs and autos reach the gate.',
+        },
+        entry: 'Free entry. Open roughly 7:15 am–1 pm and 4–8:20 pm; timings extend on festival days.',
+        tips: [
+            'Phones and footwear are deposited at the entrance — travel light and carry a bag tag.',
+            'Weekends and Janmashtami see very long, winding queues; a weekday morning is calmest.',
+            'The walk to the sanctum is long and one-way through the arcade; allow at least an hour.',
+        ],
+        maps: 'ISKCON Temple, Rajajinagar, Bengaluru',
+    },
+    {
+        slug: 'bull-temple',
+        name: 'Bull Temple (Dodda Basavana Gudi)',
+        category: 'Shiva / Nandi temple',
+        area: 'Basavanagudi, South Bengaluru',
+        bestTime: 'Morning; the Kadalekai Parishe groundnut fair in Nov–Dec',
+        tagline: 'A giant monolithic Nandi carved from a single granite boulder.',
+        image: 'images/bull-temple.jpg',
+        description:
+            'Built by Kempegowda around 1537, the Bull Temple in Basavanagudi enshrines one of the ' +
+            'largest Nandi (bull) idols in the world — roughly 4.5 metres tall and 6 metres long, ' +
+            'carved from a single block of granite and darkened over centuries by ritual oil and ' +
+            'charcoal. Nandi is the mount and devotee of Shiva, and the temple gives the whole ' +
+            'neighbourhood its name (Basava = bull, gudi = temple). Each year the surrounding streets ' +
+            'host the Kadalekai Parishe, a centuries-old groundnut fair.',
+        highlights: [
+            'The colossal monolithic Nandi, garlanded and anointed daily',
+            'The Kempegowda-era Dravidian architecture',
+            'The Kadalekai Parishe (groundnut fair) in late November / December',
+        ],
+        gettingThere: {
+            metro: 'National College station (Green Line) is the closest; about a 15-minute walk or short auto.',
+            road: 'In Basavanagudi off Bull Temple Road; easy by auto or cab, parking is tight on weekends.',
+        },
+        entry: 'Free entry. Open roughly 6 am–noon and 5:30–8:30 pm daily.',
+        tips: [
+            'The Dodda Ganapathi (big Ganesha) temple is right next door — do both in one visit.',
+            'Go during the groundnut fair for the atmosphere, but expect big crowds and closed roads.',
+            'Footwear comes off at the entrance; floors can be warm by mid-morning.',
+        ],
+        maps: 'Bull Temple, Basavanagudi, Bengaluru',
+    },
+    {
+        slug: 'gavi-gangadhareshwara',
+        name: 'Gavi Gangadhareshwara Cave Temple',
+        category: 'Shiva cave temple',
+        area: 'Gavipuram, South Bengaluru',
+        bestTime: 'Makar Sankranti (Jan 14–15) for the sun phenomenon',
+        tagline: 'A 16th-century rock-cut cave temple with a famous solar alignment.',
+        image: 'images/gavi-gangadhareshwara.jpg',
+        description:
+            'One of Bengaluru\'s oldest temples, this Shiva shrine was built into a natural cave by ' +
+            'Kempegowda in the 16th century — "gavi" means cave in Kannada. Its monolithic granite ' +
+            'discs and pillars in the forecourt are an architectural curiosity, but the temple is most ' +
+            'famous for a solar marvel: on Makar Sankranti each January, evening sunlight passes through ' +
+            'an arch and between the horns of the stone Nandi to fall directly on the Shiva linga inside ' +
+            'the cave, illuminating it for a few minutes. It is protected as an ancient monument.',
+        highlights: [
+            'The Makar Sankranti sunlight-through-Nandi\'s-horns alignment on the linga',
+            'The rock-cut cave sanctum and the monolithic discs (Surya Pana, Chandra Pana)',
+            'The old Kempegowda-era Dravidian forecourt',
+        ],
+        gettingThere: {
+            metro: 'National College and Krishna Rajendra Market stations (Green Line) are the nearest railheads.',
+            road: 'In Gavipuram Guttahalli, near Kempegowda Nagar; reachable by auto or cab.',
+        },
+        entry: 'Free entry. Open roughly 7:30 am–12:30 pm and 5–8:30 pm; hugely crowded on Sankranti.',
+        tips: [
+            'For the Sankranti sun phenomenon, arrive well before evening — crowds are enormous.',
+            'The cave sanctum is low and dim; watch your step and your head.',
+            'A quiet weekday morning is the best time to actually see the architecture.',
+        ],
+        maps: 'Gavi Gangadhareshwara Temple, Gavipuram, Bengaluru',
+    },
+    {
+        slug: 'halasuru-someshwara',
+        name: 'Halasuru Someshwara Temple',
+        category: 'Shiva temple',
+        area: 'Halasuru (Ulsoor), East Bengaluru',
+        bestTime: 'Morning; Kartika and Shivaratri festivals',
+        tagline: 'A Chola-origin Shiva temple, greatly expanded under Vijayanagara.',
+        image: 'images/halasuru-someshwara.jpg',
+        description:
+            'The Someshwara temple in Halasuru (Ulsoor) is among the oldest surviving temples in the ' +
+            'city, with origins in the Chola period and major additions during the Vijayanagara era, ' +
+            'attributed to the 16th century and Kempegowda\'s time. Dedicated to Shiva as Someshwara, ' +
+            'it is celebrated for its intricately carved pillars, a richly sculpted mantapa and a tall, ' +
+            'colourful gopura crowded with figures from the epics. It sits close to Ulsoor Lake, making ' +
+            'the two an easy combined visit.',
+        highlights: [
+            'The towering, densely sculpted gopura over the entrance',
+            'The ornate pillared mantapa and Vijayanagara-era stonework',
+            'Old Tamil and Kannada inscriptions within the complex',
+        ],
+        gettingThere: {
+            metro: 'Halasuru and Trinity stations (Purple Line) are a short auto ride away.',
+            road: 'In Ulsoor, just off MG Road and near Ulsoor Lake; central and easy by auto or cab.',
+        },
+        entry: 'Free entry. Open roughly 6 am–noon and 5:30–8:30 pm daily.',
+        tips: [
+            'Pair it with a walk around Ulsoor Lake, a few minutes away.',
+            'Look up at the mantapa ceilings and pillar carvings — the detail is the highlight.',
+            'It is a living temple, so dress modestly and be mindful during pujas.',
+        ],
+        maps: 'Halasuru Someshwara Temple, Ulsoor, Bengaluru',
+    },
+    {
+        slug: 'banashankari',
+        name: 'Sri Banashankari Amma Temple',
+        category: 'Devi temple',
+        area: 'Banashankari, South Bengaluru',
+        bestTime: 'Fridays and Rahukala (evening) for special pujas',
+        tagline: 'A hugely popular Devi temple famous for its Rahukala lamp offerings.',
+        image: 'images/banashankari.jpg',
+        description:
+            'The Banashankari Amma temple is one of the city\'s most-visited Devi shrines and gives its ' +
+            'name to the whole surrounding locality. The goddess Banashankari, a form of Parvati, is ' +
+            'worshipped here in a way that is unusual for a Devi temple: devotees offer lamps and ' +
+            'prayers during Rahukala — a period normally considered inauspicious — which draws long ' +
+            'queues on Fridays and Tuesdays. Expect a lively, intensely devotional atmosphere with ' +
+            'flower and lamp stalls lining the approach.',
+        highlights: [
+            'The distinctive Rahukala lamp (deepa) offerings',
+            'Friday and Tuesday crowds and the bustling market outside',
+            'Rahu-Ketu and special pujas the temple is sought out for',
+        ],
+        gettingThere: {
+            metro: 'Banashankari station (Green Line) is close; then a short walk or auto ride.',
+            road: 'On Kanakapura Road in Banashankari; easy by bus, auto or cab.',
+        },
+        entry: 'Free entry. Open roughly 6 am–1 pm and 3:30–9 pm; Rahukala timings vary by day.',
+        tips: [
+            'It gets extremely crowded on Fridays and during Rahukala — go early on a weekday for calm.',
+            'Lamp and flower offerings are sold at stalls right outside the temple.',
+            'Keep an eye on belongings in the dense crowd around the sanctum.',
+        ],
+        maps: 'Banashankari Temple, Bengaluru',
+    },
+    {
+        slug: 'chokkanathaswamy',
+        name: 'Chokkanathaswamy Temple',
+        category: 'Vishnu temple',
+        area: 'Domlur, East Bengaluru',
+        bestTime: 'Morning; Vaikuntha Ekadashi and Vishnu festivals',
+        tagline: 'Widely regarded as the oldest temple in Bengaluru, of Chola origin.',
+        image: 'images/chokkanathaswamy.jpg',
+        description:
+            'The Chokkanathaswamy temple in Domlur is often called the oldest temple in Bengaluru, with ' +
+            'inscriptions dating its origins to around the 10th century and the Chola period, and later ' +
+            'work under the Vijayanagara empire. Dedicated to Vishnu (as Chokkanatha or Chokka Perumal), ' +
+            'it is a modest but historically important shrine known for its old granite pillars, finely ' +
+            'sculpted figures, and Tamil and Kannada inscriptions that record centuries of patronage.',
+        highlights: [
+            'Among the city\'s oldest surviving shrines, with 10th–16th century roots',
+            'The carved granite pillars and Vishnu iconography',
+            'Historic Tamil and Kannada inscriptions in the complex',
+        ],
+        gettingThere: {
+            metro: 'Nearest metro is limited; Indiranagar station (Purple Line) plus an auto is easiest.',
+            road: 'In Domlur, near the Domlur flyover and old airport road; best reached by auto or cab.',
+        },
+        entry: 'Free entry. Open roughly 7 am–noon and 5:30–8:30 pm; quieter than the bigger temples.',
+        tips: [
+            'It is a small neighbourhood temple — a short, unhurried visit for the history and carvings.',
+            'Combine with nearby Indiranagar cafes or Ulsoor for a fuller outing.',
+            'Ask the priest about the inscriptions if you\'re curious about its age.',
+        ],
+        maps: 'Chokkanathaswamy Temple, Domlur, Bengaluru',
+    },
+];
+
+/*
  * Hidden cafes across Bengaluru's neighbourhoods — independent, lesser-known spots rather than the
  * big chains, in areas like JP Nagar, Jayanagar, Indiranagar and around. Same card + detail pattern,
  * but a cafe model: neighbourhood, what it's known for, the vibe, an overview, what to order, tips,
