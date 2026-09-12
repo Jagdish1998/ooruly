@@ -551,6 +551,114 @@ const DESTINATIONS = [
         booking: { railTo: 'Mysuru', busTo: 'Gundlupet', hotelCity: 'Bandipur' },
         tags: ['nature', 'family', 'photo'],
     },
+    {
+        slug: 'ramanagara',
+        name: 'Ramanagara',
+        state: 'Karnataka',
+        type: 'hills',
+        distanceKm: 50,
+        driveHours: '1–1.5',
+        seasons: ['oct', 'nov', 'dec', 'jan', 'feb'],
+        bestMonths: 'October to February',
+        tagline: 'The dramatic granite hills of "Sholay" — rock-climbing and vulture country.',
+        image: 'images/ramanagara.jpg',
+        description:
+            'Ramanagara is a cluster of striking granite hills just off the Bengaluru–Mysuru road, ' +
+            'famous as the setting for the classic film "Sholay". It is one of South India\'s top ' +
+            'rock-climbing and bouldering spots, and its cliffs shelter a protected vulture sanctuary. ' +
+            'An easy day trip for trekkers, climbers and anyone after big rocky views close to the city.',
+        howToReach: {
+            flight: 'Nearest airport is Bengaluru (BLR, ~70 km).',
+            train: 'Ramanagara has a station on the Bengaluru–Mysuru line; frequent trains.',
+            bus: 'Very frequent buses on the Bengaluru–Mysuru road stop at Ramanagara.',
+            road: 'Drive on the Bengaluru–Mysuru expressway; about an hour.',
+        },
+        precautions: [
+            'Rock climbing needs proper gear and a guide — don\'t attempt exposed routes alone.',
+            'The rocks are hot and shadeless by midday; start early and carry water.',
+            'Parts fall within a vulture sanctuary — respect restricted zones and keep noise down.',
+            'Watch your footing on loose granite, especially after rain.',
+        ],
+        booking: { railTo: 'Ramanagara', busTo: 'Ramanagara', hotelCity: 'Ramanagara' },
+        tags: ['nature', 'groups', 'photo'],
+        bestFor: ['Adventurers', 'Climbers', 'Photographers'],
+        effort: 'Moderate to hard — climbing and rocky treks',
+        didYouKnow: [
+            'The rocky hills of Ramanagara were the backdrop for the iconic 1975 film "Sholay".',
+            'Its cliffs are a protected sanctuary for long-billed and Egyptian vultures.',
+        ],
+    },
+    {
+        slug: 'bheemeshwari',
+        name: 'Bheemeshwari',
+        state: 'Karnataka',
+        type: 'nature',
+        distanceKm: 100,
+        driveHours: '2.5–3',
+        seasons: ['oct', 'nov', 'dec', 'jan', 'feb', 'mar'],
+        bestMonths: 'October to March',
+        tagline: 'A riverside nature retreat on the Cauvery — coracles, angling and forest walks.',
+        image: 'images/coorg.jpg',
+        description:
+            'Bheemeshwari is a peaceful nature and adventure camp on the banks of the Cauvery, set in ' +
+            'the Cauvery Wildlife Sanctuary. Known for its riverside calm, it offers coracle rides, ' +
+            'nature walks, ziplining and (catch-and-release) angling, with mahseer fish in the river ' +
+            'and birdlife along the banks. A refreshing, low-key weekend escape close to the city.',
+        howToReach: {
+            flight: 'Nearest airport is Bengaluru (BLR, ~100 km).',
+            train: 'Nearest railheads are Maddur and Mandya; continue by road.',
+            bus: 'Buses run toward Malavalli; the camp is a short hop from there.',
+            road: 'Drive via Kanakapura or Maddur; about 2.5–3 hours.',
+        },
+        precautions: [
+            'It is a wildlife area — follow camp guidance and don\'t wander off alone near the river.',
+            'Water activities are weather- and season-dependent; confirm before travelling.',
+            'Angling is catch-and-release and regulated; respect the rules protecting the mahseer.',
+            'Carry insect repellent and avoid the peak monsoon when the river runs high.',
+        ],
+        booking: { railTo: 'Maddur', busTo: 'Malavalli', hotelCity: 'Bheemeshwari' },
+        tags: ['nature', 'family', 'groups'],
+        bestFor: ['Nature lovers', 'Families', 'Anglers'],
+        effort: 'Easy to moderate — gentle activities',
+    },
+    {
+        slug: 'bhoganandeeshwara',
+        name: 'Bhoganandeeshwara Temple',
+        state: 'Karnataka',
+        type: 'heritage',
+        distanceKm: 60,
+        driveHours: '1.5–2',
+        seasons: ['jan', 'feb', 'mar', 'aug', 'sep', 'oct', 'nov', 'dec'],
+        bestMonths: 'Year-round; pleasant August to March',
+        tagline: 'A 1,000-year-old temple at the foot of Nandi Hills, of exquisite early Dravidian craft.',
+        image: 'images/bhoganandeeshwara.jpg',
+        description:
+            'At the base of Nandi Hills in the village of Nandi stands the Bhoganandeeshwara Temple, ' +
+            'one of the oldest in the region, with origins around the 9th–10th century under the ' +
+            'Nolambas and later expanded by the Gangas, Cholas, Hoysalas and Vijayanagara rulers. ' +
+            'Dedicated to Shiva, it is celebrated for its finely carved pillars, a stepped temple tank ' +
+            '(kalyani) and a serene, uncrowded atmosphere — a rewarding stop paired with a Nandi Hills trip.',
+        howToReach: {
+            flight: 'Close to Kempegowda International Airport (BLR, ~40 km).',
+            train: 'Nearest stations are Chikkaballapur and Devanahalli; most people drive.',
+            bus: 'Buses run toward Chikkaballapur; the temple is near the Nandi Hills base.',
+            road: 'Drive on NH44 toward Chikkaballapur, then to Nandi village; 1.5–2 hours.',
+        },
+        precautions: [
+            'It is a living temple — dress modestly and remove footwear inside.',
+            'Photograph the carvings respectfully; avoid flash near the shrines.',
+            'It pairs well with Nandi Hills — combine them, but start early for the hill sunrise.',
+            'Carry water; the village has limited facilities.',
+        ],
+        booking: { railTo: 'Chikkaballapur', busTo: 'Chikkaballapur', hotelCity: 'Nandi Hills' },
+        tags: ['heritage', 'photo', 'solo'],
+        bestFor: ['History buffs', 'Photographers'],
+        effort: 'Easy — a short, level visit',
+        didYouKnow: [
+            'The temple is over a thousand years old, begun under the Nolambas around the 9th–10th century.',
+            'Successive dynasties — Gangas, Cholas, Hoysalas and Vijayanagara — each added to it.',
+        ],
+    },
 ];
 
 /*
@@ -1091,6 +1199,264 @@ const CITY_ATTRACTIONS = [
         lat: 12.8360, lng: 77.4300,
         tags: ['family', 'groups'],
     },
+    {
+        slug: 'map-museum',
+        name: 'Museum of Art & Photography (MAP)',
+        category: 'Art museum',
+        area: 'Kasturba Road, Central Bengaluru',
+        bestTime: 'Late morning to afternoon',
+        tagline: 'A modern museum of Indian art, photography and textiles spanning a thousand years.',
+        image: 'images/map-museum.jpg',
+        description:
+            'MAP is one of India\'s leading private art museums, built around a vast collection of ' +
+            'paintings, photographs, textiles and sculptures — some dating back to the 10th century. ' +
+            'Rotating exhibitions, a strong photography archive and a rooftop cafe make it a rich, ' +
+            'contemporary counterpoint to the city\'s older heritage sites.',
+        highlights: [
+            'Rotating exhibitions drawn from a 60,000-piece collection',
+            'Indian photography, textiles and modern art under one roof',
+            'The rooftop cafe for a break between galleries',
+        ],
+        gettingThere: {
+            metro: 'Cubbon Park and MG Road stations (Purple Line) are a short walk away.',
+            road: 'On Kasturba Road near Cubbon Park; central and easy by Metro or auto.',
+        },
+        entry: 'Ticketed; free entry on Tuesdays. Open roughly 10 am–6:30 pm; closed Mondays. Check current shows online.',
+        tips: [
+            'Free on Tuesdays — but busier; a weekday morning is calmest.',
+            'Check which exhibitions are on before you go; they rotate.',
+            'Pair it with Cubbon Park and the Government Museum next door.',
+        ],
+        maps: 'Museum of Art and Photography, Bengaluru',
+        lat: 12.9752, lng: 77.5966,
+        tags: ['heritage', 'date', 'solo'],
+        bestFor: ['Art lovers', 'Photography fans', 'Date'],
+        effort: 'Easy — indoor galleries',
+        didYouKnow: [
+            'MAP\'s collection numbers around 60,000 works across art, photography and textiles.',
+            'Its facade deliberately resembles an industrial water tank — a nod to storing something precious.',
+        ],
+    },
+    {
+        slug: 'ngma',
+        name: 'National Gallery of Modern Art',
+        category: 'Art museum',
+        area: 'Palace Road, Central Bengaluru',
+        bestTime: 'Late morning to afternoon',
+        tagline: 'India\'s modern-art collection, set in a restored early-1900s manor.',
+        image: 'images/bangalore-palace.jpg',
+        description:
+            'The Bengaluru wing of the National Gallery of Modern Art is housed in the elegant ' +
+            'Manikyavelu Mansion, a restored early-20th-century building set in leafy grounds. Its ' +
+            'galleries trace Indian modern art from the colonial era to the present, with works by ' +
+            'masters like Raja Ravi Varma alongside changing exhibitions.',
+        highlights: [
+            'The restored Manikyavelu Mansion and its gardens',
+            'A permanent collection charting Indian modern art',
+            'Regular temporary exhibitions and talks',
+        ],
+        gettingThere: {
+            metro: 'Nearest is around Cantonment; take a cab or auto for the last stretch.',
+            road: 'On Palace Road near the Golf Course; easy by cab or auto.',
+        },
+        entry: 'Ticketed; closed Mondays and public holidays. Open roughly 10 am–5 pm.',
+        tips: [
+            'The heritage building and grounds are as much a draw as the art.',
+            'Photography inside is usually restricted; check at the desk.',
+            'Allow 1–1.5 hours for the collection.',
+        ],
+        maps: 'National Gallery of Modern Art, Bengaluru',
+        lat: 12.9915, lng: 77.5920,
+        tags: ['heritage', 'date', 'solo'],
+        bestFor: ['Art lovers', 'History buffs'],
+        effort: 'Easy — indoor galleries and gardens',
+    },
+    {
+        slug: 'indian-music-experience',
+        name: 'Indian Music Experience',
+        category: 'Music museum',
+        area: 'JP Nagar, South Bengaluru',
+        bestTime: 'Late morning to afternoon',
+        tagline: 'India\'s first interactive music museum — themed galleries and listening stations.',
+        image: 'images/vitm.jpg',
+        description:
+            'The Indian Music Experience is India\'s first interactive music museum, taking visitors ' +
+            'through themed galleries — from classical and devotional to folk, film and indie music. ' +
+            'Listening stations, instruments and memorabilia (including pieces donated by legendary ' +
+            'artists) make it a hands-on journey through the country\'s soundscape.',
+        highlights: [
+            'Interactive galleries across classical, folk, film and indie music',
+            'Listening stations and instrument displays',
+            'Memorabilia donated by celebrated musicians',
+        ],
+        gettingThere: {
+            metro: 'Yelachenahalli / JP Nagar stations (Green Line) are nearest; then a short auto.',
+            road: 'In JP Nagar 8th Phase, south Bengaluru; easy by cab or auto.',
+        },
+        entry: 'Ticketed; closed Mondays. Open roughly 10 am–6 pm on weekdays, later on weekends.',
+        tips: [
+            'Bring or borrow headphones to make the most of the listening stations.',
+            'Great for families and music lovers; allow a couple of hours.',
+            'There\'s a cafe and gift shop on site.',
+        ],
+        maps: 'Indian Music Experience Museum, Bengaluru',
+        lat: 12.8988, lng: 77.5850,
+        tags: ['family', 'heritage', 'solo'],
+        bestFor: ['Music lovers', 'Families', 'Curious minds'],
+        effort: 'Easy — interactive indoor galleries',
+        didYouKnow: [
+            'It is India\'s first dedicated interactive music museum.',
+        ],
+    },
+    {
+        slug: 'government-museum',
+        name: 'Government Museum & Venkatappa Gallery',
+        category: 'Museum',
+        area: 'Kasturba Road, Central Bengaluru',
+        bestTime: 'Morning to afternoon',
+        tagline: 'One of India\'s oldest museums, holding the earliest known Kannada inscription.',
+        image: 'images/govt-museum.jpg',
+        description:
+            'Established in 1865, the Government Museum is among the oldest in India. Its galleries ' +
+            'hold antiquities, coins, sculptures and archaeological finds — including the Halmidi ' +
+            'inscription (c. 450 CE), the oldest known example of written Kannada, and the Begur ' +
+            'inscription that carries an early mention of "Bengaluru". The adjoining Venkatappa Art ' +
+            'Gallery shows the work of the noted artist K. Venkatappa and others.',
+        highlights: [
+            'The Halmidi inscription — the oldest known Kannada text',
+            'Coins, sculptures and archaeological treasures',
+            'The Venkatappa Art Gallery next door',
+        ],
+        gettingThere: {
+            metro: 'Cubbon Park and MG Road stations (Purple Line) are a short walk away.',
+            road: 'On Kasturba Road by Cubbon Park; central and easy by Metro.',
+        },
+        entry: 'Small entry ticket; closed Mondays. Open roughly 10 am–5 pm.',
+        tips: [
+            'Seek out the Halmidi inscription — it\'s a genuine piece of Kannada history.',
+            'Combine with Cubbon Park, VITM and MAP for a museum half-day.',
+            'It\'s an older museum — go for the history, not slick displays.',
+        ],
+        maps: 'Government Museum, Kasturba Road, Bengaluru',
+        lat: 12.9750, lng: 77.5959,
+        tags: ['heritage', 'solo', 'budget'],
+        bestFor: ['History buffs', 'Students'],
+        effort: 'Easy — indoor galleries',
+        didYouKnow: [
+            'The museum holds the Halmidi inscription of around 450 CE — the oldest known writing in Kannada.',
+            'It is one of the oldest museums in India, founded in 1865.',
+        ],
+    },
+    {
+        slug: 'science-gallery',
+        name: 'Science Gallery Bengaluru',
+        category: 'Science museum',
+        area: 'Bellary Road, North Bengaluru',
+        bestTime: 'Afternoon to evening',
+        tagline: 'A free, contemporary science-and-society gallery for curious minds.',
+        image: 'images/cubbon-park.jpg',
+        description:
+            'Science Gallery Bengaluru is a free public space where science meets art and society, ' +
+            'part of a global network of Science Galleries. Its changing, months-long exhibitions ' +
+            'explore themes at the edge of research — with young facilitators on hand to talk you ' +
+            'through the ideas, from cosmic rays to the city\'s lakes and brewing science.',
+        highlights: [
+            'Free, changing exhibitions on science and society',
+            'Young facilitators who explain the exhibits',
+            'A window into Bengaluru\'s "science city" identity',
+        ],
+        gettingThere: {
+            metro: 'Nearest stations are on the Green Line toward the north; then a cab or auto.',
+            road: 'On Bellary Road near Hebbal; easy by cab.',
+        },
+        entry: 'Free entry; closed Mon–Tue. Open roughly 10 am–6 pm (later on weekends). Check the current exhibition.',
+        tips: [
+            'Entry is free — check what exhibition is running before you go.',
+            'Great for teens and the science-curious.',
+            'Exhibitions rotate every few months, so it rewards repeat visits.',
+        ],
+        maps: 'Science Gallery Bengaluru',
+        lat: 13.0350, lng: 77.5900,
+        tags: ['family', 'budget', 'solo'],
+        bestFor: ['Students', 'Families', 'Science fans'],
+        effort: 'Easy — indoor galleries',
+    },
+    {
+        slug: 'st-marys-basilica',
+        name: 'St. Mary\'s Basilica',
+        category: 'Church',
+        area: 'Shivajinagar, Central Bengaluru',
+        bestTime: 'Morning; the September St. Mary\'s Feast',
+        tagline: 'Bengaluru\'s oldest church and the only basilica in Karnataka.',
+        image: 'images/st-marys-basilica.jpg',
+        description:
+            'St. Mary\'s Basilica in Shivajinagar is the oldest church in Bengaluru and the only one ' +
+            'in Karnataka elevated to the status of a minor basilica. Built in the Gothic style with ' +
+            'tall stained-glass windows and lofty arches, it is famed for the annual St. Mary\'s Feast ' +
+            'each September, when a grand procession and car festival draw enormous crowds of all faiths.',
+        highlights: [
+            'Gothic architecture with stained glass and soaring arches',
+            'The September St. Mary\'s Feast and procession',
+            'A rare minor basilica and the city\'s oldest church',
+        ],
+        gettingThere: {
+            metro: 'Cantonment and around Shivajinagar are nearest; then a short auto.',
+            road: 'In Shivajinagar near Russell Market; easy by auto, though the area is busy.',
+        },
+        entry: 'Free entry. Open through the day for prayer; the September feast is the peak time (and most crowded).',
+        tips: [
+            'Dress modestly and keep quiet during services.',
+            'The September feast is spectacular but extremely crowded.',
+            'Pair it with a walk through the historic Russell Market nearby.',
+        ],
+        maps: 'St Marys Basilica, Shivajinagar, Bengaluru',
+        lat: 12.9847, lng: 77.6050,
+        tags: ['heritage', 'photo'],
+        bestFor: ['History buffs', 'Photographers'],
+        effort: 'Easy — a short visit',
+        etiquette: [
+            'Dress modestly and remove hats inside.',
+            'Keep voices low, especially during Mass.',
+            'Ask before photographing worshippers or services.',
+        ],
+    },
+    {
+        slug: 'bangalore-fort',
+        name: 'Bangalore Fort',
+        category: 'Heritage',
+        area: 'KR Market area, South Bengaluru',
+        bestTime: 'Morning',
+        tagline: 'The surviving stone remnant of the city\'s old fort, with Tipu-era gates.',
+        image: 'images/bangalore-fort.jpg',
+        description:
+            'Bangalore Fort began as Kempegowda\'s 16th-century mud fort and was rebuilt in stone by ' +
+            'Hyder Ali and Tipu Sultan. Much was lost over time, but the Delhi Gate with its Persian ' +
+            'friezes, sections of the fort wall and a Ganesha temple in the quadrangle survive. It sits ' +
+            'right beside Tipu\'s Summer Palace, making the two an easy combined visit.',
+        highlights: [
+            'The Delhi Gate with its Persian-style friezes',
+            'Surviving stretches of the old fort wall',
+            'Its pairing with Tipu\'s Summer Palace next door',
+        ],
+        gettingThere: {
+            metro: 'Krishna Rajendra Market and City Railway Station (Green Line) are nearby.',
+            road: 'Near KR Market and Tipu\'s Palace; the area is congested, so allow time.',
+        },
+        entry: 'Small entry ticket; a protected monument. Best done together with Tipu\'s Palace.',
+        tips: [
+            'Combine with Tipu\'s Summer Palace, KR Market and Kote Venkataramana Temple.',
+            'Go in the morning before market traffic peaks.',
+            'It\'s a compact ruin — a short, historical stop rather than a long visit.',
+        ],
+        maps: 'Bangalore Fort, Bengaluru',
+        lat: 12.9629, lng: 77.5772,
+        tags: ['heritage', 'photo', 'budget'],
+        bestFor: ['History buffs'],
+        effort: 'Easy — a compact site',
+        didYouKnow: [
+            'The fort started as Kempegowda\'s mud fort and was later rebuilt in stone by Hyder Ali and Tipu Sultan.',
+        ],
+    },
 ];
 
 /*
@@ -1484,6 +1850,50 @@ const TEMPLES = [
         maps: 'Kote Venkataramana Temple, Bengaluru',
         lat: 12.9605, lng: 77.5760,
         tags: ['heritage', 'solo'],
+    },
+    {
+        slug: 'dharmaraya-swamy',
+        name: 'Dharmaraya Swamy Temple',
+        category: 'Draupadi / Pandava temple',
+        area: 'Thigalarapete, near KR Market',
+        bestTime: 'The Bengaluru Karaga festival (Mar–Apr)',
+        tagline: 'The 500-year-old temple at the heart of the city\'s famous Karaga festival.',
+        image: 'images/dharmaraya.jpg',
+        description:
+            'The Dharmaraya Swamy Temple, dedicated to Yudhishtira (Dharmaraya) and the Pandavas with ' +
+            'Draupadi as the presiding deity, is the focal point of the centuries-old Bengaluru ' +
+            'Karaga — one of the city\'s oldest and most spectacular festivals. Over nine nights each ' +
+            'spring, the Karaga (a decorated earthen pot invoking the goddess) is carried through the ' +
+            'old city in a dramatic, night-long procession by a priest of the Tigala community.',
+        highlights: [
+            'The nine-day Bengaluru Karaga festival and its night procession',
+            'A ~500-year-old temple in the historic Pete quarter',
+            'The living traditions of the Tigala (gardener) community',
+        ],
+        gettingThere: {
+            metro: 'Krishna Rajendra Market station (Green Line) is nearest; then a short walk.',
+            road: 'In Thigalarapete near KR Market; the old-city lanes are congested.',
+        },
+        entry: 'Free entry. Open morning and evening; the Karaga festival (Mar–Apr) is the time to see it at its most alive.',
+        tips: [
+            'Time your visit with the Karaga festival for the full experience — but expect huge crowds.',
+            'It sits in the atmospheric old Pete; pair it with a heritage walk.',
+            'Dress modestly and be respectful during rituals.',
+        ],
+        maps: 'Dharmaraya Swamy Temple, Bengaluru',
+        lat: 12.9660, lng: 77.5810,
+        tags: ['heritage', 'photo'],
+        bestFor: ['History buffs', 'Culture seekers'],
+        effort: 'Easy — a short visit',
+        didYouKnow: [
+            'The Bengaluru Karaga, centred on this temple, is over five centuries old and honours Draupadi.',
+            'The Karaga procession pauses at the dargah of an 18th-century Muslim saint — a rare shared tradition.',
+        ],
+        etiquette: [
+            'Remove footwear and dress modestly.',
+            'During the Karaga, follow crowd marshals and keep clear of the procession path.',
+            'Ask before photographing rituals or participants.',
+        ],
     },
 ];
 
@@ -2219,7 +2629,7 @@ const PHRASES = [
 const ITINERARIES = [
     {
         slug: 'weekend-in-the-city',
-        title: 'A Weekend in the City',
+        title: 'A weekend in the city',
         icon: 'fa-city',
         duration: '2 days',
         summary: 'The essential first-timer\'s loop — palaces, gardens, iconic dosas and a hidden cafe.',
@@ -2230,7 +2640,7 @@ const ITINERARIES = [
     },
     {
         slug: 'heritage-day',
-        title: 'Heritage Day',
+        title: 'Heritage day',
         icon: 'fa-landmark',
         duration: '1 day',
         summary: 'Palaces, forts and old-city history, wrapped around a legendary Basavanagudi breakfast.',
@@ -2241,7 +2651,7 @@ const ITINERARIES = [
     },
     {
         slug: 'temple-trail',
-        title: 'Temple Trail',
+        title: 'Temple trail',
         icon: 'fa-gopuram',
         duration: '1 day',
         summary: 'From the oldest shrines to a modern landmark — a spread across eras and faiths.',
@@ -2252,7 +2662,7 @@ const ITINERARIES = [
     },
     {
         slug: 'cafe-crawl',
-        title: 'Cafe Crawl',
+        title: 'Cafe crawl',
         icon: 'fa-mug-saucer',
         duration: 'Half day',
         summary: 'A slow, caffeinated wander through the city\'s best independent coffee rooms.',
@@ -2263,7 +2673,7 @@ const ITINERARIES = [
     },
     {
         slug: 'family-day-out',
-        title: 'Family Day Out',
+        title: 'Family day out',
         icon: 'fa-people-roof',
         duration: '1 day',
         summary: 'Animals, science and a big green park — an easy, all-ages day without leaving the city.',
@@ -2273,7 +2683,7 @@ const ITINERARIES = [
     },
     {
         slug: 'foodie-evening',
-        title: 'A Foodie Evening',
+        title: 'A foodie evening',
         icon: 'fa-utensils',
         duration: 'Evening',
         summary: 'Old-school tiffin, a street-food graze and dessert — the taste of Bengaluru in one night.',
@@ -2292,7 +2702,7 @@ const ITINERARIES = [
 const THEMES = [
     {
         slug: 'kempegowda-legacy',
-        title: 'The Kempegowda Legacy',
+        title: 'The Kempegowda legacy',
         icon: 'fa-chess-rook',
         blurb: 'The 16th-century chieftain who founded Bengaluru left temples, towers and a fort still woven through the city.',
         intro:
@@ -2321,7 +2731,7 @@ const THEMES = [
     },
     {
         slug: 'hoysala-vijayanagara',
-        title: 'Stone Empires: Hoysala & Vijayanagara',
+        title: 'Stone empires: Hoysala & Vijayanagara',
         icon: 'fa-landmark-dome',
         blurb: 'Two dynasties that turned South Indian temple-building into a high art of carved stone.',
         intro:
@@ -2367,7 +2777,7 @@ const THEMES = [
     },
     {
         slug: 'coffee-country',
-        title: 'Coffee Country',
+        title: 'Coffee country',
         icon: 'fa-mug-hot',
         blurb: 'How the Western Ghats became the birthplace of Indian coffee — and the city\'s coffee culture that followed.',
         intro:
@@ -2391,7 +2801,7 @@ const THEMES = [
     },
     {
         slug: 'tiffin-heritage',
-        title: 'The Tiffin Heritage',
+        title: 'The tiffin heritage',
         icon: 'fa-utensils',
         blurb: 'The decades-old eating houses where Bengaluru\'s breakfast classics were perfected — and some invented.',
         intro:

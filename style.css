@@ -342,20 +342,9 @@ img.img-fallback { visibility: hidden; }
 #city, #cafes, #eats, #do, #nearby { scroll-margin-top: calc(var(--header-h) + 1rem); }
 
 /* The "Inside Bengaluru" band sits above the getaways with a soft tinted background. */
-.section--city {
-    position: relative;
-    background:
-        radial-gradient(70% 60% at 100% 0%, var(--accent-soft), transparent 60%);
-    border-bottom: 1px solid var(--border);
-}
-
-/* ---------- hidden cafes ---------- */
-.section--cafes {
-    position: relative;
-    background:
-        radial-gradient(60% 55% at 0% 0%, rgba(90, 60, 255, 0.10), transparent 60%);
-    border-bottom: 1px solid var(--border);
-}
+/* Content bands (city sights, temples, cafes, eats, do, getaways) stay plain for a calm rhythm;
+   only the "ways to explore" teaser interludes (itineraries, themes) carry a soft tint. */
+.section--city { position: relative; }
 /*
  * Cafe/eatery card media: a real photo on top of a themed monogram tile. If the image fails
  * (or is absent), JS hides the <img> and the monogram fallback shows through.
@@ -1020,9 +1009,11 @@ img.img-fallback { visibility: hidden; }
 }
 
 /* ---------- itineraries section + cards ---------- */
+/* The itineraries + themes teasers form one "ways to explore" interlude: a shared soft tint and a
+   framing top border on the first band tie them together as a distinct band between content. */
 .section--itin {
-    background: radial-gradient(60% 55% at 0% 0%, rgba(90, 60, 255, 0.08), transparent 60%);
-    border-bottom: 1px solid var(--border);
+    background: radial-gradient(70% 60% at 50% 0%, var(--accent-soft), transparent 65%);
+    border-top: 1px solid var(--border);
 }
 .itin-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 .itin-card {
@@ -1224,7 +1215,7 @@ img.img-fallback { visibility: hidden; }
 
 /* ---------- themes ---------- */
 .section--themes {
-    background: radial-gradient(60% 55% at 100% 0%, rgba(255, 0, 79, 0.07), transparent 60%);
+    background: radial-gradient(70% 60% at 50% 100%, var(--accent-soft), transparent 65%);
     border-bottom: 1px solid var(--border);
 }
 .theme-card { text-decoration: none; }
@@ -1316,7 +1307,7 @@ img.img-fallback { visibility: hidden; }
 
 /* ---------- compare toggle on getaway cards ---------- */
 .compare-toggle {
-    position: absolute; left: 0.6rem; bottom: 0.6rem; z-index: 3;
+    position: absolute; left: 0.6rem; bottom: 0.6rem; z-index: 5;
     display: inline-flex; align-items: center; gap: 0.4rem;
     padding: 0.35rem 0.7rem; border-radius: var(--radius-pill);
     font-size: 0.72rem; font-weight: 600; color: #fff;
@@ -1326,9 +1317,10 @@ img.img-fallback { visibility: hidden; }
 }
 .compare-toggle:hover { transform: translateY(-2px); }
 .compare-toggle.is-on { background: var(--accent-strong); border-color: transparent; }
-/* When a season badge is present it sits bottom-left too; nudge the compare toggle up if both show.
-   The badge container is small, so keep compare above it via a small offset when needed. */
-.card-media .card-badges { bottom: 2.6rem; }
+/* Let clicks always land on the button, never on the icon/label or a FontAwesome-swapped SVG. */
+.compare-toggle * { pointer-events: none; }
+/* The compare toggle sits bottom-left; lift the season/open badges above it so they never overlap. */
+.card-media .card-badges { bottom: 3rem; }
 
 /* ---------- floating compare bar ---------- */
 .compare-bar {
@@ -1426,15 +1418,14 @@ img.img-fallback { visibility: hidden; }
 }
 
 /* ---------- explored tick on cards ---------- */
+/* Sits bottom-right — a clear corner on every card type, so it never collides with the top-left
+   category label, the top-right heart, or the bottom-left season/compare badges. */
 .explored-tick {
-    position: absolute; top: 0.6rem; left: 0.6rem; z-index: 3;
+    position: absolute; bottom: 0.6rem; right: 0.6rem; z-index: 4;
     width: 26px; height: 26px; display: grid; place-items: center;
     border-radius: 50%; color: #fff; background: rgba(52, 211, 153, 0.92);
     box-shadow: 0 0 0 2px rgba(8,8,10,0.35); font-size: 0.8rem;
 }
-/* If a card-type label is top-left, shift the tick to top-right-ish under the fav button instead. */
-.card-media .card-type + .fav-btn + .explored-tick,
-.card-media .explored-tick { top: 0.6rem; left: 0.6rem; }
 
 /* ---------- journey / progress page ---------- */
 .journey-stats {

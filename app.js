@@ -333,10 +333,10 @@
                         </div>
                         <ul class="hero-stats" aria-label="What's inside">
                             <li><strong>${totalCount}</strong> curated spots</li>
-                            <li><strong>${DESTINATIONS.length}</strong> weekend getaways</li>
+                            <li><strong>${DESTINATIONS.length}</strong> getaways</li>
                             <li><strong>${cityCount}</strong> city sights</li>
                             <li><strong>${templeCount}</strong> temples</li>
-                            <li>cafes, eats &amp; more</li>
+                            <li><strong>${eatCount + cafeCount}</strong> cafes &amp; eats</li>
                         </ul>
                     </div>
 
@@ -367,12 +367,41 @@
 
             ${dailyFact ? `<div class="container">${dailyFact}</div>` : ''}
 
+            <section class="section section--city" id="city">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Inside Bengaluru</h2>
+                        <p class="section-sub">No trip needed — city sights you can do in a few hours.
+                            Tap any place for how to reach it, the best time to go, and travel tips.</p>
+                    </div>
+                    ${cityBar}
+                    <div class="grid" id="grid-city">${cityList}</div>
+                </div>
+            </section>
+
+            <section class="section" id="nearby">
+                <div class="container">
+                    <div class="section-head section-head--row">
+                        <div>
+                            <h2 class="section-title">Nearby Bengaluru</h2>
+                            <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
+                        </div>
+                        <button class="near-btn" id="near-me-inline" type="button">
+                            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Near me
+                        </button>
+                    </div>
+                    <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
+                    <div class="grid" id="grid">${list}</div>
+                </div>
+            </section>
+
+            <!-- "Ways to explore" interlude: after two headline content bands, offer the tools. -->
             ${itinTeaser ? `
             <section class="section section--itin" id="itineraries">
                 <div class="container">
                     <div class="section-head section-head--row">
                         <div>
-                            <h2 class="section-title">Ready-Made Itineraries</h2>
+                            <h2 class="section-title">Ready-made itineraries</h2>
                             <p class="section-sub">Not sure where to start? Use a curated day plan as-is,
                                 or tweak it in the planner.</p>
                         </div>
@@ -387,7 +416,7 @@
                 <div class="container">
                     <div class="section-head section-head--row">
                         <div>
-                            <h2 class="section-title">Learn by Theme</h2>
+                            <h2 class="section-title">Learn by theme</h2>
                             <p class="section-sub">Understand Bengaluru through the threads that run through it —
                                 dynasties, faith, coffee and food.</p>
                         </div>
@@ -396,18 +425,6 @@
                     <div class="grid itin-grid">${themeTeaser}</div>
                 </div>
             </section>` : ''}
-
-            <section class="section section--city" id="city">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Inside Bengaluru</h2>
-                        <p class="section-sub">No trip needed — city sights you can do in a few hours.
-                            Tap any place for how to reach it, the best time to go, and travel tips.</p>
-                    </div>
-                    ${cityBar}
-                    <div class="grid" id="grid-city">${cityList}</div>
-                </div>
-            </section>
 
             <section class="section section--temples" id="temples">
                 <div class="container">
@@ -458,22 +475,6 @@
                     </div>
                     ${doBar}
                     <div class="grid" id="grid-do">${doList}</div>
-                </div>
-            </section>
-
-            <section class="section" id="nearby">
-                <div class="container">
-                    <div class="section-head section-head--row">
-                        <div>
-                            <h2 class="section-title">Nearby Bengaluru</h2>
-                            <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
-                        </div>
-                        <button class="near-btn" id="near-me-inline" type="button">
-                            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Near me
-                        </button>
-                    </div>
-                    <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
-                    <div class="grid" id="grid">${list}</div>
                 </div>
             </section>`;
 
@@ -1468,7 +1469,7 @@
                 <div class="container">
                     <div class="section-head page-head">
                         <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
-                        <h1 class="section-title">Ready-Made Itineraries</h1>
+                        <h1 class="section-title">Ready-made itineraries</h1>
                         <p class="section-sub">Curated day plans you can use as-is or tweak. "Use this plan"
                             drops all the stops into your weekend planner, where you can reorder, share, or
                             open the whole route in Maps.</p>
@@ -1512,7 +1513,7 @@
                 <div class="container">
                     <div class="section-head page-head">
                         <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
-                        <h1 class="section-title">Themes to Explore</h1>
+                        <h1 class="section-title">Themes to explore</h1>
                         <p class="section-sub">Learn Bengaluru by the threads that run through it — dynasties,
                             faith, coffee and food. Each theme groups places by what you'll understand,
                             with a short primer and a curated list.</p>
@@ -1780,7 +1781,7 @@
                 <div class="container container--narrow">
                     <div class="section-head page-head">
                         <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
-                        <h1 class="section-title">Plan a Trip</h1>
+                        <h1 class="section-title">Plan a trip</h1>
                         <p class="section-sub">Answer two quick questions and we'll suggest where to go.</p>
                     </div>
                     <div class="wiz-steps" aria-hidden="true">
@@ -1988,7 +1989,7 @@
                 <div class="container">
                     <div class="section-head page-head">
                         <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
-                        <h1 class="section-title">Your Journey</h1>
+                        <h1 class="section-title">Your journey</h1>
                         <p class="section-sub">Explore places, pass theme quizzes and keep a daily streak to
                             earn badges. Everything here is saved privately on this device.</p>
                     </div>
@@ -2537,8 +2538,15 @@
                     } else {
                         cmpBtn.classList.toggle('is-on', res.on);
                         cmpBtn.setAttribute('aria-pressed', res.on ? 'true' : 'false');
-                        const icon = cmpBtn.querySelector('i');
-                        if (icon) icon.className = 'fa-solid ' + (res.on ? 'fa-check' : 'fa-scale-balanced');
+                        cmpBtn.setAttribute('aria-label', res.on ? 'Remove from compare' : 'Add to compare');
+                        // FontAwesome may have swapped the <i> for an <svg>; replace whichever exists.
+                        const icon = cmpBtn.querySelector('i, svg');
+                        if (icon) {
+                            const fresh = document.createElement('i');
+                            fresh.className = 'fa-solid ' + (res.on ? 'fa-check' : 'fa-scale-balanced');
+                            fresh.setAttribute('aria-hidden', 'true');
+                            icon.replaceWith(fresh);
+                        }
                     }
                     return;
                 }
