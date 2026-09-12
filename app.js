@@ -25,6 +25,72 @@
 
     let activeType = 'all';
 
+    /* Per-collection filter state: { area, intent } for each home section that has filters. */
+    const collFilter = {
+        city: { area: 'all', intent: 'all' },
+        temples: { area: 'all', intent: 'all' },
+        cafes: { area: 'all', intent: 'all' },
+        eats: { area: 'all', intent: 'all' },
+        do: { area: 'all', intent: 'all' },
+    };
+
+    /* Distinct areas within a collection, for the area filter chips. */
+    function areasOf(list) {
+        const seen = [];
+        list.forEach((x) => { if (x.area && seen.indexOf(x.area) === -1) seen.push(x.area); });
+        return seen.sort();
+    }
+
+    /* Apply area + intent filters to a collection. */
+    function applyFilter(list, f) {
+        return list.filter((x) => {
+            const areaOk = f.area === 'all' || x.area === f.area;
+            const intentOk = f.intent === 'all' || (Array.isArray(x.tags) && x.tags.indexOf(f.intent) !== -1);
+            return areaOk && intentOk;
+        });
+    }
+
+    /* Build an area + intent filter bar for a section. `sec` keys into collFilter. */
+    function filterBarHTML(sec, list) {
+        const f = collFilter[sec];
+        const areas = areasOf(list);
+        const areaOpts = ['all'].concat(areas).map((a) =>
+            `<option value="${esc(a)}" ${f.area === a ? 'selected' : ''}>${a === 'all' ? 'All areas' : esc(a)}</option>`
+        ).join('');
+
+        const intents = typeof INTENTS !== 'undefined' ? INTENTS : [];
+        const usedIntents = intents.filter((i) =>
+            list.some((x) => Array.isArray(x.tags) && x.tags.indexOf(i.id) !== -1));
+        const intentSelect = usedIntents.length ? `
+            <label class="filter-select">
+                <span class="filter-select-label"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Vibe</span>
+                <select class="select" data-filter-sec="${sec}" data-filter-kind="intent" aria-label="Filter by vibe">
+                    <option value="all" ${f.intent === 'all' ? 'selected' : ''}>Any vibe</option>
+                    ${usedIntents.map((i) =>
+                        `<option value="${i.id}" ${f.intent === i.id ? 'selected' : ''}>${esc(i.label)}</option>`).join('')}
+                </select>
+            </label>` : '';
+
+        // A "Clear" link only shows when a filter is active, so the row stays clean by default.
+        const active = f.area !== 'all' || f.intent !== 'all';
+        const clear = active
+            ? `<button class="filter-clear" type="button" data-filter-sec="${sec}" data-filter-kind="clear">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i> Clear
+               </button>`
+            : '';
+
+        return `<div class="filters filters--select" data-filter-bar="${sec}">
+                    <label class="filter-select">
+                        <span class="filter-select-label"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Area</span>
+                        <select class="select" data-filter-sec="${sec}" data-filter-kind="area" aria-label="Filter by area">
+                            ${areaOpts}
+                        </select>
+                    </label>
+                    ${intentSelect}
+                    ${clear}
+                </div>`;
+    }
+
     /* ---------- small helpers ---------- */
 
     function esc(s) {
@@ -67,6 +133,73 @@
         return t ? t.label : id;
     }
 
+    const F = window.Ooruly; // feature layer (features.js)
+
+    /* A small heart button that toggles a favourite. `key` is the collection ('cafe', 'eat', …). */
+    function favBtnHTML(key, slug, extraClass) {
+        const on = F && F.isFav(key, slug);
+        return `<button class="fav-btn ${on ? 'is-on' : ''} ${extraClass || ''}" type="button"
+                    data-fav-key="${esc(key)}" data-fav-slug="${esc(slug)}"
+                    aria-pressed="${on ? 'true' : 'false'}"
+                    aria-label="${on ? 'Remove from saved' : 'Save this place'}">
+                    <i class="fa-${on ? 'solid' : 'regular'} fa-heart" aria-hidden="true"></i>
+                </button>`;
+    }
+
+    /* A "plan" button that adds/removes an item from the weekend plan. */
+    function planBtnHTML(key, slug, label) {
+        const on = F && F.inPlan(key, slug);
+        return `<button class="plan-btn ${on ? 'is-on' : ''}" type="button"
+                    data-plan-key="${esc(key)}" data-plan-slug="${esc(slug)}"
+                    aria-pressed="${on ? 'true' : 'false'}">
+                    <i class="fa-solid ${on ? 'fa-check' : 'fa-plus'}" aria-hidden="true"></i>
+                    ${esc(label || (on ? 'In your plan' : 'Add to plan'))}
+                </button>`;
+    }
+
+    /* Small "in season" / "open today" pills used on getaway and eatery cards. */
+    function seasonBadgeHTML(seasons) {
+        if (!F) return '';
+        const s = F.isInSeason(seasons);
+        if (s === null) return '';
+        return s
+            ? `<span class="badge badge--good"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Good to go now</span>`
+            : `<span class="badge badge--off"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> Off-season</span>`;
+    }
+    function openBadgeHTML(item) {
+        if (!F) return '';
+        const o = F.isOpenToday(item);
+        if (o === null) return '';
+        return o
+            ? `<span class="badge badge--good"><i class="fa-solid fa-door-open" aria-hidden="true"></i> Open today</span>`
+            : `<span class="badge badge--off"><i class="fa-solid fa-door-closed" aria-hidden="true"></i> Closed today</span>`;
+    }
+
+    /* Intent tag chips (read-only) shown on a card/detail. */
+    /* Fav + plan + share action row for detail pages. */
+    function detailActionsHTML(key, slug, name) {
+        return `
+            <div class="detail-actions">
+                ${favBtnHTML(key, slug, 'fav-btn--label')}
+                ${planBtnHTML(key, slug)}
+                <button class="share-btn" type="button" data-share data-share-title="${esc(name)} — Ooruly">
+                    <i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Share
+                </button>
+            </div>`;
+    }
+
+    function tagPillsHTML(tags) {
+        if (!Array.isArray(tags) || !tags.length || typeof INTENTS === 'undefined') return '';
+        const byId = {};
+        INTENTS.forEach((i) => { byId[i.id] = i; });
+        const pills = tags.map((t) => {
+            const meta = byId[t];
+            if (!meta) return '';
+            return `<span class="tag-pill"><i class="fa-solid ${meta.icon}" aria-hidden="true"></i> ${esc(meta.label)}</span>`;
+        }).join('');
+        return pills ? `<div class="tag-pills">${pills}</div>` : '';
+    }
+
     /* ---------- home view ---------- */
 
     function renderHome() {
@@ -86,25 +219,29 @@
             .map(cardHTML)
             .join('');
 
-        const cityList = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : [])
-            .map(cityCardHTML)
-            .join('');
+        const cityAll = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []);
+        const templeAll = (typeof TEMPLES !== 'undefined' ? TEMPLES : []);
+        const cafeAll = (typeof CAFES !== 'undefined' ? CAFES : []);
+        const eatAll = (typeof EATERIES !== 'undefined' ? EATERIES : []);
+        const doAll = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []);
 
-        const templeList = (typeof TEMPLES !== 'undefined' ? TEMPLES : [])
-            .map(templeCardHTML)
-            .join('');
+        const cityBar = filterBarHTML('city', cityAll);
+        const templeBar = filterBarHTML('temples', templeAll);
+        const cafeBar = filterBarHTML('cafes', cafeAll);
+        const eatBar = filterBarHTML('eats', eatAll);
+        const doBar = filterBarHTML('do', doAll);
 
-        const cafeList = (typeof CAFES !== 'undefined' ? CAFES : [])
-            .map(cafeCardHTML)
-            .join('');
-
-        const eatList = (typeof EATERIES !== 'undefined' ? EATERIES : [])
-            .map(eatCardHTML)
-            .join('');
-
-        const doList = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : [])
-            .map(activityCardHTML)
-            .join('');
+        const emptyMsg = '<p class="grid-empty">Nothing matches those filters yet — try clearing one.</p>';
+        const cityFiltered = applyFilter(cityAll, collFilter.city);
+        const cityList = cityFiltered.length ? cityFiltered.map(cityCardHTML).join('') : emptyMsg;
+        const templeFiltered = applyFilter(templeAll, collFilter.temples);
+        const templeList = templeFiltered.length ? templeFiltered.map(templeCardHTML).join('') : emptyMsg;
+        const cafeFiltered = applyFilter(cafeAll, collFilter.cafes);
+        const cafeList = cafeFiltered.length ? cafeFiltered.map(cafeCardHTML).join('') : emptyMsg;
+        const eatFiltered = applyFilter(eatAll, collFilter.eats);
+        const eatList = eatFiltered.length ? eatFiltered.map(eatCardHTML).join('') : emptyMsg;
+        const doFiltered = applyFilter(doAll, collFilter.do);
+        const doList = doFiltered.length ? doFiltered.map(activityCardHTML).join('') : emptyMsg;
 
         // Counts for the hero stat row (proof of how much is inside).
         const cityCount = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []).length;
@@ -174,7 +311,8 @@
                         <p class="section-sub">No trip needed — city sights you can do in a few hours.
                             Tap any place for how to reach it, the best time to go, and travel tips.</p>
                     </div>
-                    <div class="grid">${cityList}</div>
+                    ${cityBar}
+                    <div class="grid" id="grid-city">${cityList}</div>
                 </div>
             </section>
 
@@ -186,7 +324,8 @@
                             Chola-era shrines and a 16th-century cave temple to a modern landmark.
                             Tap one for its story, how to reach it, timings and tips.</p>
                     </div>
-                    <div class="grid">${templeList}</div>
+                    ${templeBar}
+                    <div class="grid" id="grid-temples">${templeList}</div>
                 </div>
             </section>
 
@@ -198,7 +337,8 @@
                             city — Indiranagar, Jayanagar, Koramangala and beyond. Tap one for what it's
                             known for, what to order, and directions.</p>
                     </div>
-                    <div class="grid">${cafeList}</div>
+                    ${cafeBar}
+                    <div class="grid" id="grid-cafes">${cafeList}</div>
                 </div>
             </section>
 
@@ -210,7 +350,8 @@
                             on — tiffin rooms, benne-dosa joints and colonial-era cafes. Tap one for
                             what to order, the story behind it, and directions.</p>
                     </div>
-                    <div class="grid">${eatList}</div>
+                    ${eatBar}
+                    <div class="grid" id="grid-eats">${eatList}</div>
                 </div>
             </section>
 
@@ -222,7 +363,8 @@
                             candle workshops, pizza classes, lake kayaking, heritage cycling and
                             go-karting. Tap one for what to expect and where to find it.</p>
                     </div>
-                    <div class="grid">${doList}</div>
+                    ${doBar}
+                    <div class="grid" id="grid-do">${doList}</div>
                 </div>
             </section>
 
@@ -237,18 +379,44 @@
                 </div>
             </section>`;
 
-        view.querySelectorAll('.chip').forEach((btn) => {
+        // Getaway type chips (existing behaviour).
+        view.querySelectorAll('.chip[data-type]').forEach((btn) => {
             btn.addEventListener('click', () => {
                 activeType = btn.dataset.type;
                 renderHome();
-                // keep the user anchored at the getaways section after re-render
                 const nearby = document.getElementById('nearby');
                 if (nearby) nearby.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
+            });
+        });
+
+        // Per-collection area + intent filters (native dropdowns). Re-render in place, keep anchored.
+        function anchorTo(sec) {
+            const target = document.getElementById(sec);
+            if (target) target.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
+        }
+        view.querySelectorAll('.select[data-filter-sec]').forEach((sel) => {
+            sel.addEventListener('change', () => {
+                const sec = sel.dataset.filterSec;
+                const kind = sel.dataset.filterKind; // 'area' | 'intent'
+                collFilter[sec][kind] = sel.value;
+                renderHome();
+                anchorTo(sec);
+            });
+        });
+        view.querySelectorAll('.filter-clear[data-filter-sec]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const sec = btn.dataset.filterSec;
+                collFilter[sec] = { area: 'all', intent: 'all' };
+                renderHome();
+                anchorTo(sec);
             });
         });
     }
 
     function cardHTML(d) {
+        const dist = F && F.lastPos && typeof d.lat === 'number'
+            ? `<span class="card-dist">${Math.round(F.haversineKm(F.lastPos, { lat: d.lat, lng: d.lng }))} km away</span>`
+            : `<span class="card-dist">${d.distanceKm} km</span>`;
         return `
             <a class="card" href="#/place/${d.slug}">
                 <div class="card-media">
@@ -256,17 +424,20 @@
                         loading="lazy" decoding="async"
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(typeLabel(d.type))}</span>
+                    ${favBtnHTML('place', d.slug)}
+                    <span class="card-badges">${seasonBadgeHTML(d.seasons)}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-head">
                         <h3>${esc(d.name)}</h3>
-                        <span class="card-dist">${d.distanceKm} km</span>
+                        ${dist}
                     </div>
                     <p class="card-tag">${esc(d.tagline)}</p>
                     <p class="card-meta">
                         <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
                         Best: ${esc(d.bestMonths)}
                     </p>
+                    ${tagPillsHTML(d.tags)}
                 </div>
             </a>`;
     }
@@ -279,6 +450,8 @@
                         loading="lazy" decoding="async"
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(p.category)}</span>
+                    ${favBtnHTML('city', p.slug)}
+                    <span class="card-badges">${openBadgeHTML(p)}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -289,6 +462,7 @@
                         <i class="fa-solid fa-clock" aria-hidden="true"></i>
                         Best: ${esc(p.bestTime)}
                     </p>
+                    ${tagPillsHTML(p.tags)}
                 </div>
             </a>`;
     }
@@ -301,6 +475,7 @@
                         loading="lazy" decoding="async"
                         onerror="this.classList.add('img-fallback')">
                     <span class="card-type">${esc(t.category)}</span>
+                    ${favBtnHTML('temple', t.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -311,6 +486,7 @@
                         <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                         ${esc(t.area)}
                     </p>
+                    ${tagPillsHTML(t.tags)}
                 </div>
             </a>`;
     }
@@ -328,6 +504,7 @@
                         loading="lazy" decoding="async"
                         onerror="this.style.display='none'">` : ''}
                     <span class="card-type">${esc(c.area)}</span>
+                    ${favBtnHTML('cafe', c.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -338,6 +515,7 @@
                         <i class="fa-solid fa-mug-hot" aria-hidden="true"></i>
                         ${esc(c.knownFor)}
                     </p>
+                    ${tagPillsHTML(c.tags)}
                 </div>
             </a>`;
     }
@@ -355,16 +533,20 @@
                         loading="lazy" decoding="async"
                         onerror="this.style.display='none'">` : ''}
                     ${e.since ? `<span class="card-type card-type--since">Since ${esc(e.since)}</span>` : ''}
+                    ${favBtnHTML('eat', e.slug)}
+                    <span class="card-badges">${openBadgeHTML(e)}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-head">
                         <h3>${esc(e.name)}</h3>
+                        ${e.veg ? `<span class="card-dist veg-tag veg-tag--${e.veg === 'veg' ? 'veg' : 'mixed'}">${esc(e.veg)}</span>` : ''}
                     </div>
                     <p class="card-tag">${esc(e.tagline)}</p>
                     <p class="card-meta">
                         <i class="fa-solid fa-star" aria-hidden="true"></i>
                         ${esc(e.signature)}
                     </p>
+                    ${tagPillsHTML(e.tags)}
                 </div>
             </a>`;
     }
@@ -382,6 +564,7 @@
                         loading="lazy" decoding="async"
                         onerror="this.style.display='none'">` : ''}
                     <span class="card-type">${esc(a.category)}</span>
+                    ${favBtnHTML('do', a.slug)}
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -393,6 +576,7 @@
                         <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                         ${esc(a.area)}
                     </p>
+                    ${tagPillsHTML(a.tags)}
                 </div>
             </a>`;
     }
@@ -445,10 +629,12 @@
                             <li><i class="fa-solid fa-route" aria-hidden="true"></i> ${d.distanceKm} km from ${esc(ORIGIN.city)}</li>
                             <li><i class="fa-solid fa-clock" aria-hidden="true"></i> ${esc(d.driveHours)} hrs by road</li>
                         </ul>
+                        ${detailActionsHTML('place', d.slug, d.name)}
                     </div>
                 </div>
 
                 <div class="container detail-body">
+                    ${tagPillsHTML(d.tags)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(d.description)}</p>
@@ -487,14 +673,14 @@
        backHref / backLabel point the back link at whichever section the item came from. */
 
     function renderCityDetail(slug) {
-        renderAttractionDetail(byCitySlug(slug), '#city', 'Inside Bengaluru');
+        renderAttractionDetail(byCitySlug(slug), '#city', 'Inside Bengaluru', 'city');
     }
 
     function renderTempleDetail(slug) {
-        renderAttractionDetail(byTempleSlug(slug), '#temples', 'Temples');
+        renderAttractionDetail(byTempleSlug(slug), '#temples', 'Temples', 'temple');
     }
 
-    function renderAttractionDetail(p, backHref, backLabel) {
+    function renderAttractionDetail(p, backHref, backLabel, key) {
         if (!p) { location.hash = '#/'; return; }
 
         const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
@@ -528,10 +714,12 @@
                             <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${esc(p.area)}</li>
                             <li><i class="fa-solid fa-clock" aria-hidden="true"></i> Best time: ${esc(p.bestTime)}</li>
                         </ul>
+                        ${detailActionsHTML(key, p.slug, p.name)}
                     </div>
                 </div>
 
                 <div class="container detail-body">
+                    ${tagPillsHTML(p.tags)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(p.description)}</p>
@@ -619,10 +807,12 @@
                         <h1>${esc(c.name)}</h1>
                         <p class="detail-tag">${esc(c.tagline)}</p>
                         <ul class="detail-facts">${facts}</ul>
+                        ${detailActionsHTML('cafe', c.slug, c.name)}
                     </div>
                 </div>
 
                 <div class="container detail-body">
+                    ${tagPillsHTML(c.tags)}
                     <section class="block">
                         <h2>The vibe</h2>
                         <p>${esc(c.description)}</p>
@@ -698,10 +888,12 @@
                         <h1>${esc(e.name)}</h1>
                         <p class="detail-tag">${esc(e.tagline)}</p>
                         <ul class="detail-facts">${facts}</ul>
+                        ${detailActionsHTML('eat', e.slug, e.name)}
                     </div>
                 </div>
 
                 <div class="container detail-body">
+                    ${tagPillsHTML(e.tags)}
                     <section class="block">
                         <h2>The story</h2>
                         <p>${esc(e.description)}</p>
@@ -777,10 +969,12 @@
                         <h1>${esc(a.name)}</h1>
                         <p class="detail-tag">${esc(a.tagline)}</p>
                         <ul class="detail-facts">${facts}</ul>
+                        ${detailActionsHTML('do', a.slug, a.name)}
                     </div>
                 </div>
 
                 <div class="container detail-body">
+                    ${tagPillsHTML(a.tags)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(a.description)}</p>
@@ -818,6 +1012,213 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
+    /* ---------- generic card for saved/plan/search (works across collections) ---------- */
+    function entryCardHTML(e, opts) {
+        opts = opts || {};
+        const item = e.item || {};
+        const img = item.image;
+        const initial = esc((e.name || '?').trim().charAt(0).toUpperCase());
+        const media = img
+            ? `<div class="card-media"><img src="${esc(img)}" alt="${esc(e.name)}"
+                    loading="lazy" decoding="async" onerror="this.classList.add('img-fallback')">
+                    <span class="card-type">${esc(e.label)}</span>${favBtnHTML(e.key, e.slug)}</div>`
+            : `<div class="card-media cafe-media">
+                    <span class="cafe-fallback" aria-hidden="true">
+                        <span class="cafe-initial">${initial}</span>
+                        <i class="fa-solid ${esc(e.icon)} cafe-cup"></i>
+                    </span>
+                    <span class="card-type">${esc(e.label)}</span>${favBtnHTML(e.key, e.slug)}</div>`;
+        const controls = opts.planControls ? `
+            <div class="plan-controls">
+                <button class="icon-btn plan-move" data-plan-move="up" data-plan-id="${esc(e.id)}" aria-label="Move up"><i class="fa-solid fa-arrow-up"></i></button>
+                <button class="icon-btn plan-move" data-plan-move="down" data-plan-id="${esc(e.id)}" aria-label="Move down"><i class="fa-solid fa-arrow-down"></i></button>
+                <button class="icon-btn plan-remove" data-plan-id="${esc(e.id)}" aria-label="Remove from plan"><i class="fa-solid fa-xmark"></i></button>
+            </div>` : '';
+        return `
+            <div class="card card--entry">
+                <a class="card-link" href="${esc(e.route)}" aria-label="${esc(e.name)}">${media}</a>
+                <div class="card-body">
+                    <div class="card-head"><h3><a href="${esc(e.route)}">${esc(e.name)}</a></h3></div>
+                    <p class="card-tag">${esc(e.tagline)}</p>
+                    <p class="card-meta"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${esc(e.area || e.category || '')}</p>
+                    ${controls}
+                </div>
+            </div>`;
+    }
+
+    /* ---------- saved / favourites view ---------- */
+    function renderSaved() {
+        const entries = F ? F.favEntries() : [];
+        const body = entries.length
+            ? `<div class="grid">${entries.map((e) => entryCardHTML(e)).join('')}</div>`
+            : `<div class="empty-state">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    <h2>Nothing saved yet</h2>
+                    <p>Tap the heart on any place, cafe, eatery or getaway to save it here for later.</p>
+                    <a class="btn btn-primary" href="#/">Browse the guide</a>
+               </div>`;
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Saved places</h1>
+                        <p class="section-sub">Your shortlist, kept on this device.</p>
+                    </div>
+                    ${body}
+                </div>
+            </section>`;
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- weekend plan / itinerary view ---------- */
+    function renderPlan() {
+        const entries = F ? F.planEntries() : [];
+        const mapsUrl = entries.length
+            ? 'https://www.google.com/maps/dir/' + entries.map((e) =>
+                encodeURIComponent((e.item && e.item.maps) || (e.name + ', Bengaluru'))).join('/')
+            : '';
+        const body = entries.length
+            ? `<div class="plan-actions">
+                    <button class="btn btn-primary" id="plan-share"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Share this plan</button>
+                    <a class="btn btn-ghost" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-route" aria-hidden="true"></i> Route on Maps</a>
+               </div>
+               <ol class="grid plan-grid">${entries.map((e) => `<li>${entryCardHTML(e, { planControls: true })}</li>`).join('')}</ol>`
+            : `<div class="empty-state">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    <h2>Your plan is empty</h2>
+                    <p>Open any place and tap "Add to plan" to build a day out. Reorder them here and share the plan as a link.</p>
+                    <a class="btn btn-primary" href="#/">Start planning</a>
+               </div>`;
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Weekend plan</h1>
+                        <p class="section-sub">Line up your day, reorder the stops, then share it or open the whole route in Maps.</p>
+                    </div>
+                    ${body}
+                </div>
+            </section>`;
+        const shareBtn = document.getElementById('plan-share');
+        if (shareBtn) shareBtn.addEventListener('click', async () => {
+            const url = F.planShareUrl();
+            const res = await F.share({ title: 'My Bengaluru plan — Ooruly', text: 'Here\'s a day out I planned on Ooruly', url });
+            toast(res === 'copied' ? 'Plan link copied' : res === 'shared' ? 'Shared' : 'Could not share');
+        });
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- map view (Leaflet + OpenStreetMap, loaded on demand) ---------- */
+    let mapInstance = null;
+    function renderMap() {
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Map</h1>
+                        <p class="section-sub">Everything in the guide, pinned. Tap a marker to open the place.</p>
+                    </div>
+                    <div id="ooruly-map" class="map-canvas" role="application" aria-label="Map of places"></div>
+                </div>
+            </section>`;
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+        ensureLeaflet().then(() => initMap()).catch(() => {
+            const el = document.getElementById('ooruly-map');
+            if (el) el.innerHTML = '<p class="map-fail">Map couldn\'t load. Check your connection and try again.</p>';
+        });
+    }
+
+    function initMap() {
+        const el = document.getElementById('ooruly-map');
+        if (!el || typeof L === 'undefined') return;
+        if (mapInstance) { mapInstance.remove(); mapInstance = null; }
+        mapInstance = L.map(el, { scrollWheelZoom: false }).setView([12.9716, 77.5946], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(mapInstance);
+
+        const idx = F ? F.buildIndex() : [];
+        const bounds = [];
+        idx.forEach((e) => {
+            const item = e.item || {};
+            if (typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+            const m = L.marker([item.lat, item.lng]).addTo(mapInstance);
+            m.bindPopup(`<strong>${esc(e.name)}</strong><br>${esc(e.area || e.label)}<br>
+                <a href="${esc(e.route)}">Open in Ooruly</a>`);
+            bounds.push([item.lat, item.lng]);
+        });
+        if (bounds.length) mapInstance.fitBounds(bounds, { padding: [40, 40] });
+    }
+
+    let leafletPromise = null;
+    function ensureLeaflet() {
+        if (typeof L !== 'undefined') return Promise.resolve();
+        if (leafletPromise) return leafletPromise;
+        leafletPromise = new Promise((resolve, reject) => {
+            const css = document.createElement('link');
+            css.rel = 'stylesheet';
+            css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            document.head.appendChild(css);
+            const s = document.createElement('script');
+            s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+        return leafletPromise;
+    }
+
+    /* ---------- Kannada phrasebook view ---------- */
+    function renderPhrases() {
+        const list = typeof PHRASES !== 'undefined' ? PHRASES : [];
+        const groups = list.map((g) => `
+            <section class="phrase-group">
+                <h2>${esc(g.group)}</h2>
+                <div class="phrase-list">
+                    ${g.items.map((p) => `
+                        <div class="phrase-row">
+                            <span class="phrase-en">${esc(p.en)}</span>
+                            <span class="phrase-roman">${esc(p.roman)}</span>
+                            <span class="phrase-kn" lang="kn">${esc(p.kn)}</span>
+                        </div>`).join('')}
+                </div>
+            </section>`).join('');
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Kannada phrases</h1>
+                        <p class="section-sub">A few words go a long way. Say the middle column out loud; show the Kannada if needed.</p>
+                    </div>
+                    <div class="phrase-wrap">${groups}</div>
+                </div>
+            </section>`;
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- tiny toast ---------- */
+    let toastTimer = null;
+    function toast(msg) {
+        let el = document.getElementById('ooruly-toast');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'ooruly-toast';
+            el.className = 'toast';
+            el.setAttribute('role', 'status');
+            el.setAttribute('aria-live', 'polite');
+            document.body.appendChild(el);
+        }
+        el.textContent = msg;
+        el.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('is-visible'), 2200);
+    }
+
     /* ---------- router ---------- */
 
     // Section anchors on the home page should scroll, not re-render the home view.
@@ -835,6 +1236,12 @@
             if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             return;
         }
+
+        // Standalone pages.
+        if (hash === '#/saved') { renderSaved(); currentView = 'saved'; return; }
+        if (hash === '#/plan' || hash.indexOf('#/plan/') === 0) { renderPlan(); currentView = 'plan'; return; }
+        if (hash === '#/map') { renderMap(); currentView = 'map'; return; }
+        if (hash === '#/phrases') { renderPhrases(); currentView = 'phrases'; return; }
 
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
@@ -998,6 +1405,62 @@
          */
         if (view) {
             view.addEventListener('click', (e) => {
+                // Favourite toggle (heart). Sits inside <a> cards, so stop the navigation.
+                const favBtn = e.target.closest('.fav-btn');
+                if (favBtn && view.contains(favBtn)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const key = favBtn.dataset.favKey, slug = favBtn.dataset.favSlug;
+                    const nowOn = F.toggleFav(key, slug);
+                    favBtn.classList.toggle('is-on', nowOn);
+                    favBtn.setAttribute('aria-pressed', nowOn ? 'true' : 'false');
+                    favBtn.setAttribute('aria-label', nowOn ? 'Remove from saved' : 'Save this place');
+                    const icon = favBtn.querySelector('i');
+                    if (icon) icon.className = (nowOn ? 'fa-solid' : 'fa-regular') + ' fa-heart';
+                    toast(nowOn ? 'Saved' : 'Removed from saved');
+                    return;
+                }
+
+                // Add/remove from plan.
+                const planBtn = e.target.closest('.plan-btn');
+                if (planBtn && view.contains(planBtn)) {
+                    e.preventDefault();
+                    const key = planBtn.dataset.planKey, slug = planBtn.dataset.planSlug;
+                    const nowOn = F.togglePlan(key, slug);
+                    planBtn.classList.toggle('is-on', nowOn);
+                    planBtn.setAttribute('aria-pressed', nowOn ? 'true' : 'false');
+                    const icon = planBtn.querySelector('i');
+                    if (icon) icon.className = 'fa-solid ' + (nowOn ? 'fa-check' : 'fa-plus');
+                    planBtn.lastChild.textContent = ' ' + (nowOn ? 'In your plan' : 'Add to plan');
+                    toast(nowOn ? 'Added to your plan' : 'Removed from plan');
+                    return;
+                }
+
+                // Plan reorder / remove (only present on the plan page).
+                const moveBtn = e.target.closest('.plan-move');
+                if (moveBtn && view.contains(moveBtn)) {
+                    e.preventDefault();
+                    F.movePlan(moveBtn.dataset.planId, moveBtn.dataset.planMove === 'up' ? -1 : 1);
+                    renderPlan();
+                    return;
+                }
+                const rmBtn = e.target.closest('.plan-remove');
+                if (rmBtn && view.contains(rmBtn)) {
+                    e.preventDefault();
+                    F.removeFromPlan(rmBtn.dataset.planId);
+                    renderPlan();
+                    return;
+                }
+
+                // Share button on detail pages.
+                const shareBtn = e.target.closest('[data-share]');
+                if (shareBtn && view.contains(shareBtn)) {
+                    e.preventDefault();
+                    F.share({ title: shareBtn.dataset.shareTitle || document.title, url: location.href })
+                        .then((res) => toast(res === 'copied' ? 'Link copied' : res === 'shared' ? 'Shared' : 'Could not share'));
+                    return;
+                }
+
                 const a = e.target.closest('a[href^="#"]');
                 if (!a || !view.contains(a)) return;
                 const href = a.getAttribute('href');
@@ -1033,5 +1496,141 @@
         window.addEventListener('scroll', syncActiveLink, { passive: true });
         window.addEventListener('hashchange', () => setTimeout(syncActiveLink, 50));
         setTimeout(syncActiveLink, 60);
+
+        /* ---------- header badges (saved + plan counts) ---------- */
+        function refreshBadges() {
+            const favBadge = document.getElementById('fav-badge');
+            const planBadge = document.getElementById('plan-badge');
+            if (favBadge) {
+                const n = F ? F.favCount() : 0;
+                favBadge.textContent = n;
+                favBadge.hidden = n === 0;
+            }
+            if (planBadge) {
+                const n = F ? F.planCount() : 0;
+                planBadge.textContent = n;
+                planBadge.hidden = n === 0;
+            }
+        }
+        if (F) { F.on('favschange', refreshBadges); F.on('planchange', refreshBadges); }
+        refreshBadges();
+
+        /* ---------- "near me" — sort getaways by real distance from the user ---------- */
+        const nearBtn = document.getElementById('near-me');
+        if (nearBtn && F) {
+            nearBtn.addEventListener('click', async () => {
+                nearBtn.classList.add('is-loading');
+                try {
+                    await F.getPosition();
+                    toast('Sorted by distance from you');
+                    if (currentView !== 'home') { location.hash = '#nearby'; }
+                    else { renderHome(); const n = document.getElementById('nearby'); if (n) n.scrollIntoView({ behavior: 'smooth' }); }
+                } catch (e) {
+                    toast('Couldn\'t get your location');
+                } finally {
+                    nearBtn.classList.remove('is-loading');
+                }
+            });
+        }
+
+        /* ---------- global search palette ---------- */
+        const overlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        const searchOpen = document.getElementById('search-open');
+        const searchClose = document.getElementById('search-close');
+        const searchBackdrop = document.getElementById('search-backdrop');
+        let activeResult = -1;
+        let results = [];
+
+        function openSearch() {
+            if (!overlay) return;
+            overlay.hidden = false;
+            requestAnimationFrame(() => {
+                overlay.classList.add('is-open');
+                if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+                renderResults('');
+            });
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSearch() {
+            if (!overlay) return;
+            overlay.classList.remove('is-open');
+            setTimeout(() => { overlay.hidden = true; }, 220);
+            document.body.style.overflow = '';
+            activeResult = -1;
+        }
+        function renderResults(q) {
+            if (!F || !searchResults) return;
+            results = F.search(q);
+            if (searchInput) searchInput.setAttribute('aria-expanded', results.length ? 'true' : 'false');
+            if (!q) {
+                searchResults.innerHTML = `<li class="search-empty">Try “dosa”, “Indiranagar”, “sunrise”, “work-friendly”…</li>`;
+                return;
+            }
+            if (!results.length) {
+                searchResults.innerHTML = `<li class="search-empty">No matches for “${escHtml(q)}”.</li>`;
+                return;
+            }
+            searchResults.innerHTML = results.map((r, i) => `
+                <li role="option" id="search-opt-${i}" class="search-result ${i === activeResult ? 'is-active' : ''}"
+                    data-route="${escHtml(r.route)}">
+                    <span class="search-result-icon"><i class="fa-solid ${escHtml(r.icon)}" aria-hidden="true"></i></span>
+                    <span class="search-result-text">
+                        <span class="search-result-name">${escHtml(r.name)}</span>
+                        <span class="search-result-meta">${escHtml(r.label)}${r.area ? ' · ' + escHtml(r.area) : ''}</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right search-result-go" aria-hidden="true"></i>
+                </li>`).join('');
+        }
+        function escHtml(s) {
+            return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        }
+        function goToResult(i) {
+            const r = results[i];
+            if (!r) return;
+            closeSearch();
+            location.hash = r.route;
+        }
+        function moveActive(delta) {
+            if (!results.length) return;
+            activeResult = (activeResult + delta + results.length) % results.length;
+            const opts = searchResults.querySelectorAll('.search-result');
+            opts.forEach((o, i) => o.classList.toggle('is-active', i === activeResult));
+            const el = opts[activeResult];
+            if (el) el.scrollIntoView({ block: 'nearest' });
+            if (searchInput) searchInput.setAttribute('aria-activedescendant', 'search-opt-' + activeResult);
+        }
+
+        if (searchOpen) searchOpen.addEventListener('click', openSearch);
+        if (searchClose) searchClose.addEventListener('click', closeSearch);
+        if (searchBackdrop) searchBackdrop.addEventListener('click', closeSearch);
+        if (searchInput) {
+            searchInput.addEventListener('input', () => { activeResult = -1; renderResults(searchInput.value); });
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
+                else if (e.key === 'Enter') { e.preventDefault(); goToResult(activeResult === -1 ? 0 : activeResult); }
+            });
+        }
+        if (searchResults) {
+            searchResults.addEventListener('click', (e) => {
+                const li = e.target.closest('.search-result');
+                if (!li) return;
+                closeSearch();
+                location.hash = li.dataset.route;
+            });
+        }
+        // Global shortcuts: ⌘K / Ctrl-K open, Esc closes, "/" opens when not typing.
+        document.addEventListener('keydown', (e) => {
+            const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target && e.target.tagName) || '');
+            if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault(); openSearch();
+            } else if (e.key === '/' && !typing && overlay && overlay.hidden) {
+                e.preventDefault(); openSearch();
+            } else if (e.key === 'Escape' && overlay && !overlay.hidden) {
+                closeSearch();
+            }
+        });
     });
 })();

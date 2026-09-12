@@ -47,6 +47,7 @@ const DESTINATIONS = [
             'Book plantation stays ahead on long weekends; Coorg fills up fast.',
         ],
         booking: { railTo: 'Mysuru', busTo: 'Madikeri', hotelCity: 'Coorg' },
+        tags: ['nature', 'date', 'solo'],
     },
     {
         slug: 'chikmagalur',
@@ -78,6 +79,7 @@ const DESTINATIONS = [
             'Some peaks fall in reserved forest with entry timings and occasional closures; confirm locally.',
         ],
         booking: { railTo: 'Kadur', busTo: 'Chikmagalur', hotelCity: 'Chikmagalur' },
+        tags: ['nature', 'solo', 'date'],
     },
     {
         slug: 'mysuru',
@@ -110,6 +112,7 @@ const DESTINATIONS = [
             'Standard city precautions: watch belongings in the crowded market area.',
         ],
         booking: { railTo: 'Mysuru', busTo: 'Mysuru', hotelCity: 'Mysore' },
+        tags: ['heritage', 'family', 'photo'],
     },
     {
         slug: 'ooty',
@@ -142,6 +145,7 @@ const DESTINATIONS = [
             'Ghat roads have many hairpins; those prone to motion sickness should prepare.',
         ],
         booking: { railTo: 'Mettupalayam', busTo: 'Ooty', hotelCity: 'Ooty' },
+        tags: ['nature', 'family', 'photo'],
     },
     {
         slug: 'wayanad',
@@ -173,6 +177,7 @@ const DESTINATIONS = [
             'Carry cash for plantation stays and small towns where digital payments are patchy.',
         ],
         booking: { railTo: 'Kozhikode', busTo: 'Kalpetta', hotelCity: 'Wayanad' },
+        tags: ['nature', 'solo', 'family'],
     },
     {
         slug: 'hampi',
@@ -204,6 +209,7 @@ const DESTINATIONS = [
             'Respect it as a living heritage and religious site: dress modestly and don\'t deface the monuments.',
         ],
         booking: { railTo: 'Hosapete', busTo: 'Hospet', hotelCity: 'Hampi' },
+        tags: ['heritage', 'photo', 'solo'],
     },
     {
         slug: 'gokarna',
@@ -234,6 +240,7 @@ const DESTINATIONS = [
             'Monsoon (Jun–Sep) makes the trek slippery and the sea rough; the beaches are a dry-season destination.',
         ],
         booking: { railTo: 'Gokarna Road', busTo: 'Gokarna', hotelCity: 'Gokarna' },
+        tags: ['nature', 'date', 'solo'],
     },
     {
         slug: 'nandi-hills',
@@ -265,6 +272,7 @@ const DESTINATIONS = [
             'It gets crowded and littered on holidays; carry your trash back and consider a weekday visit.',
         ],
         booking: { railTo: 'Chikkaballapur', busTo: 'Chikkaballapur', hotelCity: 'Nandi Hills' },
+        tags: ['nature', 'photo', 'family'],
     },
 ];
 
@@ -306,6 +314,8 @@ const CITY_ATTRACTIONS = [
             'Enter from the Metro-side west gate to reach the glass house fastest.',
         ],
         maps: 'Lalbagh Botanical Garden, Bengaluru',
+        lat: 12.9507, lng: 77.5848,
+        tags: ['nature', 'family', 'photo'],
     },
     {
         slug: 'cubbon-park',
@@ -337,6 +347,8 @@ const CITY_ATTRACTIONS = [
             'Early morning is quietest; it gets busy with groups by mid-morning.',
         ],
         maps: 'Cubbon Park, Bengaluru',
+        lat: 12.9763, lng: 77.5929,
+        tags: ['nature', 'family', 'solo'],
     },
     {
         slug: 'bangalore-palace',
@@ -368,6 +380,8 @@ const CITY_ATTRACTIONS = [
             'Allow about 60–90 minutes for the full audio-guided tour.',
         ],
         maps: 'Bangalore Palace, Bengaluru',
+        lat: 12.9987, lng: 77.5920,
+        tags: ['heritage', 'photo', 'family'],
     },
     {
         slug: 'vidhana-soudha',
@@ -398,6 +412,8 @@ const CITY_ATTRACTIONS = [
             'Pair it with a Cubbon Park walk, since it sits right at the park\'s edge.',
         ],
         maps: 'Vidhana Soudha, Bengaluru',
+        lat: 12.9794, lng: 77.5912,
+        tags: ['heritage', 'photo'],
     },
     {
         slug: 'iskcon-temple',
@@ -429,6 +445,8 @@ const CITY_ATTRACTIONS = [
             'Dress modestly, as it is an active place of worship.',
         ],
         maps: 'ISKCON Temple Rajajinagar, Bengaluru',
+        lat: 13.0098, lng: 77.5511,
+        tags: ['heritage', 'family'],
     },
     {
         slug: 'bannerghatta',
@@ -460,6 +478,9 @@ const CITY_ATTRACTIONS = [
             'Carry water and sun cover; the zoo section involves a fair bit of walking.',
         ],
         maps: 'Bannerghatta Biological Park, Bengaluru',
+        lat: 12.8000, lng: 77.5770,
+        tags: ['family', 'nature', 'photo'],
+        closedOn: 'tue',
     },
     {
         slug: 'tipu-summer-palace',
@@ -491,6 +512,8 @@ const CITY_ATTRACTIONS = [
             'Wooden floors and stairs are old and narrow; tread gently.',
         ],
         maps: 'Tipu Sultan Summer Palace, Bengaluru',
+        lat: 12.9591, lng: 77.5738,
+        tags: ['heritage', 'photo'],
     },
     {
         slug: 'ulsoor-lake',
@@ -521,6 +544,8 @@ const CITY_ATTRACTIONS = [
             'It is a city lake — swimming is not allowed.',
         ],
         maps: 'Ulsoor Lake, Bengaluru',
+        lat: 12.9825, lng: 77.6203,
+        tags: ['nature', 'date', 'family'],
     },
 ];
 
@@ -561,6 +586,8 @@ const TEMPLES = [
             'The walk to the sanctum is long and one-way through the arcade; allow at least an hour.',
         ],
         maps: 'ISKCON Temple, Rajajinagar, Bengaluru',
+        lat: 13.0098, lng: 77.5511,
+        tags: ['heritage', 'family'],
     },
     {
         slug: 'bull-temple',
@@ -593,6 +620,8 @@ const TEMPLES = [
             'Footwear comes off at the entrance; floors can be warm by mid-morning.',
         ],
         maps: 'Bull Temple, Basavanagudi, Bengaluru',
+        lat: 12.9426, lng: 77.5676,
+        tags: ['heritage', 'photo'],
     },
     {
         slug: 'gavi-gangadhareshwara',
@@ -625,6 +654,8 @@ const TEMPLES = [
             'A quiet weekday morning is the best time to actually see the architecture.',
         ],
         maps: 'Gavi Gangadhareshwara Temple, Gavipuram, Bengaluru',
+        lat: 12.9503, lng: 77.5590,
+        tags: ['heritage', 'photo'],
     },
     {
         slug: 'halasuru-someshwara',
@@ -657,6 +688,8 @@ const TEMPLES = [
             'It is a living temple, so dress modestly and be mindful during pujas.',
         ],
         maps: 'Halasuru Someshwara Temple, Ulsoor, Bengaluru',
+        lat: 12.9789, lng: 77.6270,
+        tags: ['heritage', 'photo'],
     },
     {
         slug: 'banashankari',
@@ -689,6 +722,8 @@ const TEMPLES = [
             'Keep an eye on belongings in the dense crowd around the sanctum.',
         ],
         maps: 'Banashankari Temple, Bengaluru',
+        lat: 12.9255, lng: 77.5468,
+        tags: ['heritage', 'family'],
     },
     {
         slug: 'chokkanathaswamy',
@@ -720,6 +755,8 @@ const TEMPLES = [
             'Ask the priest about the inscriptions if you\'re curious about its age.',
         ],
         maps: 'Chokkanathaswamy Temple, Domlur, Bengaluru',
+        lat: 12.9612, lng: 77.6387,
+        tags: ['heritage', 'solo'],
     },
 ];
 
@@ -753,6 +790,8 @@ const CAFES = [
             'Carry a book or sketchpad; it is that kind of place. Photography is welcome, but be gentle around the art.',
         ],
         maps: 'Dyu Art Cafe, Koramangala, Bengaluru',
+        lat: 12.9349, lng: 77.6156,
+        tags: ['date', 'solo', 'work', 'photo'],
     },
     {
         slug: 'matteo-coffea',
@@ -775,6 +814,8 @@ const CAFES = [
             'Great as a work or reading stop — pace your order to keep the table.',
         ],
         maps: 'Matteo Coffea, Church Street, Bengaluru',
+        lat: 12.9752, lng: 77.6069,
+        tags: ['work', 'solo', 'date'],
     },
     {
         slug: 'the-hole-in-the-wall',
@@ -797,6 +838,8 @@ const CAFES = [
             'Seating is tight; small groups fare best.',
         ],
         maps: 'The Hole in the Wall Cafe, Koramangala, Bengaluru',
+        lat: 12.9346, lng: 77.6205,
+        tags: ['groups', 'family', 'budget'],
     },
     {
         slug: 'third-wave-jayanagar',
@@ -819,6 +862,8 @@ const CAFES = [
             'A good work or catch-up spot in south Bengaluru, away from the busier branches.',
         ],
         maps: 'Third Wave Coffee, Jayanagar, Bengaluru',
+        lat: 12.9250, lng: 77.5938,
+        tags: ['work', 'solo'],
     },
     {
         slug: 'roastery-coffee-house',
@@ -842,6 +887,8 @@ const CAFES = [
             'Weekday mornings are the quietest for a work session.',
         ],
         maps: 'Roastery Coffee House, Bengaluru',
+        lat: 12.9279, lng: 77.6271,
+        tags: ['work', 'solo', 'date'],
     },
     {
         slug: 'ela-matcha',
@@ -864,6 +911,8 @@ const CAFES = [
             'Afternoons suit the mood of the place best.',
         ],
         maps: 'Ela Matcha, Indiranagar, Bengaluru',
+        lat: 12.9718, lng: 77.6412,
+        tags: ['solo', 'date', 'photo'],
     },
 ];
 
@@ -897,6 +946,9 @@ const EATERIES = [
             'The Lalbagh Road original is the one to visit for the full heritage experience.',
         ],
         maps: 'MTR Mavalli Tiffin Rooms, Lalbagh Road, Bengaluru',
+        lat: 12.9548, lng: 77.5848,
+        veg: 'veg',
+        tags: ['family', 'heritage', 'quick'],
     },
     {
         slug: 'vidyarthi-bhavan',
@@ -919,6 +971,9 @@ const EATERIES = [
             'Cash is handy; go early morning or late afternoon to dodge the peak.',
         ],
         maps: 'Vidyarthi Bhavan, Gandhi Bazaar, Basavanagudi, Bengaluru',
+        lat: 12.9438, lng: 77.5731,
+        veg: 'veg',
+        tags: ['budget', 'quick', 'heritage'],
     },
     {
         slug: 'ctr',
@@ -941,6 +996,9 @@ const EATERIES = [
             'Malleswaram around it is great for a post-dosa walk.',
         ],
         maps: 'CTR Shri Sagar, Malleswaram, Bengaluru',
+        lat: 13.0037, lng: 77.5687,
+        veg: 'veg',
+        tags: ['budget', 'quick', 'heritage'],
     },
     {
         slug: 'koshys',
@@ -964,6 +1022,9 @@ const EATERIES = [
             'Central location near MG Road / Cubbon Park makes it an easy add-on.',
         ],
         maps: 'Koshy\'s, St Marks Road, Bengaluru',
+        lat: 12.9727, lng: 77.5990,
+        veg: 'veg & non-veg',
+        tags: ['groups', 'heritage', 'date'],
     },
     {
         slug: 'airlines-hotel',
@@ -987,6 +1048,9 @@ const EATERIES = [
             'It is pure vegetarian; expect a relaxed, no-rush vibe.',
         ],
         maps: 'Airlines Hotel, Lavelle Road, Bengaluru',
+        lat: 12.9714, lng: 77.5969,
+        veg: 'veg',
+        tags: ['family', 'date', 'heritage'],
     },
     {
         slug: 'brahmins-coffee-bar',
@@ -1009,6 +1073,9 @@ const EATERIES = [
             'Closes by early afternoon and stays busy — go in the morning.',
         ],
         maps: 'Brahmins Coffee Bar, Basavanagudi, Bengaluru',
+        lat: 12.9432, lng: 77.5698,
+        veg: 'veg',
+        tags: ['budget', 'quick', 'heritage'],
     },
 ];
 
@@ -1046,6 +1113,7 @@ const ACTIVITIES = [
             'Finished pieces need firing, so you usually collect them a week or two later.',
         ],
         maps: 'Pottery studio Indiranagar, Bengaluru',
+        tags: ['date', 'solo', 'groups'],
     },
     {
         slug: 'pizza-making',
@@ -1073,6 +1141,7 @@ const ACTIVITIES = [
             'Tell the host about any dietary needs when you book.',
         ],
         maps: 'Pizza making class Bengaluru',
+        tags: ['date', 'groups', 'family'],
     },
     {
         slug: 'candle-making',
@@ -1099,6 +1168,7 @@ const ACTIVITIES = [
             'Check whether materials are included when you book.',
         ],
         maps: 'Candle making workshop Bengaluru',
+        tags: ['date', 'solo', 'groups'],
     },
     {
         slug: 'kayaking-ulsoor',
@@ -1126,6 +1196,7 @@ const ACTIVITIES = [
             'Sessions are weather-dependent — confirm on the day.',
         ],
         maps: 'Kayaking Ulsoor Lake, Bengaluru',
+        tags: ['nature', 'solo', 'groups'],
     },
     {
         slug: 'heritage-cycling',
@@ -1152,6 +1223,7 @@ const ACTIVITIES = [
             'Carry water and sun cover even for a morning ride.',
         ],
         maps: 'Heritage cycling tour Bengaluru',
+        tags: ['heritage', 'groups', 'nature'],
     },
     {
         slug: 'go-karting',
@@ -1178,6 +1250,7 @@ const ACTIVITIES = [
             'Outdoor tracks are best in the cooler parts of the day.',
         ],
         maps: 'Go karting track Bengaluru',
+        tags: ['groups', 'family'],
     },
 ];
 
@@ -1188,4 +1261,63 @@ const TYPES = [
     { id: 'beach', label: 'Beaches' },
     { id: 'heritage', label: 'Heritage' },
     { id: 'wildlife', label: 'Wildlife' },
+];
+
+/*
+ * INTENTS — the "what am I in the mood for?" layer. A small, curated set of vibes users can filter
+ * by across cafes, eats, things-to-do and sights. Each item can carry a `tags: []` of these ids;
+ * the UI turns them into filter chips. Keeping the vocabulary fixed here keeps filtering meaningful.
+ */
+const INTENTS = [
+    { id: 'work', label: 'Work-friendly', icon: 'fa-laptop' },
+    { id: 'date', label: 'Date spot', icon: 'fa-heart' },
+    { id: 'family', label: 'Family', icon: 'fa-people-roof' },
+    { id: 'solo', label: 'Solo', icon: 'fa-user' },
+    { id: 'groups', label: 'Groups', icon: 'fa-users' },
+    { id: 'quick', label: 'Quick bite', icon: 'fa-bolt' },
+    { id: 'photo', label: 'Photo spot', icon: 'fa-camera' },
+    { id: 'budget', label: 'Budget', icon: 'fa-indian-rupee-sign' },
+    { id: 'nature', label: 'Nature', icon: 'fa-tree' },
+    { id: 'heritage', label: 'Heritage', icon: 'fa-landmark' },
+];
+
+/*
+ * PHRASES — a tiny Kannada phrasebook (the "Lingo Help" locals' guides tend to ship). Grouped for a
+ * simple tabbed helper: greetings, getting around (autos/directions) and food ordering. Romanised so
+ * a visitor can read it aloud; kn is the Kannada script for showing a local.
+ */
+const PHRASES = [
+    {
+        group: 'Basics',
+        items: [
+            { en: 'Hello / greetings', roman: 'Namaskāra', kn: 'ನಮಸ್ಕಾರ' },
+            { en: 'Thank you', roman: 'Dhanyavādagalu', kn: 'ಧನ್ಯವಾದಗಳು' },
+            { en: 'Yes', roman: 'Haudu', kn: 'ಹೌದು' },
+            { en: 'No', roman: 'Illa', kn: 'ಇಲ್ಲ' },
+            { en: 'How much?', roman: 'Eshtu?', kn: 'ಎಷ್ಟು?' },
+            { en: 'I don\'t understand', roman: 'Nanage artha āgalilla', kn: 'ನನಗೆ ಅರ್ಥ ಆಗಲಿಲ್ಲ' },
+        ],
+    },
+    {
+        group: 'Getting around',
+        items: [
+            { en: 'Where is...?', roman: '...elli ide?', kn: '...ಎಲ್ಲಿ ಇದೆ?' },
+            { en: 'Go straight', roman: 'Nēra hōgi', kn: 'ನೇರ ಹೋಗಿ' },
+            { en: 'Turn left', roman: 'Edakke tirugi', kn: 'ಎಡಕ್ಕೆ ತಿರುಗಿ' },
+            { en: 'Turn right', roman: 'Balakke tirugi', kn: 'ಬಲಕ್ಕೆ ತಿರುಗಿ' },
+            { en: 'Stop here', roman: 'Illi nilḷisi', kn: 'ಇಲ್ಲಿ ನಿಲ್ಲಿಸಿ' },
+            { en: 'Please use the meter', roman: 'Meter hāki', kn: 'ಮೀಟರ್ ಹಾಕಿ' },
+        ],
+    },
+    {
+        group: 'Food',
+        items: [
+            { en: 'Water, please', roman: 'Nīru kodi', kn: 'ನೀರು ಕೊಡಿ' },
+            { en: 'One coffee', roman: 'Ondu kāfi', kn: 'ಒಂದು ಕಾಫಿ' },
+            { en: 'Not spicy', roman: 'Khāra beda', kn: 'ಖಾರ ಬೇಡ' },
+            { en: 'Very tasty', roman: 'Tumbā ruchi', kn: 'ತುಂಬಾ ರುಚಿ' },
+            { en: 'The bill, please', roman: 'Bill kodi', kn: 'ಬಿಲ್ ಕೊಡಿ' },
+            { en: 'Vegetarian only', roman: 'Veg maatra', kn: 'ವೆಜ್ ಮಾತ್ರ' },
+        ],
+    },
 ];

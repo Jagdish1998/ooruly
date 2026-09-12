@@ -14,13 +14,20 @@ Live: https://jagdish1998.github.io/ooruly/
 - **Data-driven.** Every place is one object in [`data.js`](data.js) across five collections —
   `DESTINATIONS`, `CITY_ATTRACTIONS`, `CAFES`, `EATERIES` and `ACTIVITIES`. The home sections and
   all detail pages are generated from these; add an entry and it shows up with no code change.
-- **Hash-routed SPA.** `#/` is home (Inside Bengaluru, Hidden cafes, Authentic eats, Things to do,
-  Nearby Bengaluru). Detail routes: `#/place/<slug>`, `#/city/<slug>`, `#/cafe/<slug>`,
-  `#/eat/<slug>`, `#/do/<slug>`. Refresh-safe on static hosting.
+- **Hash-routed SPA.** `#/` is home (Inside Bengaluru, Temples, Hidden cafes, Authentic eats,
+  Things to do, Nearby Bengaluru). Detail routes: `#/place/<slug>`, `#/city/<slug>`,
+  `#/temple/<slug>`, `#/cafe/<slug>`, `#/eat/<slug>`, `#/do/<slug>`. Feature pages: `#/map`,
+  `#/saved`, `#/plan` (and shareable `#/plan/<ids>`), `#/phrases`. Refresh-safe on static hosting.
 - **Honest booking.** A static site can't take a payment, so the booking buttons deep-link to
   the right MakeMyTrip section (flights / trains / bus / hotels) with the destination in hand.
   The link builder in [`booking.js`](booking.js) is affiliate-ready: flip `AFFILIATE.enabled`
   and every outbound link becomes tracked in one place.
+- **Discover, save, plan.** A global search palette (⌘K / Ctrl-K or `/`) spans every collection;
+  per-section area + "vibe" (intent) filters; save any place to a shortlist; build a shareable
+  weekend plan (encoded in the URL); "near me" distance sorting; an all-pins map; and a Kannada
+  phrasebook. All client-side, all in [`features.js`](features.js).
+- **Installable & offline.** A web app manifest and a service worker ([`sw.js`](sw.js)) precache
+  the shell and city photos, so the guide installs to a home screen and opens offline.
 
 ## Structure
 
@@ -29,8 +36,11 @@ Live: https://jagdish1998.github.io/ooruly/
 | `index.html` | App shell: header, theme toggle, view container, footer |
 | `data.js` | `ORIGIN`, `DESTINATIONS[]`, `CITY_ATTRACTIONS[]`, `CAFES[]`, `EATERIES[]`, `ACTIVITIES[]`, `TYPES[]` — all the content |
 | `booking.js` | MakeMyTrip deep-link helper (affiliate-ready) |
-| `app.js` | Hash router, home sections + filters, and all detail views |
+| `features.js` | Search index, favourites, weekend plan, geolocation, share, season/open helpers |
+| `app.js` | Hash router, home sections + filters, detail views, search palette, map, saved/plan/phrases pages |
 | `style.css` | Theme (dark/light), shared with the portfolio's design tokens |
+| `manifest.webmanifest` | PWA manifest (installable, standalone) |
+| `sw.js` | Service worker: precache app shell + runtime-cache images for offline |
 
 ## Credits
 
