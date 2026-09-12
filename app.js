@@ -1,5 +1,5 @@
 /*
- * Yatra front-end: a tiny hash router over the DESTINATIONS data.
+ * Ooruly front-end: a tiny hash router over the DESTINATIONS data.
  *
  *   #/                 -> home: hero, jump nav, "Inside Bengaluru" grid, "Nearby Bengaluru" grid
  *   #/place/<slug>     -> one getaway: overview, how to reach, best months, precautions, booking
@@ -427,7 +427,7 @@
 
                     <section class="block book">
                         <h2>Book your trip</h2>
-                        <p class="book-intro">One tap through to MakeMyTrip for each leg. Yatra doesn't
+                        <p class="book-intro">One tap through to MakeMyTrip for each leg. Ooruly doesn't
                             handle the booking — it just takes you to the right place to make it.</p>
                         <div class="book-grid">${links}</div>
                     </section>
@@ -746,7 +746,7 @@
 
                     <section class="block book">
                         <h2>Find it near you</h2>
-                        <p class="book-intro">Yatra points you to the kind of experience, not one
+                        <p class="book-intro">Ooruly points you to the kind of experience, not one
                             operator — search Google Maps for current studios, timings and bookings.</p>
                         <div class="book-grid">
                             <a class="book-btn" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer">
@@ -922,11 +922,10 @@
             // external / other links fall through to default behaviour
         }
 
-        if (nav) {
-            nav.querySelectorAll('.nav-links a').forEach((a) => {
-                a.addEventListener('click', (e) => handleNavClick(e, a.getAttribute('href')));
-            });
-        }
+        // Wire BOTH the desktop nav and the mobile drawer links (two separate .nav-links lists).
+        document.querySelectorAll('.nav-links a').forEach((a) => {
+            a.addEventListener('click', (e) => handleNavClick(e, a.getAttribute('href')));
+        });
         const brand = document.querySelector('.brand');
         if (brand) brand.addEventListener('click', (e) => handleNavClick(e, brand.getAttribute('href')));
 
@@ -951,7 +950,7 @@
          * Scroll-spy: highlight the nav link for the section currently in view. Runs on scroll
          * (cheap: a handful of getBoundingClientRect calls) and only while the home view is shown.
          */
-        const navAnchors = nav ? Array.from(nav.querySelectorAll('.nav-links a')) : [];
+        const navAnchors = Array.from(document.querySelectorAll('.nav-links a'));
         function syncActiveLink() {
             if (currentView !== 'home' || !navAnchors.length) {
                 navAnchors.forEach((a) => a.classList.remove('is-active'));

@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yatra — travel guide to India's getaways, starting near Bengaluru</title>
+    <title>Ooruly — a local's travel guide to Bengaluru and around</title>
     <meta name="description"
-        content="A travel guide to India's getaways: where to go, how to reach, the best months to visit, precautions to take, and one-tap booking for flights, trains, buses and hotels. Starting with the best places near Bengaluru.">
+        content="Ooruly is a local's guide to Bengaluru and around: city sights, hidden cafes, iconic eateries, things to do, and easy weekend getaways — where to go, how to reach, the best time, and one-tap directions or booking.">
     <meta name="author" content="Jagdish Sahoo">
     <meta name="theme-color" content="#08080a">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Yatra — travel guide to India's getaways">
+    <meta property="og:title" content="Ooruly — a local's travel guide to Bengaluru and around">
     <meta property="og:description"
-        content="Where to go, how to reach, best months, precautions, and one-tap booking. Starting near Bengaluru.">
+        content="City sights, hidden cafes, iconic eateries, things to do and weekend getaways around Bengaluru — where to go, how to reach, and one tap to get there.">
 
     <link rel="icon"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='6' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Ey%3C/text%3E%3Ccircle cx='23' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='5.5' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Eo%3C/text%3E%3Ccircle cx='23.5' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='6' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Ey%3C/text%3E%3Ccircle cx='23' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='5.5' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Eo%3C/text%3E%3Ccircle cx='23.5' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,15 +52,12 @@
 
     <header class="site-header" id="site-header">
         <div class="container nav-wrap">
-            <a href="#/" class="brand" aria-label="Yatra, home">
-                <span class="brand-mark">yatra</span>
+            <a href="#/" class="brand" aria-label="Ooruly, home">
+                <span class="brand-mark">ooruly</span>
                 <span class="brand-dot" aria-hidden="true"></span>
             </a>
 
-            <nav id="primary-nav" aria-label="Primary">
-                <button class="nav-close icon-btn" type="button" aria-label="Close menu">
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                </button>
+            <nav class="nav-desktop" aria-label="Primary">
                 <ul class="nav-links">
                     <li><a href="#/">Home</a></li>
                     <li><a href="#city">City sights</a></li>
@@ -85,7 +82,23 @@
             </div>
         </div>
     </header>
+
+    <!-- Mobile drawer + backdrop live OUTSIDE the header: the header's backdrop-filter
+         blur would otherwise blur the drawer (its descendant). -->
     <div class="nav-backdrop" id="nav-backdrop" hidden></div>
+    <nav id="primary-nav" class="nav-drawer" aria-label="Primary (mobile)">
+        <button class="nav-close icon-btn" type="button" aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#/">Home</a></li>
+            <li><a href="#city">City sights</a></li>
+            <li><a href="#cafes">Cafes</a></li>
+            <li><a href="#eats">Eats</a></li>
+            <li><a href="#do">Things to do</a></li>
+            <li><a href="#nearby">Getaways</a></li>
+        </ul>
+    </nav>
 
     <main id="main">
         <!-- Views are swapped in by app.js based on the URL hash: #/ is home,
@@ -96,9 +109,9 @@
 
     <footer class="site-footer">
         <div class="container footer-inner">
-            <p>Yatra — a travel guide, built as a static site.</p>
+            <p>Ooruly — a local's guide to Bengaluru, built as a static site.</p>
             <p class="footer-note">
-                Booking links open MakeMyTrip; Yatra doesn't process bookings itself.
+                Booking links open MakeMyTrip; Ooruly doesn't process bookings itself.
             </p>
             <p class="footer-note">
                 Photos via

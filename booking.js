@@ -16,7 +16,7 @@
 
 const AFFILIATE = {
     enabled: false,
-    // e.g. { affid: 'yourId', campaign: 'yatra' } — appended to every MakeMyTrip link when enabled.
+    // e.g. { affid: 'yourId', campaign: 'ooruly' } — appended to every MakeMyTrip link when enabled.
     params: {},
 };
 

@@ -1,19 +1,22 @@
-# Yatra
+# Ooruly
 
-A static travel guide to India's getaways — where to go, how to reach, the best months to
-visit, precautions to take, and one-tap hand-off to MakeMyTrip for flights, trains, buses and
-hotels. It starts with the destinations that are easy from Bengaluru.
+A local's static travel guide to Bengaluru and around — city sights, hidden cafes, iconic
+eateries, things to do, and easy weekend getaways. Where to go, how to reach, the best time,
+and one tap to get directions or hand off to MakeMyTrip for flights, trains, buses and hotels.
+
+("Ooru" is Kannada for town/hometown — Ooruly is a guide to the city and its surroundings.)
 
 Live: https://jagdish1998.github.io/yatra/
 
 ## What it is
 
 - **No build step.** Plain HTML, CSS and vanilla JS, served straight from GitHub Pages.
-- **Data-driven.** Every destination is one object in [`data.js`](data.js). The home grid,
-  filters and the detail pages are all generated from it — add a place there and it shows up
-  with no code change.
-- **Hash-routed SPA.** `#/` is the home grid (filters + cards sorted by distance);
-  `#/place/<slug>` is a destination. Refresh-safe on static hosting.
+- **Data-driven.** Every place is one object in [`data.js`](data.js) across five collections —
+  `DESTINATIONS`, `CITY_ATTRACTIONS`, `CAFES`, `EATERIES` and `ACTIVITIES`. The home sections and
+  all detail pages are generated from these; add an entry and it shows up with no code change.
+- **Hash-routed SPA.** `#/` is home (Inside Bengaluru, Hidden cafes, Authentic eats, Things to do,
+  Nearby Bengaluru). Detail routes: `#/place/<slug>`, `#/city/<slug>`, `#/cafe/<slug>`,
+  `#/eat/<slug>`, `#/do/<slug>`. Refresh-safe on static hosting.
 - **Honest booking.** A static site can't take a payment, so the booking buttons deep-link to
   the right MakeMyTrip section (flights / trains / bus / hotels) with the destination in hand.
   The link builder in [`booking.js`](booking.js) is affiliate-ready: flip `AFFILIATE.enabled`
@@ -24,9 +27,9 @@ Live: https://jagdish1998.github.io/yatra/
 | File | Role |
 | --- | --- |
 | `index.html` | App shell: header, theme toggle, view container, footer |
-| `data.js` | `ORIGIN`, `DESTINATIONS[]`, `TYPES[]` — all the content |
+| `data.js` | `ORIGIN`, `DESTINATIONS[]`, `CITY_ATTRACTIONS[]`, `CAFES[]`, `EATERIES[]`, `ACTIVITIES[]`, `TYPES[]` — all the content |
 | `booking.js` | MakeMyTrip deep-link helper (affiliate-ready) |
-| `app.js` | Hash router, home grid + filters, destination detail |
+| `app.js` | Hash router, home sections + filters, and all detail views |
 | `style.css` | Theme (dark/light), shared with the portfolio's design tokens |
 
 ## Credits

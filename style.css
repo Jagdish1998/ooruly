@@ -1,5 +1,5 @@
 /* ============================================================
-   Yatra — reuses the portfolio's design tokens so the two sites
+   Ooruly — reuses the portfolio's design tokens so the two sites
    read as siblings. Same accent, type scale, radii and themes.
    ============================================================ */
 :root {
@@ -159,6 +159,9 @@ img.img-fallback { visibility: hidden; }
 }
 .nav-links a:hover, .nav-links a.is-active { color: var(--text); }
 .nav-links a:hover::after, .nav-links a.is-active::after { width: 100%; }
+
+/* The slide-in drawer is hidden entirely until the mobile breakpoint reveals it. */
+.nav-drawer { display: none; }
 
 .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
 .nav-portfolio { color: var(--text-muted); font-size: var(--step--1); transition: color var(--dur-fast); white-space: nowrap; }
@@ -536,29 +539,36 @@ img.img-fallback { visibility: hidden; }
     .hero-title, .hero-lede { max-width: none; }
     .hero-collage { width: 100%; max-height: 320px; aspect-ratio: 16 / 9; margin-left: 0; }
 
-    /* Nav links collapse into a right-hand slide-in drawer. */
+    /* Desktop links hide; the hamburger + slide-in drawer take over. */
+    .nav-desktop { display: none; }
     .nav-open { display: grid; }
     .nav-portfolio { display: none; }
 
-    /* Drawer sits above the backdrop (130) and the header (110): it's a full overlay
-       with its own close button, so the header no longer obscures its top. */
-    #primary-nav {
+    /* Drawer is a top-level overlay (not a header descendant, so it never inherits the
+       header's blur). Above the backdrop (130) and header (110), with its own close button. */
+    .nav-drawer {
         position: fixed; top: 0; right: 0; z-index: 140;
         height: 100%; width: min(84vw, 320px);
         display: flex; flex-direction: column; gap: 0.4rem;
-        padding: calc(var(--header-h) + 0.5rem) 1.4rem 2rem;
+        padding: 1.25rem 1.4rem 2rem;
         background: var(--bg-elev); border-left: 1px solid var(--border);
         box-shadow: var(--shadow-lg);
         transform: translateX(100%);
         transition: transform var(--dur-base) var(--ease);
         overflow-y: auto;
     }
-    #primary-nav.is-open { transform: translateX(0); }
+    .nav-drawer.is-open { transform: translateX(0); }
 
-    .nav-links { flex-direction: column; align-items: stretch; gap: 0.2rem; }
-    .nav-links a { padding: 0.85rem 0.4rem; font-size: var(--step-1); border-bottom: 1px solid var(--border); }
-    .nav-links a::after { display: none; }
-    .nav-links a:hover, .nav-links a.is-active { color: var(--accent-ink); }
+    .nav-drawer .nav-links {
+        flex-direction: column; align-items: stretch; gap: 0.2rem;
+        margin-top: 3rem; /* clear the absolutely-positioned close button */
+    }
+    .nav-drawer .nav-links a {
+        padding: 0.9rem 0.4rem; font-size: var(--step-1);
+        color: var(--text); border-bottom: 1px solid var(--border);
+    }
+    .nav-drawer .nav-links a::after { display: none; }
+    .nav-drawer .nav-links a:hover, .nav-drawer .nav-links a.is-active { color: var(--accent-ink); }
 
     .nav-close {
         display: grid; place-items: center;
