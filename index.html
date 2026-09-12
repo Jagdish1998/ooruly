@@ -48,6 +48,7 @@
 
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
+    <div class="scroll-progress" aria-hidden="true"><span id="scroll-bar"></span></div>
 
     <header class="site-header" id="site-header">
         <div class="container nav-wrap">
@@ -56,16 +57,35 @@
                 <span class="brand-dot" aria-hidden="true"></span>
             </a>
 
-            <nav class="nav-actions" aria-label="Primary">
+            <nav id="primary-nav" aria-label="Primary">
+                <button class="nav-close icon-btn" type="button" aria-label="Close menu">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#/">Home</a></li>
+                    <li><a href="#city">City sights</a></li>
+                    <li><a href="#cafes">Cafes</a></li>
+                    <li><a href="#eats">Eats</a></li>
+                    <li><a href="#do">Things to do</a></li>
+                    <li><a href="#nearby">Getaways</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
                 <a class="nav-portfolio" href="https://jagdish1998.github.io/portfolio/" target="_blank"
                     rel="noopener noreferrer">By Jagdish Sahoo</a>
                 <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">
                     <i class="fa-solid fa-sun theme-icon-sun" aria-hidden="true"></i>
                     <i class="fa-solid fa-moon theme-icon-moon" aria-hidden="true"></i>
                 </button>
-            </nav>
+                <button class="icon-btn nav-open" id="nav-open" type="button" aria-label="Open menu"
+                    aria-expanded="false" aria-controls="primary-nav">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
     </header>
+    <div class="nav-backdrop" id="nav-backdrop" hidden></div>
 
     <main id="main">
         <!-- Views are swapped in by app.js based on the URL hash: #/ is home,

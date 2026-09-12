@@ -6,7 +6,8 @@
  *   #/city/<slug>      -> one city sight: overview, what to see, getting there, timings, tips, map
  *   #/cafe/<slug>      -> one hidden cafe: the vibe, what to order, good to know, directions
  *   #/eat/<slug>       -> one iconic eatery: the story, what to order, good to know, directions
- *   #city/#cafes/#eats/#nearby -> scroll to a section of the home view
+ *   #/do/<slug>        -> one activity: overview, what you'll do, good to know, find it on Maps
+ *   #city/#cafes/#eats/#do/#nearby -> scroll to a section of the home view
  *
  * There is no framework and no build step. Everything renders from data.js, so the site is entirely
  * content-driven: add a destination there and it appears here with no code change.
@@ -51,6 +52,11 @@
         return list.find((e) => e.slug === slug);
     }
 
+    function byActivitySlug(slug) {
+        const list = typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : [];
+        return list.find((a) => a.slug === slug);
+    }
+
     function typeLabel(id) {
         const t = TYPES.find((x) => x.id === id);
         return t ? t.label : id;
@@ -87,30 +93,66 @@
             .map(eatCardHTML)
             .join('');
 
+        const doList = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : [])
+            .map(activityCardHTML)
+            .join('');
+
+        // Counts for the hero stat row (proof of how much is inside).
+        const cityCount = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []).length;
+        const cafeCount = (typeof CAFES !== 'undefined' ? CAFES : []).length;
+        const eatCount = (typeof EATERIES !== 'undefined' ? EATERIES : []).length;
+        const doCount = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []).length;
+        const totalCount = DESTINATIONS.length + cityCount + cafeCount + eatCount + doCount;
+
         view.innerHTML = `
             <section class="hero">
                 <div class="hero-aura" aria-hidden="true"></div>
                 <div class="container hero-inner">
-                    <p class="eyebrow">Travel guide to Bengaluru &amp; around</p>
-                    <h1 class="hero-title">Where to go, <span class="accent">how to reach</span>,
-                        and when it's worth it.</h1>
-                    <p class="hero-lede">A practical travel guide — the places, the best time to go,
-                        the precautions that actually matter, and one tap to reach or book. From day
-                        trips inside Bengaluru to weekend getaways around it.</p>
-                    <nav class="jump-nav" aria-label="Jump to section">
-                        <a class="jump-link" href="#city">
-                            <i class="fa-solid fa-city" aria-hidden="true"></i> Inside Bengaluru
-                        </a>
-                        <a class="jump-link" href="#cafes">
-                            <i class="fa-solid fa-mug-saucer" aria-hidden="true"></i> Hidden cafes
-                        </a>
-                        <a class="jump-link" href="#eats">
-                            <i class="fa-solid fa-utensils" aria-hidden="true"></i> Authentic eats
-                        </a>
-                        <a class="jump-link" href="#nearby">
-                            <i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Nearby Bengaluru
-                        </a>
-                    </nav>
+                    <div class="hero-copy">
+                        <p class="eyebrow">Travel guide to Bengaluru &amp; around</p>
+                        <h1 class="hero-title">Where to go, <span class="accent">how to reach</span>,
+                            and when it's worth it.</h1>
+                        <p class="hero-lede">A practical travel guide — the places, the best time to go,
+                            the precautions that actually matter, and one tap to reach or book. From day
+                            trips inside Bengaluru to weekend getaways around it.</p>
+                        <div class="hero-cta">
+                            <a class="btn btn-primary" href="#nearby">
+                                Explore getaways <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            </a>
+                            <a class="btn btn-ghost" href="#city">
+                                <i class="fa-solid fa-city" aria-hidden="true"></i> Inside Bengaluru
+                            </a>
+                        </div>
+                        <ul class="hero-stats" aria-label="What's inside">
+                            <li><strong>${totalCount}</strong> curated spots</li>
+                            <li><strong>${DESTINATIONS.length}</strong> weekend getaways</li>
+                            <li><strong>${cityCount}</strong> city sights</li>
+                            <li>cafes, eats &amp; things to do</li>
+                        </ul>
+                    </div>
+
+                    <div class="hero-collage" aria-hidden="true">
+                        <figure class="hero-tile hero-tile--tall">
+                            <img src="images/mysuru.jpg" alt="" loading="eager" decoding="async"
+                                onerror="this.classList.add('img-fallback')">
+                            <figcaption>Mysuru</figcaption>
+                        </figure>
+                        <figure class="hero-tile">
+                            <img src="images/coorg.jpg" alt="" loading="eager" decoding="async"
+                                onerror="this.classList.add('img-fallback')">
+                            <figcaption>Coorg</figcaption>
+                        </figure>
+                        <figure class="hero-tile">
+                            <img src="images/gokarna.jpg" alt="" loading="lazy" decoding="async"
+                                onerror="this.classList.add('img-fallback')">
+                            <figcaption>Gokarna</figcaption>
+                        </figure>
+                        <figure class="hero-tile hero-tile--wide">
+                            <img src="images/hampi.jpg" alt="" loading="lazy" decoding="async"
+                                onerror="this.classList.add('img-fallback')">
+                            <figcaption>Hampi</figcaption>
+                        </figure>
+                    </div>
                 </div>
             </section>
 
@@ -144,6 +186,18 @@
                             what to order, the story behind it, and directions.</p>
                     </div>
                     <div class="grid">${eatList}</div>
+                </div>
+            </section>
+
+            <section class="section section--do" id="do">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Things to do</h2>
+                        <p class="section-sub">Hands-on experiences to fill a weekend — pottery and
+                            candle workshops, pizza classes, lake kayaking, heritage cycling and
+                            go-karting. Tap one for what to expect and where to find it.</p>
+                    </div>
+                    <div class="grid">${doList}</div>
                 </div>
             </section>
 
@@ -263,6 +317,34 @@
                     <p class="card-meta">
                         <i class="fa-solid fa-star" aria-hidden="true"></i>
                         ${esc(e.signature)}
+                    </p>
+                </div>
+            </a>`;
+    }
+
+    function activityCardHTML(a) {
+        const initial = esc((a.name || '?').trim().charAt(0).toUpperCase());
+        return `
+            <a class="card" href="#/do/${a.slug}">
+                <div class="card-media cafe-media">
+                    <span class="cafe-fallback" aria-hidden="true">
+                        <span class="cafe-initial">${initial}</span>
+                        <i class="fa-solid fa-palette cafe-cup"></i>
+                    </span>
+                    ${a.image ? `<img src="${esc(a.image)}" alt="${esc(a.name)} in Bengaluru"
+                        loading="lazy" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
+                    <span class="card-type">${esc(a.category)}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-head">
+                        <h3>${esc(a.name)}</h3>
+                        ${a.duration ? `<span class="card-dist">${esc(a.duration)}</span>` : ''}
+                    </div>
+                    <p class="card-tag">${esc(a.tagline)}</p>
+                    <p class="card-meta">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                        ${esc(a.area)}
                     </p>
                 </div>
             </a>`;
@@ -601,12 +683,91 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
+    /* ---------- activity detail view ---------- */
+
+    function renderActivityDetail(slug) {
+        const a = byActivitySlug(slug);
+        if (!a) { location.hash = '#/'; return; }
+
+        const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent(a.maps || `${a.name}, Bengaluru`);
+
+        const initial = esc((a.name || '?').trim().charAt(0).toUpperCase());
+        const steps = (a.whatYoullDo || []).map((s) => `<li>${esc(s)}</li>`).join('');
+        const tips = (a.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
+
+        const facts = [
+            { icon: 'fa-tag', text: a.category },
+            { icon: 'fa-location-dot', text: a.area },
+            { icon: 'fa-hourglass-half', text: a.duration },
+            { icon: 'fa-circle-check', text: a.priceHint },
+        ].filter((f) => f.text).map((f) =>
+            `<li><i class="fa-solid ${f.icon}" aria-hidden="true"></i> ${esc(f.text)}</li>`).join('');
+
+        view.innerHTML = `
+            <article class="detail">
+                <div class="detail-hero detail-hero--cafe">
+                    <div class="cafe-hero-art" aria-hidden="true">
+                        <span class="cafe-hero-initial">${initial}</span>
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    ${a.image ? `<img class="detail-hero-img" src="${esc(a.image)}"
+                        alt="${esc(a.name)} in Bengaluru" decoding="async"
+                        onerror="this.style.display='none'">` : ''}
+                    <div class="detail-hero-overlay"></div>
+                    <div class="container detail-hero-inner">
+                        <a class="back" href="#do"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Things to do</a>
+                        <span class="detail-type">${esc(a.category)}</span>
+                        <h1>${esc(a.name)}</h1>
+                        <p class="detail-tag">${esc(a.tagline)}</p>
+                        <ul class="detail-facts">${facts}</ul>
+                    </div>
+                </div>
+
+                <div class="container detail-body">
+                    <section class="block">
+                        <h2>Overview</h2>
+                        <p>${esc(a.description)}</p>
+                    </section>
+
+                    ${steps ? `
+                    <section class="block">
+                        <h2>What you'll do</h2>
+                        <ul class="cautions cautions--plain">${steps}</ul>
+                    </section>` : ''}
+
+                    ${tips ? `
+                    <section class="block">
+                        <h2>Good to know</h2>
+                        <ul class="cautions">${tips}</ul>
+                    </section>` : ''}
+
+                    <section class="block book">
+                        <h2>Find it near you</h2>
+                        <p class="book-intro">Yatra points you to the kind of experience, not one
+                            operator — search Google Maps for current studios, timings and bookings.</p>
+                        <div class="book-grid">
+                            <a class="book-btn" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer">
+                                <span class="book-btn-top">
+                                    <i class="fa-solid fa-magnifying-glass-location" aria-hidden="true"></i> Search on Maps
+                                    <i class="fa-solid fa-arrow-up-right-from-square book-ext" aria-hidden="true"></i>
+                                </span>
+                                <span class="book-note">Find ${esc(a.name)} spots in Bengaluru</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </article>`;
+
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
     /* ---------- router ---------- */
 
     // Section anchors on the home page should scroll, not re-render the home view.
-    const HOME_ANCHORS = ['#city', '#cafes', '#eats', '#nearby'];
+    const HOME_ANCHORS = ['#city', '#cafes', '#eats', '#do', '#nearby'];
 
-    let currentView = null; // 'home' | 'place' | 'city' | 'cafe' | 'eat'
+    let currentView = null; // 'home' | 'place' | 'city' | 'cafe' | 'eat' | 'do'
 
     function route() {
         const hash = location.hash || '#/';
@@ -623,6 +784,7 @@
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
         const cafeMatch = hash.match(/^#\/cafe\/(.+)$/);
         const eatMatch = hash.match(/^#\/eat\/(.+)$/);
+        const doMatch = hash.match(/^#\/do\/(.+)$/);
 
         if (placeMatch) {
             renderDetail(placeMatch[1]);
@@ -636,6 +798,9 @@
         } else if (eatMatch) {
             renderEatDetail(eatMatch[1]);
             currentView = 'eat';
+        } else if (doMatch) {
+            renderActivityDetail(doMatch[1]);
+            currentView = 'do';
         } else {
             renderHome();
             currentView = 'home';
@@ -659,11 +824,139 @@
         }
 
         const toTop = document.getElementById('to-top');
+
+        /* Header goes solid + a scroll-progress bar fills, both on scroll (mirrors the portfolio). */
+        const header = document.getElementById('site-header');
+        const bar = document.getElementById('scroll-bar');
+        function onScroll() {
+            const y = window.scrollY;
+            if (header) header.classList.toggle('is-stuck', y > 8);
+            if (toTop) toTop.classList.toggle('is-visible', y > 500);
+            if (bar) {
+                const h = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+            }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        onScroll();
+
         if (toTop) {
             toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-            window.addEventListener('scroll', () => {
-                toTop.classList.toggle('is-visible', window.scrollY > 500);
-            }, { passive: true });
         }
+
+        /* Mobile drawer: hamburger opens, close button / backdrop / Escape / a link tap closes it. */
+        const nav = document.getElementById('primary-nav');
+        const openBtn = document.getElementById('nav-open');
+        const closeBtn = nav && nav.querySelector('.nav-close');
+        const backdrop = document.getElementById('nav-backdrop');
+
+        function openMenu() {
+            if (!nav) return;
+            nav.classList.add('is-open');
+            if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
+            if (backdrop) { backdrop.hidden = false; requestAnimationFrame(() => backdrop.classList.add('is-open')); }
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMenu() {
+            if (!nav) return;
+            nav.classList.remove('is-open');
+            if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+            if (backdrop) {
+                backdrop.classList.remove('is-open');
+                setTimeout(() => { backdrop.hidden = true; }, 280);
+            }
+            document.body.style.overflow = '';
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openMenu);
+        if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+        if (backdrop) backdrop.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && nav && nav.classList.contains('is-open')) closeMenu();
+        });
+
+        /*
+         * Nav clicks are handled explicitly, because relying on the hash alone breaks two cases:
+         *  - "Home" (#/) when the hash is already "#/" fires no hashchange, so nothing scrolls.
+         *  - A section link (#city, …) when that hash is already current also fires no hashchange.
+         * Driving the scroll here makes every nav item work every time. The brand logo is Home too.
+         */
+        function goHome() {
+            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
+            if (location.hash !== '#/' && location.hash !== '') {
+                history.replaceState(null, '', location.pathname + location.search + '#/');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function goSection(id) {
+            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function handleNavClick(e, href) {
+            if (href === '#/' || href === '#') {
+                e.preventDefault();
+                goHome();
+                closeMenu();
+            } else if (href && href.charAt(0) === '#') {
+                e.preventDefault();
+                goSection(href.slice(1));
+                closeMenu();
+            }
+            // external / other links fall through to default behaviour
+        }
+
+        if (nav) {
+            nav.querySelectorAll('.nav-links a').forEach((a) => {
+                a.addEventListener('click', (e) => handleNavClick(e, a.getAttribute('href')));
+            });
+        }
+        const brand = document.querySelector('.brand');
+        if (brand) brand.addEventListener('click', (e) => handleNavClick(e, brand.getAttribute('href')));
+
+        /*
+         * Hero CTAs (and any future in-page # link inside the rendered view) are delegated here so
+         * they smooth-scroll like the nav — and still work when the target hash is already current.
+         * Delegation on #view survives re-renders without re-binding.
+         */
+        if (view) {
+            view.addEventListener('click', (e) => {
+                const a = e.target.closest('a[href^="#"]');
+                if (!a || !view.contains(a)) return;
+                const href = a.getAttribute('href');
+                // Only intercept home + the home-section anchors; leave #/place/... etc. to the router.
+                if (href === '#/' || href === '#' || HOME_ANCHORS.includes(href)) {
+                    handleNavClick(e, href);
+                }
+            });
+        }
+
+        /*
+         * Scroll-spy: highlight the nav link for the section currently in view. Runs on scroll
+         * (cheap: a handful of getBoundingClientRect calls) and only while the home view is shown.
+         */
+        const navAnchors = nav ? Array.from(nav.querySelectorAll('.nav-links a')) : [];
+        function syncActiveLink() {
+            if (currentView !== 'home' || !navAnchors.length) {
+                navAnchors.forEach((a) => a.classList.remove('is-active'));
+                return;
+            }
+            const ids = ['city', 'cafes', 'eats', 'do', 'nearby'];
+            const mark = window.innerHeight * 0.35;
+            let active = '#/';
+            // If we're near the very top, Home is active; otherwise the last section whose top passed the mark.
+            if (window.scrollY > 40) {
+                ids.forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el && el.getBoundingClientRect().top <= mark) active = '#' + id;
+                });
+            }
+            navAnchors.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === active));
+        }
+        window.addEventListener('scroll', syncActiveLink, { passive: true });
+        window.addEventListener('hashchange', () => setTimeout(syncActiveLink, 50));
+        setTimeout(syncActiveLink, 60);
     });
 })();

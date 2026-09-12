@@ -813,6 +813,175 @@ const EATERIES = [
     },
 ];
 
+/*
+ * Things to do — popular hands-on experiences and activities around Bengaluru: creative workshops,
+ * cooking classes and outdoor adventures. Same card + detail pattern (image with monogram fallback),
+ * with an activity model: category, area, typical duration, an overview, what you'll actually do,
+ * tips, and a Google Maps link. These point to the kind of place/experience rather than endorsing
+ * one specific operator; search locally for current studios, timings and bookings. Route: #/do/<slug>.
+ */
+const ACTIVITIES = [
+    {
+        slug: 'pottery-class',
+        name: 'Pottery & wheel-throwing',
+        category: 'Creative',
+        area: 'Indiranagar & studios citywide',
+        duration: '2–3 hours',
+        priceHint: 'Beginner-friendly',
+        tagline: 'Get your hands muddy at a beginner pottery wheel and hand-building class.',
+        image: 'images/act-pottery.jpg',
+        description:
+            'Pottery has quietly become one of Bengaluru\'s favourite weekend activities, with a wave ' +
+            'of studios running beginner-friendly drop-in classes. A typical session mixes hand-' +
+            'building and time at the wheel, so you leave with something you actually made. It is ' +
+            'calming, tactile and social — no experience needed, just a willingness to get clay under ' +
+            'your nails.',
+        whatYoullDo: [
+            'Learn to centre clay and throw a basic form on the wheel',
+            'Try hand-building a pinch pot or small dish',
+            'Glaze or decorate, with pieces fired and collected later',
+        ],
+        tips: [
+            'Wear clothes you don\'t mind getting messy and keep nails short.',
+            'Beginner slots fill up on weekends — book a class ahead.',
+            'Finished pieces need firing, so you usually collect them a week or two later.',
+        ],
+        maps: 'Pottery studio Indiranagar, Bengaluru',
+    },
+    {
+        slug: 'pizza-making',
+        name: 'Pizza & pasta making',
+        category: 'Culinary',
+        area: 'Cafes & cook studios citywide',
+        duration: '2–3 hours',
+        priceHint: 'All levels',
+        tagline: 'Stretch your own dough and pull a wood-fired pizza out of the oven.',
+        image: 'images/act-pizza.jpg',
+        description:
+            'Hands-on cooking classes are a fun, tasty way to spend an afternoon, and Italian ' +
+            'sessions — making pizza and fresh pasta from scratch — are among the most popular. You ' +
+            'knead and stretch your own dough, build your toppings, and (at the good ones) bake it in ' +
+            'a wood-fired oven, then sit down and eat what you made. Great for a date, a group or a ' +
+            'birthday.',
+        whatYoullDo: [
+            'Make and stretch pizza dough from scratch',
+            'Build and bake your own pizza, often in a wood-fired oven',
+            'Sometimes roll fresh pasta and a simple sauce too',
+        ],
+        tips: [
+            'Come hungry — you eat what you cook at the end.',
+            'Good for groups and celebrations; book the whole batch together.',
+            'Tell the host about any dietary needs when you book.',
+        ],
+        maps: 'Pizza making class Bengaluru',
+    },
+    {
+        slug: 'candle-making',
+        name: 'Candle-making workshop',
+        category: 'Creative',
+        area: 'Workshops citywide',
+        duration: '1.5–2 hours',
+        priceHint: 'Beginner-friendly',
+        tagline: 'A calm, scented afternoon pouring your own custom candles.',
+        image: 'images/act-candle.jpg',
+        description:
+            'Candle-making workshops have taken off as a relaxed, mindful way to unwind. Over a ' +
+            'couple of unhurried hours you pick your fragrance, work with the wax and pour your own ' +
+            'scented candle to take home. Many sessions weave in a little mindfulness, which makes it ' +
+            'a popular solo reset as well as a low-key date or friends\' outing.',
+        whatYoullDo: [
+            'Choose your fragrance and colour',
+            'Melt, blend and pour your own candle',
+            'Take your finished candle home the same day',
+        ],
+        tips: [
+            'A relaxed, no-skill-needed activity — good for solo, dates or small groups.',
+            'The candle sets during the session, so you usually leave with it.',
+            'Check whether materials are included when you book.',
+        ],
+        maps: 'Candle making workshop Bengaluru',
+    },
+    {
+        slug: 'kayaking-ulsoor',
+        name: 'Kayaking on the lake',
+        category: 'Outdoor',
+        area: 'Ulsoor & city lakes',
+        duration: '1–2 hours',
+        priceHint: 'Basics taught',
+        tagline: 'Paddle out on a city lake for an easy dose of water and calm.',
+        image: 'images/act-kayak.jpg',
+        description:
+            'For a quick outdoor reset without leaving the city, kayaking and paddleboarding on ' +
+            'Bengaluru\'s lakes is hard to beat. Operators run beginner sessions where the basics are ' +
+            'taught before you head out on the water. It is a refreshing morning activity and an easy ' +
+            'way to see the city from a calmer angle; some lakes on the outskirts offer longer ' +
+            'paddles.',
+        whatYoullDo: [
+            'Get a short safety and paddling briefing',
+            'Kayak or paddleboard around the lake at your own pace',
+            'Options for solo or tandem, beginners welcome',
+        ],
+        tips: [
+            'Go early morning for calm water and cooler weather.',
+            'Wear quick-dry clothes and carry a change; you may get splashed.',
+            'Sessions are weather-dependent — confirm on the day.',
+        ],
+        maps: 'Kayaking Ulsoor Lake, Bengaluru',
+    },
+    {
+        slug: 'heritage-cycling',
+        name: 'Heritage cycling tour',
+        category: 'Outdoor',
+        area: 'Old Bengaluru & city routes',
+        duration: '3–4 hours',
+        priceHint: 'Guided',
+        tagline: 'Pedal through the old city\'s markets, lanes and landmarks at dawn.',
+        image: 'images/act-cycling.jpg',
+        description:
+            'Early-morning cycling tours are a brilliant way to see the older parts of Bengaluru ' +
+            'before the traffic wakes up. Guided rides wind through markets, temples, colonial-era ' +
+            'streets and local breakfast stops, mixing history with a bit of exercise. There are also ' +
+            'countryside rides toward Nandi Hills for those wanting more distance.',
+        whatYoullDo: [
+            'Ride a guided route through old-city lanes and landmarks',
+            'Stop for chai and a classic local breakfast',
+            'Hear the stories behind markets, temples and streets',
+        ],
+        tips: [
+            'Tours start early to beat the traffic and heat — sleep early the night before.',
+            'Bikes are usually provided; wear comfortable clothes and closed shoes.',
+            'Carry water and sun cover even for a morning ride.',
+        ],
+        maps: 'Heritage cycling tour Bengaluru',
+    },
+    {
+        slug: 'go-karting',
+        name: 'Go-karting',
+        category: 'Adventure',
+        area: 'Tracks around the city',
+        duration: '1–2 hours',
+        priceHint: 'All levels',
+        tagline: 'Chase lap times around a track for a quick adrenaline hit.',
+        image: 'images/act-gokart.jpg',
+        description:
+            'When you want something faster-paced, go-karting is one of Bengaluru\'s go-to adrenaline ' +
+            'activities. Tracks around the city and outskirts rent karts by the session, with safety ' +
+            'gear and a briefing included. It is beginner-friendly but genuinely competitive with ' +
+            'friends, which makes it a favourite for groups, birthdays and team outings.',
+        whatYoullDo: [
+            'Gear up and get a safety and flags briefing',
+            'Race timed laps around the track',
+            'Compare lap times — great with a group',
+        ],
+        tips: [
+            'Wear closed shoes; long hair should be tied back for safety.',
+            'Book a group slot for the most fun and shorter waits.',
+            'Outdoor tracks are best in the cooler parts of the day.',
+        ],
+        maps: 'Go karting track Bengaluru',
+    },
+];
+
 // Filterable "type" values, with readable labels for the filter bar.
 const TYPES = [
     { id: 'all', label: 'All places' },
