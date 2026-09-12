@@ -274,6 +274,194 @@ const DESTINATIONS = [
         booking: { railTo: 'Chikkaballapur', busTo: 'Chikkaballapur', hotelCity: 'Nandi Hills' },
         tags: ['nature', 'photo', 'family'],
     },
+    {
+        slug: 'skandagiri',
+        name: 'Skandagiri',
+        also: 'Kalavara Durga',
+        state: 'Karnataka',
+        type: 'hills',
+        distanceKm: 70,
+        driveHours: '1.5–2',
+        seasons: ['sep', 'oct', 'nov', 'dec', 'jan', 'feb'],
+        bestMonths: 'September to February',
+        tagline: 'A dawn trek to a hill-fort ruin above a sea of clouds.',
+        image: 'images/skandagiri.jpg',
+        description:
+            'Skandagiri is a hill fortress near Nandi Hills famous for its pre-dawn trek and the sea of ' +
+            'clouds that often fills the valley at sunrise. The moderately steep trail climbs past the ' +
+            'ruins of a Tipu-era fort to a summit that, on a clear winter morning, floats above the ' +
+            'mist. It is the go-to adventure day-break escape for Bengaluru\'s trekking crowd.',
+        howToReach: {
+            flight: 'Closest airport is Kempegowda International (BLR, ~40 km).',
+            train: 'Nearest railhead is Chikkaballapur; most people simply drive.',
+            bus: 'KSRTC buses reach Chikkaballapur; continue by local transport to the base village.',
+            road: 'Drive on NH44 toward Chikkaballapur, then to Papagni Mutt base; 1.5–2 hours.',
+        },
+        precautions: [
+            'Night trekking here needs forest-department permission and a registered guide; rules change, so confirm before going.',
+            'The trail is steep and unlit — carry a headlamp, water and grip shoes, and start early.',
+            'Weather turns quickly; a clear sunrise is not guaranteed in the monsoon months.',
+            'Carry back all trash; the summit gets littered on busy weekends.',
+        ],
+        booking: { railTo: 'Chikkaballapur', busTo: 'Chikkaballapur', hotelCity: 'Chikkaballapur' },
+        tags: ['nature', 'groups', 'photo'],
+    },
+    {
+        slug: 'savandurga',
+        name: 'Savandurga',
+        state: 'Karnataka',
+        type: 'hills',
+        distanceKm: 60,
+        driveHours: '1.5–2',
+        seasons: ['oct', 'nov', 'dec', 'jan', 'feb'],
+        bestMonths: 'October to February',
+        tagline: 'One of Asia\'s largest monolithic hills — a steep granite climb.',
+        image: 'images/savandurga.jpg',
+        description:
+            'Savandurga is a giant granite monolith often cited among the largest in Asia, rising over ' +
+            'the Arkavathi river west of Bengaluru. The bare-rock trek to the top is short but steep ' +
+            'and exposed, rewarding climbers with sweeping views and a small temple at the base. It is ' +
+            'a favourite for fit day-trekkers and rock-climbers.',
+        howToReach: {
+            flight: 'Nearest airport is Kempegowda International (BLR, ~70 km).',
+            train: 'Nearest railheads are Ramanagara and Bengaluru; drive the last stretch.',
+            bus: 'Buses run toward Magadi; the base is a short local hop from there.',
+            road: 'Drive via Magadi Road; about 1.5–2 hours to the base.',
+        },
+        precautions: [
+            'The climb is on open, steep rock with no railings — attempt only in dry weather and good shoes.',
+            'There is no shade or water on the rock; start early and carry plenty of water.',
+            'Avoid the climb in or after rain, when the granite is dangerously slippery.',
+            'Watch for monkeys and keep well clear of the edges near the top.',
+        ],
+        booking: { railTo: 'Ramanagara', busTo: 'Magadi', hotelCity: 'Ramanagara' },
+        tags: ['nature', 'groups', 'photo'],
+    },
+    {
+        slug: 'shivanasamudra',
+        name: 'Shivanasamudra Falls',
+        state: 'Karnataka',
+        type: 'nature',
+        distanceKm: 135,
+        driveHours: '3–3.5',
+        seasons: ['jul', 'aug', 'sep', 'oct', 'nov'],
+        bestMonths: 'July to November (fullest after the monsoon)',
+        tagline: 'A twin-cascade island waterfall on the Kaveri, at its best post-monsoon.',
+        image: 'images/shivanasamudra.jpg',
+        description:
+            'Shivanasamudra is a segmented waterfall where the Kaveri splits around an island and drops ' +
+            'in two great cascades — Gaganachukki and Bharachukki. Home to one of Asia\'s earliest ' +
+            'hydroelectric stations (1902), it is thunderous and full after the monsoon. It pairs well ' +
+            'with the Ranganathittu bird sanctuary and Srirangapatna on the way from Bengaluru.',
+        howToReach: {
+            flight: 'Nearest airport is Bengaluru (BLR, ~135 km).',
+            train: 'Nearest railheads are Maddur and Mandya; continue by road.',
+            bus: 'Buses run to Malavalli/Kollegal; the falls are a short hop from there.',
+            road: 'Drive via Kanakapura or Maddur; about 3–3.5 hours.',
+        },
+        precautions: [
+            'The falls are powerful in spate — stay behind barriers and never enter the water near the drop.',
+            'Rocks and viewpoints are slippery in the monsoon; wear grip footwear.',
+            'It is a day trip with little shade or food; carry water and snacks.',
+            'Best seen July–November; it thins to a trickle in peak summer.',
+        ],
+        booking: { railTo: 'Maddur', busTo: 'Malavalli', hotelCity: 'Shivanasamudra' },
+        tags: ['nature', 'photo', 'family'],
+    },
+    {
+        slug: 'belur-halebidu',
+        name: 'Belur & Halebidu',
+        state: 'Karnataka',
+        type: 'heritage',
+        distanceKm: 220,
+        driveHours: '4–4.5',
+        seasons: ['sep', 'oct', 'nov', 'dec', 'jan', 'feb'],
+        bestMonths: 'September to February',
+        tagline: 'Twin Hoysala temple towns of jaw-dropping stone carving — now UNESCO-listed.',
+        image: 'images/belur-halebidu.jpg',
+        description:
+            'Belur and Halebidu, a short drive apart near Hassan, hold the finest Hoysala temple art in ' +
+            'India: the Chennakeshava Temple at Belur and the Hoysaleswara Temple at Halebidu, both ' +
+            'covered in astonishingly intricate soapstone carving. Inscribed on the UNESCO World ' +
+            'Heritage list, they reward a slow, guided look and pair naturally with Shravanabelagola.',
+        howToReach: {
+            flight: 'Nearest airport is Mangaluru (IXE); Bengaluru (BLR, ~220 km) has more flights.',
+            train: 'Nearest railhead is Hassan (~35 km); continue by road.',
+            bus: 'Buses run from Bengaluru to Hassan and on to Belur/Halebidu (~4–5 hours).',
+            road: 'Drive via NH75 through Hassan; about 4–4.5 hours.',
+        },
+        precautions: [
+            'The carvings reward a guide — hire an authorised one at the gate for the stories in the stone.',
+            'Floors are stone and footwear comes off inside; carry socks for warm afternoons.',
+            'It is a heritage site — do not touch or lean on the carvings.',
+            'Combine both temples plus Shravanabelagola in one trip to make the distance worthwhile.',
+        ],
+        booking: { railTo: 'Hassan', busTo: 'Hassan', hotelCity: 'Hassan' },
+        tags: ['heritage', 'photo', 'solo'],
+    },
+    {
+        slug: 'shravanabelagola',
+        name: 'Shravanabelagola',
+        state: 'Karnataka',
+        type: 'heritage',
+        distanceKm: 145,
+        driveHours: '3–3.5',
+        seasons: ['sep', 'oct', 'nov', 'dec', 'jan', 'feb'],
+        bestMonths: 'September to February',
+        tagline: 'A towering monolithic Jain statue atop a granite hill, reached by stone steps.',
+        image: 'images/shravanabelagola.jpg',
+        description:
+            'Shravanabelagola is one of the most important Jain pilgrimage sites in India, crowned by ' +
+            'the roughly 17-metre monolithic statue of Gommateshwara (Bahubali) on Vindhyagiri hill, ' +
+            'carved around 981 CE. Reaching it means climbing several hundred rock-cut steps, past ' +
+            'shrines and inscriptions. Every twelve years the grand Mahamastakabhisheka anointing ' +
+            'ceremony draws huge crowds.',
+        howToReach: {
+            flight: 'Nearest airport is Bengaluru (BLR, ~145 km).',
+            train: 'Nearest railheads are Hassan and Channarayapatna; continue by road.',
+            bus: 'Buses run from Bengaluru toward Channarayapatna/Shravanabelagola (~3.5 hours).',
+            road: 'Drive via NH75 toward Hassan, then to the town; about 3–3.5 hours.',
+        },
+        precautions: [
+            'Footwear is not allowed on the hill and the steps get hot by midday — climb early and carry socks.',
+            'The step climb is long; those with knee or heart issues should pace it and rest.',
+            'It is a sacred site — dress modestly and be respectful during rituals.',
+            'Carry water; there is little shade on the ascent.',
+        ],
+        booking: { railTo: 'Hassan', busTo: 'Channarayapatna', hotelCity: 'Hassan' },
+        tags: ['heritage', 'solo', 'photo'],
+    },
+    {
+        slug: 'bandipur',
+        name: 'Bandipur & Nagarhole',
+        state: 'Karnataka',
+        type: 'wildlife',
+        distanceKm: 220,
+        driveHours: '4.5–5.5',
+        seasons: ['oct', 'nov', 'dec', 'jan', 'feb', 'mar', 'apr'],
+        bestMonths: 'October to April',
+        tagline: 'Tiger-country national parks with jeep safaris on the Kerala–Karnataka border.',
+        image: 'images/bandipur.jpg',
+        description:
+            'Bandipur and the neighbouring Nagarhole are among South India\'s premier tiger reserves, ' +
+            'part of the Nilgiri Biosphere. Jeep and bus safaris pass elephants, gaur, deer and, with ' +
+            'luck, leopard and tiger, through dry-deciduous forest. They make a classic wildlife ' +
+            'weekend from Bengaluru, often combined with a stop at Mysuru on the way.',
+        howToReach: {
+            flight: 'Nearest airport is Bengaluru (BLR, ~220 km); Mysuru (MYQ) is closer with fewer flights.',
+            train: 'Nearest railhead is Mysuru (~80 km); continue by road.',
+            bus: 'Buses toward Ooty/Gundlupet pass Bandipur; alight and arrange a safari locally.',
+            road: 'Drive via Mysuru and Gundlupet; about 4.5–5.5 hours.',
+        },
+        precautions: [
+            'The highway through the reserve has a night traffic ban (roughly 9 pm–6 am) to protect wildlife — plan a daytime crossing.',
+            'Book safaris through the forest department in advance; slots and timings are limited.',
+            'Stay in your vehicle and stay quiet on safari; do not feed or provoke animals.',
+            'Carry neutral clothing and binoculars; mornings can be cold in winter.',
+        ],
+        booking: { railTo: 'Mysuru', busTo: 'Gundlupet', hotelCity: 'Bandipur' },
+        tags: ['nature', 'family', 'photo'],
+    },
 ];
 
 /*
@@ -547,6 +735,234 @@ const CITY_ATTRACTIONS = [
         lat: 12.9825, lng: 77.6203,
         tags: ['nature', 'date', 'family'],
     },
+    {
+        slug: 'vv-puram-food-street',
+        name: 'VV Puram Food Street',
+        category: 'Street food',
+        area: 'V V Puram, South Bengaluru',
+        bestTime: 'Evening, 6–10 pm',
+        tagline: 'Bengaluru\'s legendary evening thindi (snack) lane in Sajjan Rao Circle.',
+        image: 'images/food-idli-vada.jpg',
+        description:
+            'Thindi Beedi, better known as VV Puram Food Street, is a short lane near Sajjan Rao Circle ' +
+            'that comes alive every evening with dozens of stalls dishing out Bengaluru\'s vegetarian ' +
+            'street food. Think holige, dosas of every kind, gobi, chaats, congress buns and hot badam ' +
+            'milk to finish. It is a decades-old institution and the best single spot to graze your ' +
+            'way through the city\'s snack culture.',
+        highlights: [
+            'Grazing stall-to-stall — holige, dosas, gobi, chaats and more',
+            'Classic finishers: hot badam milk and dharwad pedha',
+            'The buzzing evening crowd and the smell of ghee down the whole lane',
+        ],
+        gettingThere: {
+            metro: 'National College station (Green Line) is a short walk or auto away.',
+            road: 'Near Sajjan Rao Circle in V V Puram; easy by auto, parking is tight in the evening.',
+        },
+        entry: 'Free to walk; pay per stall. Busiest and best in the evening; many stalls shut by late night.',
+        tips: [
+            'Come hungry and in the evening — most stalls are dinner-only.',
+            'It is pure vegetarian and cash/UPI friendly; carry small change.',
+            'Go stall to stall in small portions so you can try more.',
+        ],
+        maps: 'VV Puram Food Street, Bengaluru',
+        lat: 12.9520, lng: 77.5730,
+        tags: ['budget', 'groups', 'family', 'quick'],
+    },
+    {
+        slug: 'hal-aerospace-museum',
+        name: 'HAL Aerospace Museum',
+        category: 'Museum',
+        area: 'Marathahalli / Old Airport Road, East Bengaluru',
+        bestTime: 'Late morning to afternoon',
+        tagline: 'India\'s first aerospace museum — real aircraft, a flight sim and a hangar of history.',
+        image: 'images/hal-aerospace.jpg',
+        description:
+            'Set up by Hindustan Aeronautics Limited, the HAL Aerospace Museum was India\'s first of ' +
+            'its kind. It displays a range of aircraft, helicopters and aero-engines, traces the story ' +
+            'of Indian aviation and HAL, and offers a flight-simulator experience. With outdoor ' +
+            'exhibits and interactive galleries, it is a genuinely fun half-day for families and ' +
+            'anyone curious about flight.',
+        highlights: [
+            'Real fighter jets, helicopters and aero-engines on display',
+            'The flight simulator and the aviation-history galleries',
+            'Outdoor aircraft you can walk right up to',
+        ],
+        gettingThere: {
+            metro: 'No Metro at the gate; take a cab or auto from Marathahalli / Old Airport Road.',
+            road: 'On the Old Airport Road near Marathahalli; easy by cab, allow for east-city traffic.',
+        },
+        entry: 'Ticketed, with extra charges for the simulator. Open through the day; check the weekly closure before going.',
+        tips: [
+            'Great for kids — budget extra time and tickets for the flight simulator.',
+            'Much of it is outdoors, so carry water and sun cover.',
+            'Confirm the weekly closed day before you set out.',
+        ],
+        maps: 'HAL Aerospace Museum, Bengaluru',
+        lat: 12.9498, lng: 77.6680,
+        tags: ['family', 'heritage'],
+    },
+    {
+        slug: 'vitm',
+        name: 'Visvesvaraya Museum (VITM)',
+        category: 'Science museum',
+        area: 'Kasturba Road, Central Bengaluru',
+        bestTime: 'Morning to afternoon',
+        tagline: 'A hands-on science and technology museum beside Cubbon Park.',
+        image: 'images/vitm.jpg',
+        description:
+            'The Visvesvaraya Industrial and Technological Museum, named for engineer Sir M. ' +
+            'Visvesvaraya, is a lively hands-on science museum next to Cubbon Park. Its floors cover ' +
+            'engines, electronics, space, biotechnology and a popular Fun Science gallery, with ' +
+            'interactive exhibits kids can push, pull and play with. It pairs perfectly with a Cubbon ' +
+            'Park walk and the nearby Government Museum.',
+        highlights: [
+            'Interactive Fun Science and engineering galleries',
+            'The engine, space and electronics halls',
+            'Its handy location right beside Cubbon Park',
+        ],
+        gettingThere: {
+            metro: 'Cubbon Park and MG Road stations (Purple Line) are a short walk away.',
+            road: 'On Kasturba Road near MG Road; central and easy by Metro or auto.',
+        },
+        entry: 'Ticketed entry with extra charges for some shows. Open through the day; check the weekly closure.',
+        tips: [
+            'Best for families and curious kids — allow a couple of hours for the interactive floors.',
+            'Combine with Cubbon Park and the Government Museum next door.',
+            'Weekday mornings are quietest; school groups arrive later.',
+        ],
+        maps: 'Visvesvaraya Industrial and Technological Museum, Bengaluru',
+        lat: 12.9757, lng: 77.5966,
+        tags: ['family', 'budget'],
+    },
+    {
+        slug: 'kr-market',
+        name: 'KR Market (City Market)',
+        category: 'Market',
+        area: 'Kalasipalya, South Bengaluru',
+        bestTime: 'Early morning for the flower market',
+        tagline: 'A vast, centuries-old wholesale flower and produce market — a photographer\'s dream.',
+        image: 'images/kr-market.jpg',
+        description:
+            'Krishna Rajendra Market, universally City Market, is one of Asia\'s busiest markets and ' +
+            'sits on the site of a historic battlefield. Its ground-floor flower market is a riot of ' +
+            'colour and activity at dawn, ringed by wholesale produce, spices, and hardware. Chaotic, ' +
+            'loud and utterly local, it is best explored early and paired with the nearby Tipu\'s ' +
+            'Palace and Bangalore Fort.',
+        highlights: [
+            'The dawn flower market in full colour and motion',
+            'Wholesale produce, spice and everyday-goods lanes',
+            'The nearby Tipu\'s Summer Palace and Bangalore Fort',
+        ],
+        gettingThere: {
+            metro: 'Krishna Rajendra Market station (Green Line) is right at the market.',
+            road: 'Extremely congested by road; the Metro is by far the easiest way in.',
+        },
+        entry: 'Free to wander; it is a working market. Come very early for the flower trade at its best.',
+        tips: [
+            'Go at dawn for the flowers and the light — it is at its most photogenic then.',
+            'It is crowded and hectic; watch your belongings and wear sturdy shoes.',
+            'Use the Metro; driving and parking here are a headache.',
+        ],
+        maps: 'KR Market, Bengaluru',
+        lat: 12.9634, lng: 77.5761,
+        tags: ['photo', 'budget', 'heritage'],
+    },
+    {
+        slug: 'commercial-street',
+        name: 'Commercial Street',
+        category: 'Shopping',
+        area: 'Tasker Town, Central Bengaluru',
+        bestTime: 'Late afternoon to evening',
+        tagline: 'A bustling heritage shopping strip for clothes, jewellery and street bargains.',
+        image: 'images/commercial-street.jpg',
+        description:
+            'One of Bengaluru\'s oldest and busiest shopping districts, Commercial Street is a warren ' +
+            'of shops and stalls selling clothes, footwear, jewellery, fabrics and knick-knacks, with ' +
+            'plenty of street food along the way. It is where locals come to bargain-hunt, especially ' +
+            'before festivals, and makes a lively evening out near MG Road.',
+        highlights: [
+            'Clothing, footwear and jewellery across hundreds of shops',
+            'Street-side snacks and bargaining culture',
+            'Its proximity to MG Road and the CBD',
+        ],
+        gettingThere: {
+            metro: 'MG Road station (Purple Line) is the nearest; then a short walk or auto.',
+            road: 'In the CBD near MG Road; walk in, as parking is very limited.',
+        },
+        entry: 'Free to browse; it is a shopping street. Many shops shut one day a week — check before a special trip.',
+        tips: [
+            'Bargain politely at the smaller shops and stalls.',
+            'It gets very crowded on weekends and before festivals.',
+            'Go on foot from MG Road; driving in is slow and parking scarce.',
+        ],
+        maps: 'Commercial Street, Bengaluru',
+        lat: 12.9829, lng: 77.6094,
+        tags: ['groups', 'budget'],
+    },
+    {
+        slug: 'nehru-planetarium',
+        name: 'Jawaharlal Nehru Planetarium',
+        category: 'Planetarium',
+        area: 'Sri T Chowdaiah Road, Central Bengaluru',
+        bestTime: 'Around a scheduled sky-show',
+        tagline: 'Sky-theatre shows and a science park under a dome near Sankey Tank.',
+        image: 'images/nehru-planetarium.jpg',
+        description:
+            'The Jawaharlal Nehru Planetarium runs immersive sky-theatre shows on the stars, planets ' +
+            'and space missions, alongside a Science Centre and an outdoor science park. Popular with ' +
+            'families and school groups, it is an easy, enriching stop near Sankey Tank and the ' +
+            'Bangalore Palace, best timed around one of the daily shows.',
+        highlights: [
+            'The domed sky-theatre astronomy shows',
+            'The interactive Science Centre and outdoor science park',
+            'Special events around eclipses and space missions',
+        ],
+        gettingThere: {
+            metro: 'Nearest stations are around Cantonment / Malleswaram; take an auto for the last stretch.',
+            road: 'On Sri T Chowdaiah Road near Sankey Tank; easy by auto or cab.',
+        },
+        entry: 'Ticketed, with separate show timings. Shows run at fixed slots — check and arrive before showtime.',
+        tips: [
+            'Check the show schedule and book/arrive early; seats for popular slots fill up.',
+            'Great with kids — combine with Sankey Tank or the Bangalore Palace.',
+            'It is usually closed one day a week; confirm before going.',
+        ],
+        maps: 'Jawaharlal Nehru Planetarium, Bengaluru',
+        lat: 12.9930, lng: 77.5800,
+        tags: ['family', 'budget'],
+    },
+    {
+        slug: 'wonderla',
+        name: 'Wonderla',
+        category: 'Amusement park',
+        area: 'Bidadi, Mysuru Road (SW outskirts)',
+        bestTime: 'Full day; weekdays to avoid crowds',
+        tagline: 'A big amusement and water park on the city\'s south-western edge.',
+        image: 'images/wonderla.jpg',
+        description:
+            'Wonderla, on the Mysuru road near Bidadi, is one of India\'s best-known amusement parks, ' +
+            'combining high-thrill rides, family rides and a large water park with wave pools and ' +
+            'slides. It is a full-day outing on the city\'s outskirts, hugely popular with families ' +
+            'and groups looking for a splash and some adrenaline without leaving the region.',
+        highlights: [
+            'High-thrill roller coasters and drop rides',
+            'The water park with wave pool and slides',
+            'Family and kids\' rides for all ages',
+        ],
+        gettingThere: {
+            metro: 'No Metro; drive or take the park shuttle where available.',
+            road: 'About 28 km on Mysuru Road near Bidadi; roughly an hour by cab.',
+        },
+        entry: 'Ticketed (combined dry + water park). Carry swimwear for the water rides; lockers are available.',
+        tips: [
+            'Go on a weekday to dodge weekend queues and crowds.',
+            'Carry swimwear and a change of clothes for the water park.',
+            'Book tickets online in advance, often cheaper than at the gate.',
+        ],
+        maps: 'Wonderla Amusement Park, Bengaluru',
+        lat: 12.8360, lng: 77.4300,
+        tags: ['family', 'groups'],
+    },
 ];
 
 /*
@@ -756,6 +1172,104 @@ const TEMPLES = [
         ],
         maps: 'Chokkanathaswamy Temple, Domlur, Bengaluru',
         lat: 12.9612, lng: 77.6387,
+        tags: ['heritage', 'solo'],
+    },
+    {
+        slug: 'dodda-ganapathi',
+        name: 'Dodda Ganapathi Temple',
+        category: 'Ganesha temple',
+        area: 'Basavanagudi, South Bengaluru',
+        bestTime: 'Morning; Ganesha Chaturthi',
+        tagline: 'A giant monolithic Ganesha right beside the Bull Temple.',
+        image: 'images/dodda-ganapathi.jpg',
+        description:
+            'The Dodda Ganapathi (Big Ganesha) temple sits next to the Bull Temple in Basavanagudi and ' +
+            'enshrines a huge monolithic Ganesha idol, several metres tall, carved from a single ' +
+            'stone. On special days the idol is coated in butter (benne alankara) or decorated with ' +
+            'greens. Kempegowda-era in origin, it is almost always visited together with the adjoining ' +
+            'Bull Temple.',
+        highlights: [
+            'The colossal single-stone Ganesha idol',
+            'The butter (benne) decoration on festival days',
+            'Its pairing with the Bull Temple next door',
+        ],
+        gettingThere: {
+            metro: 'National College station (Green Line) is the closest; a short walk or auto away.',
+            road: 'On Bull Temple Road in Basavanagudi; easy by auto, parking is tight on weekends.',
+        },
+        entry: 'Free entry. Open roughly 6 am–noon and 5:30–8:30 pm; busiest on Ganesha Chaturthi.',
+        tips: [
+            'Do it in one visit with the Bull Temple right beside it.',
+            'Go during Ganesha Chaturthi for the atmosphere, but expect crowds.',
+            'Footwear comes off at the entrance.',
+        ],
+        maps: 'Dodda Ganapathi Temple, Basavanagudi, Bengaluru',
+        lat: 12.9424, lng: 77.5673,
+        tags: ['heritage', 'photo'],
+    },
+    {
+        slug: 'ragigudda-anjaneya',
+        name: 'Ragigudda Anjaneya Temple',
+        category: 'Hanuman temple',
+        area: 'Jayanagar / JP Nagar, South Bengaluru',
+        bestTime: 'Morning; Saturdays and Hanuman Jayanti',
+        tagline: 'A hilltop Hanuman temple on a rocky outcrop in south Bengaluru.',
+        image: 'images/ragigudda.jpg',
+        description:
+            'Ragigudda Sri Prasanna Anjaneyaswamy Temple stands on a rocky hillock between Jayanagar ' +
+            'and JP Nagar and is one of south Bengaluru\'s most popular temples. Dedicated to Hanuman ' +
+            '(Anjaneya), the complex also has shrines to Rama, Shiva and Ganesha, with a tall Hanuman ' +
+            'idol and steps up the rock. Saturdays and Hanuman Jayanti draw large, devout crowds.',
+        highlights: [
+            'The tall Anjaneya (Hanuman) idol and hill-rock setting',
+            'The additional Rama, Shiva and Ganesha shrines',
+            'Lively Saturday worship and festival days',
+        ],
+        gettingThere: {
+            metro: 'Yelachenahalli / Jayanagar stations (Green Line) are nearest; then a short auto ride.',
+            road: 'Off the Outer Ring Road near Jayanagar/JP Nagar; easy by auto or cab.',
+        },
+        entry: 'Free entry. Open roughly 7 am–noon and 5:30–8:30 pm; extended on Saturdays and festivals.',
+        tips: [
+            'Saturdays are the busiest day of worship — go early on a weekday for calm.',
+            'There is a short climb up the rock; wear easy footwear you can remove.',
+            'Combine with a Jayanagar cafe or the 4th Block shopping area.',
+        ],
+        maps: 'Ragigudda Anjaneya Temple, Bengaluru',
+        lat: 12.9089, lng: 77.5906,
+        tags: ['heritage', 'family'],
+    },
+    {
+        slug: 'kote-venkataramana',
+        name: 'Kote Venkataramana Temple',
+        category: 'Vishnu temple',
+        area: 'Krishnarajendra Road, near Tipu\'s Palace',
+        bestTime: 'Morning',
+        tagline: 'An early-1700s Vijayanagara-Dravidian temple beside the old Bangalore Fort.',
+        image: 'images/kote-venkataramana.jpg',
+        description:
+            'Built in the early 18th century, the Kote (Fort) Venkataramana Temple stands next to ' +
+            'Tipu Sultan\'s Summer Palace within the old Bangalore Fort precinct. Dedicated to Vishnu ' +
+            'as Venkataramana, it blends Vijayanagara and Dravidian styles with finely carved pillars ' +
+            'and a serene interior. Compact and historic, it is best combined with Tipu\'s Palace, ' +
+            'the fort and KR Market close by.',
+        highlights: [
+            'The Vijayanagara-Dravidian carved pillars and mantapa',
+            'Its setting beside Tipu\'s Palace and the old fort',
+            'A quiet, historic shrine amid the busy market area',
+        ],
+        gettingThere: {
+            metro: 'Krishna Rajendra Market and City Railway Station (Green Line) are nearby; then a short auto.',
+            road: 'On K R Road near Tipu\'s Palace and KR Market; the area is congested, so allow time.',
+        },
+        entry: 'Free entry. Open roughly 7:30 am–noon and 6–8:30 pm; a compact visit.',
+        tips: [
+            'Pair it with Tipu\'s Summer Palace, Bangalore Fort and KR Market for a half-day.',
+            'Go in the morning before the market traffic builds.',
+            'It is small and living — dress modestly and tread gently.',
+        ],
+        maps: 'Kote Venkataramana Temple, Bengaluru',
+        lat: 12.9605, lng: 77.5760,
         tags: ['heritage', 'solo'],
     },
 ];
@@ -1077,6 +1591,81 @@ const EATERIES = [
         veg: 'veg',
         tags: ['budget', 'quick', 'heritage'],
     },
+    {
+        slug: 'veena-stores',
+        name: 'Veena Stores',
+        area: 'Malleswaram',
+        since: 1970,
+        signature: 'Idli & vada',
+        priceHint: '₹ · veg',
+        tagline: 'A tiny Malleswaram counter famous for pillowy idlis and long morning queues.',
+        image: 'images/food-idli-vada.jpg',
+        description:
+            'Veena Stores is a hole-in-the-wall Malleswaram legend that has served some of the city\'s ' +
+            'softest idlis for decades. The menu is short — idli, vada, khara bath, kesari bath and ' +
+            'filter coffee — and the ritual is pure Bengaluru: a fast-moving queue, a quick stand-and-' +
+            'eat, and a tumbler of coffee to finish. Mornings only, and it runs out early.',
+        mustTry: ['The famously soft idli with chutney', 'Vada and khara bath', 'Filter coffee'],
+        tips: [
+            'Go early in the morning — it is breakfast-only and sells out.',
+            'Expect a queue and standing room; it moves fast.',
+            'Carry cash/UPI and small change.',
+        ],
+        maps: 'Veena Stores, Malleswaram, Bengaluru',
+        lat: 13.0030, lng: 77.5710,
+        veg: 'veg',
+        tags: ['budget', 'quick', 'heritage'],
+    },
+    {
+        slug: 'taaza-thindi',
+        name: 'Taaza Thindi',
+        area: 'Vidyapeeth, South Bengaluru',
+        since: 1998,
+        signature: 'Idli-vada & dosa',
+        priceHint: '₹ · veg',
+        tagline: 'A no-frills south-Bengaluru favourite for fast, fresh tiffin at rock-bottom prices.',
+        image: 'images/food-dosa-sambar.jpg',
+        description:
+            'Taaza Thindi on Kanakapura Road is a beloved quick-tiffin joint where fresh idlis, vadas ' +
+            'and dosas fly off the counter to a constant queue. Cheap, fast and consistently good, it ' +
+            'is a classic stand-and-eat spot — the food is made in front of you and eaten in minutes, ' +
+            'washed down with strong filter coffee.',
+        mustTry: ['Soft idli-vada with chutney', 'Masala dosa', 'Filter coffee'],
+        tips: [
+            'Peak breakfast hours mean a queue — it clears quickly.',
+            'It is stand-and-eat; do not expect seating.',
+            'Come early; freshness and the crowd both peak in the morning.',
+        ],
+        maps: 'Taaza Thindi, Kanakapura Road, Bengaluru',
+        lat: 12.9260, lng: 77.5710,
+        veg: 'veg',
+        tags: ['budget', 'quick'],
+    },
+    {
+        slug: 'corner-house',
+        name: 'Corner House Ice Cream',
+        area: 'Multiple (Residency Road original)',
+        since: 1982,
+        signature: 'Death by Chocolate',
+        priceHint: '₹₹ · veg',
+        tagline: 'The homegrown ice-cream parlour behind the city\'s beloved Death by Chocolate.',
+        image: 'images/cafe-latte.jpg',
+        description:
+            'Corner House is a Bengaluru institution that has been serving generous sundaes since the ' +
+            '1980s, most famously the legendary "Death by Chocolate" — brownie, ice cream, nuts and ' +
+            'sauce piled into one indulgent bowl. Cheerful, crowded and nostalgic, its branches across ' +
+            'the city are a go-to for a post-dinner treat with friends and family.',
+        mustTry: ['Death by Chocolate (DBC)', 'Hot chocolate fudge', 'Any of the loaded sundaes'],
+        tips: [
+            'Evenings and weekends are busy — expect a short wait for a table.',
+            'Portions are large; share the bigger sundaes.',
+            'The Residency Road branch is the original; others are dotted across the city.',
+        ],
+        maps: 'Corner House Ice Cream, Residency Road, Bengaluru',
+        lat: 12.9698, lng: 77.6030,
+        veg: 'veg',
+        tags: ['family', 'groups', 'date'],
+    },
 ];
 
 /*
@@ -1252,6 +1841,62 @@ const ACTIVITIES = [
         maps: 'Go karting track Bengaluru',
         tags: ['groups', 'family'],
     },
+    {
+        slug: 'brewery-hopping',
+        name: 'Craft brewery hopping',
+        category: 'Nightlife',
+        area: 'Indiranagar, Koramangala & Whitefield',
+        duration: 'An evening',
+        priceHint: '21+ · varies',
+        tagline: 'Bengaluru is India\'s craft-beer capital — go tasting at its microbreweries.',
+        image: 'images/cafe-coffee.jpg',
+        description:
+            'Bengaluru is widely called the craft-beer capital of India, with a dense scene of ' +
+            'microbreweries pouring fresh, house-brewed ales, lagers and wheat beers. Institutions ' +
+            'like Toit in Indiranagar and Arbor Brewing in Magrath Road are weekend favourites, and ' +
+            'neighbourhoods like Indiranagar, Koramangala and Whitefield make easy brewery crawls. ' +
+            'Great food usually comes with the beer.',
+        whatYoullDo: [
+            'Sample a tasting flight of house-brewed beers',
+            'Hop between two or three nearby breweries in an evening',
+            'Pair the beer with the kitchen\'s signature plates',
+        ],
+        tips: [
+            'It is 21+ and IDs are checked; drink responsibly and arrange a cab home.',
+            'Popular spots have long weekend waits — go early or on a weeknight.',
+            'Try a tasting flight to sample more than one brew.',
+        ],
+        maps: 'Microbrewery Indiranagar, Bengaluru',
+        tags: ['groups', 'date'],
+    },
+    {
+        slug: 'vv-puram-food-walk',
+        name: 'VV Puram food walk',
+        category: 'Culinary',
+        area: 'V V Puram, South Bengaluru',
+        duration: '2–3 hours (evening)',
+        priceHint: 'Budget · veg',
+        tagline: 'Graze your way down Bengaluru\'s most famous evening snack street.',
+        image: 'images/food-masala-dosa-vada.jpg',
+        description:
+            'A self-guided (or guided) evening food walk down VV Puram\'s Thindi Beedi is one of the ' +
+            'tastiest things to do in the city. Over a couple of unhurried hours you graze stall to ' +
+            'stall — holige, dosas, gobi, chaats, congress buns — and finish with hot badam milk. It ' +
+            'is cheap, purely vegetarian, and the best crash course in Bengaluru\'s snack culture.',
+        whatYoullDo: [
+            'Taste your way through a dozen classic stalls',
+            'Try regional sweets like holige and dharwad pedha',
+            'Finish with a glass of hot badam milk',
+        ],
+        tips: [
+            'Come hungry and in the evening — most stalls are dinner-only.',
+            'Carry small cash/UPI and go in small portions to try more.',
+            'Weekends are busiest; weeknights are calmer.',
+        ],
+        maps: 'VV Puram Food Street, Bengaluru',
+        lat: 12.9520, lng: 77.5730,
+        tags: ['budget', 'groups', 'family'],
+    },
 ];
 
 // Filterable "type" values, with readable labels for the filter bar.
@@ -1261,6 +1906,7 @@ const TYPES = [
     { id: 'beach', label: 'Beaches' },
     { id: 'heritage', label: 'Heritage' },
     { id: 'wildlife', label: 'Wildlife' },
+    { id: 'nature', label: 'Nature & falls' },
 ];
 
 /*

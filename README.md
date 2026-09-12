@@ -11,9 +11,11 @@ Live: https://jagdish1998.github.io/ooruly/
 ## What it is
 
 - **No build step.** Plain HTML, CSS and vanilla JS, served straight from GitHub Pages.
-- **Data-driven.** Every place is one object in [`data.js`](data.js) across five collections —
-  `DESTINATIONS`, `CITY_ATTRACTIONS`, `CAFES`, `EATERIES` and `ACTIVITIES`. The home sections and
-  all detail pages are generated from these; add an entry and it shows up with no code change.
+- **Data-driven.** Every place is one object in [`data.js`](data.js) across six collections —
+  `DESTINATIONS`, `CITY_ATTRACTIONS`, `TEMPLES`, `CAFES`, `EATERIES` and `ACTIVITIES` (plus
+  `INTENTS`, `PHRASES` and `TYPES`). The home sections and all detail pages are generated from
+  these; add an entry — with `tags`, `lat`/`lng` and `maps` — and it shows up in the grids,
+  search, filters, the map and the planner with no code change.
 - **Hash-routed SPA.** `#/` is home (Inside Bengaluru, Temples, Hidden cafes, Authentic eats,
   Things to do, Nearby Bengaluru). Detail routes: `#/place/<slug>`, `#/city/<slug>`,
   `#/temple/<slug>`, `#/cafe/<slug>`, `#/eat/<slug>`, `#/do/<slug>`. Feature pages: `#/map`,

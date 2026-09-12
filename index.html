@@ -61,12 +61,34 @@
             <nav class="nav-desktop" aria-label="Primary">
                 <ul class="nav-links">
                     <li><a href="#/">Home</a></li>
-                    <li><a href="#city">City sights</a></li>
-                    <li><a href="#temples">Temples</a></li>
-                    <li><a href="#cafes">Cafes</a></li>
-                    <li><a href="#eats">Eats</a></li>
-                    <li><a href="#do">Things to do</a></li>
-                    <li><a href="#nearby">Getaways</a></li>
+
+                    <!-- The six browse-sections are anchors on the home page, so they're grouped
+                         under one "Explore" mega-menu instead of nine competing top-level links. -->
+                    <li class="nav-drop">
+                        <button type="button" class="nav-drop-btn" id="explore-btn"
+                            aria-haspopup="true" aria-expanded="false" aria-controls="explore-menu">
+                            Explore <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="nav-mega" id="explore-menu" hidden>
+                            <div class="nav-mega-col">
+                                <p class="nav-mega-head">In the city</p>
+                                <a href="#city"><i class="fa-solid fa-city" aria-hidden="true"></i> City sights</a>
+                                <a href="#temples"><i class="fa-solid fa-gopuram" aria-hidden="true"></i> Temples</a>
+                                <a href="#cafes"><i class="fa-solid fa-mug-saucer" aria-hidden="true"></i> Cafes</a>
+                                <a href="#eats"><i class="fa-solid fa-utensils" aria-hidden="true"></i> Eats</a>
+                                <a href="#do"><i class="fa-solid fa-person-hiking" aria-hidden="true"></i> Things to do</a>
+                            </div>
+                            <div class="nav-mega-col">
+                                <p class="nav-mega-head">Out of town</p>
+                                <a href="#nearby"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Weekend getaways</a>
+                                <p class="nav-mega-head nav-mega-head--spaced">Tools</p>
+                                <a href="#/saved"><i class="fa-regular fa-heart" aria-hidden="true"></i> Saved places</a>
+                                <a href="#/plan"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Weekend plan</a>
+                                <a href="#/phrases"><i class="fa-solid fa-language" aria-hidden="true"></i> Kannada phrases</a>
+                            </div>
+                        </div>
+                    </li>
+
                     <li><a href="#/map">Map</a></li>
                 </ul>
             </nav>
@@ -74,9 +96,6 @@
             <div class="nav-actions">
                 <button class="icon-btn" id="search-open" type="button" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                </button>
-                <button class="icon-btn" id="near-me" type="button" aria-label="Sort getaways by distance from me">
-                    <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
                 </button>
                 <a class="icon-btn" id="saved-link" href="#/saved" aria-label="Saved places">
                     <i class="fa-regular fa-heart" aria-hidden="true"></i>
@@ -105,16 +124,22 @@
         <button class="nav-close icon-btn" type="button" aria-label="Close menu">
             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
-        <ul class="nav-links">
+        <ul class="nav-links nav-links--drawer">
             <li><a href="#/">Home</a></li>
+
+            <li class="drawer-group-head">In the city</li>
             <li><a href="#city">City sights</a></li>
             <li><a href="#temples">Temples</a></li>
             <li><a href="#cafes">Cafes</a></li>
             <li><a href="#eats">Eats</a></li>
             <li><a href="#do">Things to do</a></li>
-            <li><a href="#nearby">Getaways</a></li>
+
+            <li class="drawer-group-head">Out of town</li>
+            <li><a href="#nearby">Weekend getaways</a></li>
+
+            <li class="drawer-group-head">Tools</li>
             <li><a href="#/map">Map</a></li>
-            <li><a href="#/saved">Saved</a></li>
+            <li><a href="#/saved">Saved places</a></li>
             <li><a href="#/plan">Weekend plan</a></li>
             <li><a href="#/phrases">Kannada phrases</a></li>
         </ul>

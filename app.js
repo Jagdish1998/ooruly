@@ -370,9 +370,14 @@
 
             <section class="section" id="nearby">
                 <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Nearby Bengaluru</h2>
-                        <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
+                    <div class="section-head section-head--row">
+                        <div>
+                            <h2 class="section-title">Nearby Bengaluru</h2>
+                            <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
+                        </div>
+                        <button class="near-btn" id="near-me-inline" type="button">
+                            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Near me
+                        </button>
                     </div>
                     <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
                     <div class="grid" id="grid">${list}</div>
@@ -1368,7 +1373,15 @@
             requestAnimationFrame(onScroll);
         }
         function goSection(id) {
-            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
+            // If we're on a route page (e.g. #/map), normalise the hash back to home first so the
+            // URL and view stay coherent, then render home and scroll to the section.
+            if (currentView !== 'home') {
+                renderHome();
+                currentView = 'home';
+                if (location.hash.indexOf('#/') === 0) {
+                    history.replaceState(null, '', location.pathname + location.search + '#/');
+                }
+            }
             const target = document.getElementById(id);
             if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             requestAnimationFrame(onScroll);
@@ -1379,7 +1392,12 @@
                 e.preventDefault();
                 goHome();
                 closeMenu();
+            } else if (href && href.indexOf('#/') === 0) {
+                // A hash ROUTE (e.g. #/saved, #/plan, #/map, #/phrases): let the browser's default
+                // anchor behaviour set the hash and the router handle it. Just close any open menu.
+                closeMenu();
             } else if (href && href.charAt(0) === '#') {
+                // A same-page SECTION anchor (e.g. #city): smooth-scroll on the home view.
                 e.preventDefault();
                 goSection(href.slice(1));
                 closeMenu();
@@ -1387,8 +1405,8 @@
             // external / other links fall through to default behaviour
         }
 
-        // Wire BOTH the desktop nav and the mobile drawer links (two separate .nav-links lists).
-        document.querySelectorAll('.nav-links a').forEach((a) => {
+        // Wire the desktop nav, the mobile drawer links, and the Explore mega-menu links.
+        document.querySelectorAll('.nav-links a, .nav-mega a').forEach((a) => {
             a.addEventListener('click', (e) => handleNavClick(e, a.getAttribute('href')));
         });
         const brand = document.querySelector('.brand');
@@ -1397,6 +1415,31 @@
         // The drawer's portfolio link opens a new tab; close the drawer behind it.
         const drawerPortfolio = document.querySelector('.nav-drawer-portfolio');
         if (drawerPortfolio) drawerPortfolio.addEventListener('click', closeMenu);
+
+        /* Desktop "Explore" mega-menu. Toggles on click; closes on outside click, Escape, or
+           picking an item. Hover also opens it on pointer-capable screens for quick access. */
+        const exploreBtn = document.getElementById('explore-btn');
+        const exploreMenu = document.getElementById('explore-menu');
+        if (exploreBtn && exploreMenu) {
+            const wrap = exploreBtn.closest('.nav-drop');
+            const openMenu2 = () => { exploreMenu.hidden = false; exploreBtn.setAttribute('aria-expanded', 'true'); };
+            const closeMenu2 = () => { exploreMenu.hidden = true; exploreBtn.setAttribute('aria-expanded', 'false'); };
+            exploreBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                exploreMenu.hidden ? openMenu2() : closeMenu2();
+            });
+            document.addEventListener('click', (e) => {
+                if (!exploreMenu.hidden && !exploreMenu.contains(e.target) && e.target !== exploreBtn) closeMenu2();
+            });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu2(); });
+            exploreMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu2));
+            // Open on hover for mouse users (pointer:fine), a common mega-menu convenience.
+            if (wrap && window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                let ht;
+                wrap.addEventListener('mouseenter', () => { clearTimeout(ht); openMenu2(); });
+                wrap.addEventListener('mouseleave', () => { ht = setTimeout(closeMenu2, 160); });
+            }
+        }
 
         /*
          * Hero CTAs (and any future in-page # link inside the rendered view) are delegated here so
@@ -1515,17 +1558,19 @@
         if (F) { F.on('favschange', refreshBadges); F.on('planchange', refreshBadges); }
         refreshBadges();
 
-        /* ---------- "near me" — sort getaways by real distance from the user ---------- */
-        const nearBtn = document.getElementById('near-me');
-        if (nearBtn && F) {
-            nearBtn.addEventListener('click', async () => {
+        /* ---------- "near me" — sort getaways by real distance (button lives in the Getaways
+           section now, and is re-created on each home render, so it's wired via delegation). ---- */
+        if (F) {
+            document.addEventListener('click', async (e) => {
+                const nearBtn = e.target.closest('#near-me-inline');
+                if (!nearBtn) return;
                 nearBtn.classList.add('is-loading');
                 try {
                     await F.getPosition();
                     toast('Sorted by distance from you');
                     if (currentView !== 'home') { location.hash = '#nearby'; }
                     else { renderHome(); const n = document.getElementById('nearby'); if (n) n.scrollIntoView({ behavior: 'smooth' }); }
-                } catch (e) {
+                } catch (err) {
                     toast('Couldn\'t get your location');
                 } finally {
                     nearBtn.classList.remove('is-loading');
