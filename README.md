@@ -6,7 +6,7 @@ and one tap to get directions or hand off to MakeMyTrip for flights, trains, bus
 
 ("Ooru" is Kannada for town/hometown — Ooruly is a guide to the city and its surroundings.)
 
-Live: https://jagdish1998.github.io/yatra/
+Live: https://jagdish1998.github.io/ooruly/
 
 ## What it is
 
