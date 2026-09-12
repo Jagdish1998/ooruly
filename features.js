@@ -303,6 +303,27 @@
         };
     }
 
+    /* ---------- audio narration (Web Speech API, no backend) ---------- */
+    /* Reads text aloud using the browser's built-in speech synthesis. Returns whether it started.
+       Only one narration plays at a time; call stopSpeech() to cancel. */
+    function canSpeak() { return typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined'; }
+    function speak(text, opts) {
+        if (!canSpeak() || !text) return false;
+        stopSpeech();
+        const u = new SpeechSynthesisUtterance(String(text));
+        u.rate = (opts && opts.rate) || 0.98;
+        u.pitch = 1;
+        u.lang = (opts && opts.lang) || 'en-IN';
+        if (opts && opts.onend) u.onend = opts.onend;
+        if (opts && opts.onstart) u.onstart = opts.onstart;
+        window.speechSynthesis.speak(u);
+        return true;
+    }
+    function stopSpeech() {
+        if (canSpeak()) window.speechSynthesis.cancel();
+    }
+    function isSpeaking() { return canSpeak() && window.speechSynthesis.speaking; }
+
     /* ---------- one-time flags (onboarding "seen" etc.) ---------- */
     function flagSeen(key) {
         try { return localStorage.getItem('ooruly:seen:' + key) === '1'; } catch (e) { return false; }
@@ -331,6 +352,8 @@
         isInSeason, currentMonthId, isOpenToday,
         // share
         share,
+        // audio narration
+        canSpeak, speak, stopSpeech, isSpeaking,
         // a11y + one-time flags
         trapFocus, flagSeen, markSeen,
         // events

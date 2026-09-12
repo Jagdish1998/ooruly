@@ -48,6 +48,35 @@ const DESTINATIONS = [
         ],
         booking: { railTo: 'Mysuru', busTo: 'Madikeri', hotelCity: 'Coorg' },
         tags: ['nature', 'date', 'solo'],
+        didYouKnow: [
+            'Coorg produces a large share of India\'s coffee, most of it grown in the shade of taller trees.',
+            'The Kodava people have a distinct culture, cuisine and traditional attire, and a martial heritage.',
+            'Bylakuppe near Coorg is one of the largest Tibetan settlements in India, home to the Golden Temple monastery.',
+        ],
+        history: [
+            { year: 'Pre-1834', event: 'Ruled by the Kodava Rajas as the kingdom of Kodagu.' },
+            { year: '1834', event: 'Annexed by the British; coffee cultivation expands across the hills.' },
+            { year: 'Today', event: 'A district of Karnataka known for coffee, culture and cool green hills.' },
+        ],
+        etiquette: [
+            'Buy coffee and spices directly from estates and local sellers to support growers.',
+            'Ask before photographing people, homes or rituals in Kodava villages.',
+            'Stick to marked trails and carry your trash out of the hills and forests.',
+            'Choose locally owned homestays for a more authentic stay that benefits the community.',
+        ],
+        localWords: [
+            { term: 'Kodagu', meaning: 'The local name for Coorg' },
+            { term: 'Kodava', meaning: 'The indigenous people of Coorg and their language' },
+            { term: 'Pandi curry', meaning: 'The famous Coorg pork curry' },
+        ],
+        bestFor: ['Nature lovers', 'Couples', 'Slow travellers'],
+        effort: 'Easy — mostly relaxed, some short treks',
+        responsible: [
+            'Buy coffee, honey and spices directly from estates and growers.',
+            'Stay in locally owned homestays so money reaches the community.',
+            'Carry out all trash from trails and viewpoints; don\'t pick plants.',
+            'Keep a respectful distance from elephants and wildlife at Dubare and on estates.',
+        ],
     },
     {
         slug: 'chikmagalur',
@@ -210,6 +239,45 @@ const DESTINATIONS = [
         ],
         booking: { railTo: 'Hosapete', busTo: 'Hospet', hotelCity: 'Hampi' },
         tags: ['heritage', 'photo', 'solo'],
+        didYouKnow: [
+            'At its peak, Vijayanagara was one of the largest and richest cities in the world, with an estimated half a million people.',
+            'The famous stone chariot at the Vittala Temple appears on the back of the ₹50 note.',
+            'Some pillars at the Vittala Temple are called "musical pillars" — they ring with different tones when tapped.',
+        ],
+        history: [
+            { year: '1336', event: 'The Vijayanagara Empire is founded, with Hampi as its capital.' },
+            { year: '1500s', event: 'The city reaches its golden age of wealth, art and temple-building.' },
+            { year: '1565', event: 'Defeated at the Battle of Talikota, the city is sacked and abandoned.' },
+            { year: '1986', event: 'The ruins are inscribed as a UNESCO World Heritage Site.' },
+        ],
+        etiquette: [
+            'It is a living heritage and religious site — dress modestly and don\'t deface or climb on monuments.',
+            'Remove footwear inside working temples like Virupaksha.',
+            'Be gentle with the "musical pillars" — repeated striking damages them.',
+            'Support local guides and craftspeople; buy from the bazaar rather than removing anything from the site.',
+        ],
+        localWords: [
+            { term: 'Vijayanagara', meaning: '"City of Victory" — the empire and its capital' },
+            { term: 'Gopura', meaning: 'The towering temple gateway' },
+            { term: 'Mantapa', meaning: 'A pillared hall or pavilion' },
+        ],
+        bestFor: ['History buffs', 'Photographers', 'Solo explorers'],
+        effort: 'Moderate — lots of walking and some climbing',
+        responsible: [
+            'Never climb on, chalk or scratch the monuments — they are fragile and protected.',
+            'Hire licensed local guides; it supports the community and the stories are worth it.',
+            'Carry water in a refillable bottle; shade and shops are sparse among the ruins.',
+            'Dress modestly at Virupaksha and other living temples.',
+        ],
+        forKids: [
+            'It looks like a giant playground of boulders — great for spotting shapes in the rocks.',
+            'Find the "musical pillars" that ring like bells (look, don\'t bang!).',
+            'Hunt for the stone chariot — it\'s the one on the ₹50 note.',
+        ],
+        sources: [
+            { label: 'Group of Monuments at Hampi — UNESCO', url: 'https://whc.unesco.org/en/list/241/' },
+            { label: 'Hampi — Wikipedia', url: 'https://en.wikipedia.org/wiki/Hampi' },
+        ],
     },
     {
         slug: 'gokarna',
@@ -398,6 +466,27 @@ const DESTINATIONS = [
         ],
         booking: { railTo: 'Hassan', busTo: 'Hassan', hotelCity: 'Hassan' },
         tags: ['heritage', 'photo', 'solo'],
+        didYouKnow: [
+            'The Chennakeshava temple at Belur took over 100 years to complete.',
+            'Hoysala sculptors signed their work — you can find artists\' names carved beneath some sculptures, rare in Indian temple art.',
+            'The soapstone they carved is soft when quarried and hardens with exposure, allowing incredibly fine detail.',
+        ],
+        history: [
+            { year: '1117', event: 'King Vishnuvardhana commissions the Chennakeshava temple at Belur.' },
+            { year: '12th c.', event: 'Halebidu (Dwarasamudra) serves as the Hoysala capital; the Hoysaleswara temple is built.' },
+            { year: '2023', event: 'The Hoysala temples are inscribed as a UNESCO World Heritage Site.' },
+        ],
+        etiquette: [
+            'Footwear comes off inside the temples; carry socks for warm stone floors.',
+            'Do not touch or lean on the carvings — skin oils and pressure damage them.',
+            'Hire an authorised guide at the gate rather than removing anything as a "souvenir".',
+            'Dress modestly at these living places of worship.',
+        ],
+        localWords: [
+            { term: 'Hoysala', meaning: 'The dynasty famous for its intricately carved temples' },
+            { term: 'Shilabalika', meaning: 'The graceful "celestial maiden" bracket figures' },
+            { term: 'Makara', meaning: 'A mythical creature carved over temple doorways' },
+        ],
     },
     {
         slug: 'shravanabelagola',
@@ -504,6 +593,30 @@ const CITY_ATTRACTIONS = [
         maps: 'Lalbagh Botanical Garden, Bengaluru',
         lat: 12.9507, lng: 77.5848,
         tags: ['nature', 'family', 'photo'],
+        didYouKnow: [
+            'The Lalbagh Rock is a peninsular gneiss dated to around 3,000 million years — among the oldest rock formations on Earth.',
+            'Its glass Crystal Palace was modelled on London\'s Crystal Palace of 1851.',
+            'One of Kempegowda\'s original watchtowers still stands on the rock inside the garden.',
+        ],
+        history: [
+            { year: '1760s', event: 'Commissioned by Hyder Ali as a Mughal-style garden.' },
+            { year: '1780s', event: 'Expanded by his son Tipu Sultan, who added plants from many countries.' },
+            { year: 'Today', event: 'A ~240-acre botanical garden famous for its biannual flower shows.' },
+        ],
+        localWords: [
+            { term: 'Lal Bagh', meaning: '"Red Garden" — likely for its red roses' },
+            { term: 'Gneiss', meaning: 'The ancient rock type of the Lalbagh Rock' },
+        ],
+        bestFor: ['Families', 'Morning walkers', 'Nature lovers'],
+        effort: 'Easy — flat paths, lots of space',
+        forKids: [
+            'Climb the giant 3,000-million-year-old rock and imagine how old that is!',
+            'Spot the huge glass house and the many kinds of trees and birds.',
+            'Visit during a flower show to see thousands of blooms arranged in patterns.',
+        ],
+        sources: [
+            { label: 'Lalbagh Botanical Garden — Wikipedia', url: 'https://en.wikipedia.org/wiki/Lalbagh' },
+        ],
     },
     {
         slug: 'cubbon-park',
@@ -669,6 +782,21 @@ const CITY_ATTRACTIONS = [
         lat: 12.8000, lng: 77.5770,
         tags: ['family', 'nature', 'photo'],
         closedOn: 'tue',
+        bestFor: ['Families', 'Kids', 'Wildlife fans'],
+        effort: 'Easy — a bus safari plus some walking',
+        forKids: [
+            'Ride the safari bus to spot tigers, lions and bears from up close (and safe!).',
+            'Look for the rare white tigers.',
+            'Walk through the butterfly conservatory and watch them flutter around you.',
+        ],
+        responsible: [
+            'Never feed or tease the animals; keep hands and arms inside the safari bus.',
+            'Don\'t litter — plastic harms wildlife.',
+            'Keep noise down so the animals stay calm.',
+        ],
+        sources: [
+            { label: 'Bannerghatta National Park — Wikipedia', url: 'https://en.wikipedia.org/wiki/Bannerghatta_National_Park' },
+        ],
     },
     {
         slug: 'tipu-summer-palace',
@@ -1004,6 +1132,34 @@ const TEMPLES = [
         maps: 'ISKCON Temple, Rajajinagar, Bengaluru',
         lat: 13.0098, lng: 77.5511,
         tags: ['heritage', 'family'],
+        didYouKnow: [
+            'It runs the kitchen behind Akshaya Patra, one of the world\'s largest mid-day-meal programmes for schoolchildren.',
+            'The temple blends traditional Dravidian gopurams with a modern glass-and-steel canopy.',
+            'The gold-plated flag mast (dhwaja stambha) and shikara are among its most striking features.',
+        ],
+        history: [
+            { year: '1997', event: 'Opened atop the seven-acre Hare Krishna Hill in Rajajinagar.' },
+            { year: 'Today', event: 'One of the largest Krishna temples in the world.' },
+        ],
+        etiquette: [
+            'Footwear and phones are deposited at the entrance — travel light.',
+            'Dress modestly, as it is an active place of worship.',
+            'The route to the sanctum is long and one-way through an arcade; allow at least an hour.',
+            'Photography is restricted inside; follow the signs.',
+        ],
+        localWords: [
+            { term: 'Aarti', meaning: 'The ritual of offering light (lamps) to the deity' },
+            { term: 'Prasadam', meaning: 'Blessed food offered to the deity, then shared' },
+            { term: 'Gopura', meaning: 'The ornate temple gateway tower' },
+            { term: 'Darshan', meaning: 'The act of beholding the deity' },
+        ],
+        bestFor: ['Families', 'First-time visitors'],
+        effort: 'Easy — but expect a long, winding queue',
+        responsible: [
+            'Take prasadam mindfully and avoid food waste.',
+            'Keep phones away in the sanctum as requested and respect the quiet.',
+            'Go on a weekday if you can, to ease pressure on peak-day crowds.',
+        ],
     },
     {
         slug: 'bull-temple',
@@ -1038,6 +1194,43 @@ const TEMPLES = [
         maps: 'Bull Temple, Basavanagudi, Bengaluru',
         lat: 12.9426, lng: 77.5676,
         tags: ['heritage', 'photo'],
+        didYouKnow: [
+            'The Nandi is carved from a single block of granite and has darkened over centuries from ritual oil and charcoal.',
+            'Local lore says the bull kept growing until a trishula (trident) was placed on its head to stop it.',
+            'The annual Kadalekai Parishe (groundnut fair) has been held around the temple for centuries.',
+        ],
+        history: [
+            { year: '1537', event: 'Built by Kempegowda, the founder of Bengaluru, in the Dravidian style.' },
+            { year: '16th c.', event: 'The surrounding area takes its name from the temple: Basava (bull) + gudi (temple).' },
+            { year: 'Today', event: 'One of the city\'s most visited temples and the heart of the Kadalekai Parishe fair.' },
+        ],
+        etiquette: [
+            'Remove footwear before entering; floors can be warm by mid-morning.',
+            'Dress modestly — cover shoulders and knees.',
+            'Ask before photographing people at prayer; follow any "no photos" signs inside the sanctum.',
+            'Keep voices low and move clockwise around the shrine.',
+        ],
+        localWords: [
+            { term: 'Nandi', meaning: 'The sacred bull, Shiva\'s mount and devotee' },
+            { term: 'Gudi', meaning: 'Temple (Kannada)' },
+            { term: 'Basava', meaning: 'Bull' },
+            { term: 'Parishe', meaning: 'Fair or festival' },
+        ],
+        bestFor: ['History buffs', 'Families', 'Photographers'],
+        effort: 'Easy — a short, level visit',
+        responsible: [
+            'Buy flowers and offerings from the small vendors outside to support them.',
+            'Don\'t litter during the Kadalekai Parishe — carry a bag for groundnut shells.',
+            'Be considerate with photography during pujas and around worshippers.',
+        ],
+        forKids: [
+            'Spot how huge the stone bull is — taller than three grown-ups stacked up!',
+            'Ask why the bull is dark and shiny (centuries of oil and butter offerings).',
+            'During the groundnut fair, kids can try fresh roasted groundnuts from the stalls.',
+        ],
+        sources: [
+            { label: 'Bull Temple, Bangalore — Wikipedia', url: 'https://en.wikipedia.org/wiki/Bull_Temple,_Bangalore' },
+        ],
     },
     {
         slug: 'gavi-gangadhareshwara',
@@ -1072,6 +1265,26 @@ const TEMPLES = [
         maps: 'Gavi Gangadhareshwara Temple, Gavipuram, Bengaluru',
         lat: 12.9503, lng: 77.5590,
         tags: ['heritage', 'photo'],
+        didYouKnow: [
+            'On Makar Sankranti each January, the setting sun\'s rays pass between the stone Nandi\'s horns and fall on the Shiva linga inside the cave — for just a few minutes.',
+            '"Gavi" means cave in Kannada; the shrine is cut into a natural rock cave.',
+            'The forecourt has mysterious monolithic granite discs (Surya Pana and Chandra Pana) whose exact purpose is still debated.',
+        ],
+        history: [
+            { year: '16th c.', event: 'Built into a natural cave by Kempegowda, making it one of Bengaluru\'s oldest temples.' },
+            { year: 'Today', event: 'Protected as an ancient monument; the Sankranti sun alignment draws huge crowds.' },
+        ],
+        etiquette: [
+            'Remove footwear at the entrance.',
+            'The cave sanctum is low and dim — watch your head and step carefully.',
+            'Dress modestly and keep quiet inside the shrine.',
+            'For the Sankranti phenomenon, arrive well ahead and be patient in the crowd.',
+        ],
+        localWords: [
+            { term: 'Gavi', meaning: 'Cave (Kannada)' },
+            { term: 'Linga', meaning: 'The aniconic symbol of Shiva' },
+            { term: 'Makar Sankranti', meaning: 'The mid-January harvest / solar festival' },
+        ],
     },
     {
         slug: 'halasuru-someshwara',
@@ -1463,6 +1676,21 @@ const EATERIES = [
         lat: 12.9548, lng: 77.5848,
         veg: 'veg',
         tags: ['family', 'heritage', 'quick'],
+        didYouKnow: [
+            'MTR is credited with inventing the rava idli during World War II, when rice was scarce and they improvised with semolina (rava).',
+            'During the 1970s Emergency-era price controls, MTR briefly reinvented itself and even sold instant-mix packets — now a business of their own.',
+            'It has been serving from near Lalbagh since 1924, making it one of the city\'s oldest eateries.',
+        ],
+        history: [
+            { year: '1924', event: 'Founded near Lalbagh as a tiffin room by the Maiya family.' },
+            { year: '1940s', event: 'Invents the rava idli during wartime rice shortages.' },
+            { year: 'Today', event: 'A living piece of Bengaluru food history, still run with the same classics.' },
+        ],
+        localWords: [
+            { term: 'Tiffin', meaning: 'A light South Indian meal or snack (breakfast/evening)' },
+            { term: 'Rava idli', meaning: 'A steamed semolina cake — invented here' },
+            { term: 'Filter coffee', meaning: 'South Indian coffee brewed drip-style, served frothy in a tumbler' },
+        ],
     },
     {
         slug: 'vidyarthi-bhavan',
@@ -1488,6 +1716,20 @@ const EATERIES = [
         lat: 12.9438, lng: 77.5731,
         veg: 'veg',
         tags: ['budget', 'quick', 'heritage'],
+        didYouKnow: [
+            'The name means "students\' home" — it opened to feed students around Basavanagudi\'s colleges.',
+            'Its masala dosa is roasted in ghee until dark and crisp, then served folded around a soft potato filling.',
+            'Writers, artists and politicians have been regulars for decades, giving it a cult following.',
+        ],
+        history: [
+            { year: '1943', event: 'Founded in Gandhi Bazaar to serve affordable food to students.' },
+            { year: 'Today', event: 'A heritage food landmark famous for one perfected dish: the ghee-roast masala dosa.' },
+        ],
+        localWords: [
+            { term: 'Masala dosa', meaning: 'A crisp rice-and-lentil crepe filled with spiced potato' },
+            { term: 'Ghee', meaning: 'Clarified butter, used to roast the dosa dark and crisp' },
+            { term: 'Kesari bath', meaning: 'A sweet semolina dish, often eaten alongside' },
+        ],
     },
     {
         slug: 'ctr',
@@ -1977,7 +2219,7 @@ const PHRASES = [
 const ITINERARIES = [
     {
         slug: 'weekend-in-the-city',
-        title: 'A weekend in the city',
+        title: 'A Weekend in the City',
         icon: 'fa-city',
         duration: '2 days',
         summary: 'The essential first-timer\'s loop — palaces, gardens, iconic dosas and a hidden cafe.',
@@ -1988,7 +2230,7 @@ const ITINERARIES = [
     },
     {
         slug: 'heritage-day',
-        title: 'Heritage day',
+        title: 'Heritage Day',
         icon: 'fa-landmark',
         duration: '1 day',
         summary: 'Palaces, forts and old-city history, wrapped around a legendary Basavanagudi breakfast.',
@@ -1999,7 +2241,7 @@ const ITINERARIES = [
     },
     {
         slug: 'temple-trail',
-        title: 'Temple trail',
+        title: 'Temple Trail',
         icon: 'fa-gopuram',
         duration: '1 day',
         summary: 'From the oldest shrines to a modern landmark — a spread across eras and faiths.',
@@ -2010,7 +2252,7 @@ const ITINERARIES = [
     },
     {
         slug: 'cafe-crawl',
-        title: 'Cafe crawl',
+        title: 'Cafe Crawl',
         icon: 'fa-mug-saucer',
         duration: 'Half day',
         summary: 'A slow, caffeinated wander through the city\'s best independent coffee rooms.',
@@ -2021,7 +2263,7 @@ const ITINERARIES = [
     },
     {
         slug: 'family-day-out',
-        title: 'Family day out',
+        title: 'Family Day Out',
         icon: 'fa-people-roof',
         duration: '1 day',
         summary: 'Animals, science and a big green park — an easy, all-ages day without leaving the city.',
@@ -2031,7 +2273,7 @@ const ITINERARIES = [
     },
     {
         slug: 'foodie-evening',
-        title: 'A foodie evening',
+        title: 'A Foodie Evening',
         icon: 'fa-utensils',
         duration: 'Evening',
         summary: 'Old-school tiffin, a street-food graze and dessert — the taste of Bengaluru in one night.',
@@ -2039,4 +2281,137 @@ const ITINERARIES = [
             'eat:brahmins-coffee-bar', 'do:vv-puram-food-walk', 'city:vv-puram-food-street', 'eat:corner-house',
         ],
     },
+];
+
+/*
+ * THEMES — learning collections that group places by what you'd understand, not just where they are.
+ * Each theme is a short "why this matters" intro plus a list of "key:slug" members (same id format
+ * as plans/itineraries). Rendered on the Themes page and each theme detail. Route: #/themes,
+ * #/theme/<slug>. Add a theme here and it appears with no code change.
+ */
+const THEMES = [
+    {
+        slug: 'kempegowda-legacy',
+        title: 'The Kempegowda Legacy',
+        icon: 'fa-chess-rook',
+        blurb: 'The 16th-century chieftain who founded Bengaluru left temples, towers and a fort still woven through the city.',
+        intro:
+            'Kempegowda I, a chieftain under the Vijayanagara Empire, founded Bengaluru in 1537 and ' +
+            'shaped its early form — laying out the pete (market town), building a mud fort, and ' +
+            'commissioning temples and watchtowers that survive today. Following his mark across the ' +
+            'city is one of the best ways to understand how Bengaluru began.',
+        members: ['temple:bull-temple', 'temple:gavi-gangadhareshwara', 'city:lalbagh', 'city:tipu-summer-palace'],
+    },
+    {
+        slug: 'hoysala-vijayanagara',
+        title: 'Stone Empires: Hoysala & Vijayanagara',
+        icon: 'fa-landmark-dome',
+        blurb: 'Two dynasties that turned South Indian temple-building into a high art of carved stone.',
+        intro:
+            'Between the 12th and 16th centuries, the Hoysalas and then the Vijayanagara Empire raised ' +
+            'some of India\'s most astonishing stone architecture — from the jewel-box carving of ' +
+            'Belur and Halebidu to the vast temple-city of Hampi. Seen together, they tell the story ' +
+            'of medieval South India\'s wealth, faith and craftsmanship.',
+        members: ['place:hampi', 'place:belur-halebidu', 'place:shravanabelagola'],
+        quiz: [
+            {
+                q: 'Which empire built Hampi as its capital?',
+                options: ['The Hoysalas', 'The Vijayanagara Empire', 'The Cholas'],
+                answer: 1,
+            },
+            {
+                q: 'What material did Hoysala sculptors carve to achieve such fine detail?',
+                options: ['Marble', 'Sandstone', 'Soapstone'],
+                answer: 2,
+            },
+            {
+                q: 'Which Hampi monument appears on the ₹50 note?',
+                options: ['The stone chariot at the Vittala Temple', 'The Virupaksha gopura', 'Matanga Hill'],
+                answer: 0,
+            },
+        ],
+    },
+    {
+        slug: 'coffee-country',
+        title: 'Coffee Country',
+        icon: 'fa-mug-hot',
+        blurb: 'How the Western Ghats became the birthplace of Indian coffee — and the city\'s coffee culture that followed.',
+        intro:
+            'Coffee was first grown in India in the hills of Chikmagalur, and the Western Ghats around ' +
+            'Bengaluru remain the heart of the country\'s coffee. That heritage flows down into the ' +
+            'city\'s beloved filter-coffee ritual and its wave of specialty cafes. This theme connects ' +
+            'the estates to the cup.',
+        members: ['place:chikmagalur', 'place:coorg', 'eat:airlines-hotel', 'cafe:roastery-coffee-house'],
+        quiz: [
+            {
+                q: 'Where was coffee first grown in India?',
+                options: ['Coorg', 'Chikmagalur', 'Ooty'],
+                answer: 1,
+            },
+            {
+                q: 'What is South Indian "filter coffee" traditionally served in?',
+                options: ['A paper cup', 'A steel tumbler and dabarah', 'A glass mug'],
+                answer: 1,
+            },
+        ],
+    },
+    {
+        slug: 'tiffin-heritage',
+        title: 'The Tiffin Heritage',
+        icon: 'fa-utensils',
+        blurb: 'The decades-old eating houses where Bengaluru\'s breakfast classics were perfected — and some invented.',
+        intro:
+            'Bengaluru\'s food identity was shaped in its "tiffin rooms" — modest, often family-run ' +
+            'eating houses that turned idli, vada and the masala dosa into an art. Some, like MTR, ' +
+            'even invented dishes now eaten across India. Eating your way through them is a lesson in ' +
+            'the city\'s living food history.',
+        members: ['eat:mtr', 'eat:vidyarthi-bhavan', 'eat:ctr', 'eat:brahmins-coffee-bar', 'eat:veena-stores'],
+        quiz: [
+            {
+                q: 'Which dish is MTR credited with inventing?',
+                options: ['Masala dosa', 'Rava idli', 'Bisi bele bath'],
+                answer: 1,
+            },
+            {
+                q: 'What does "benne" mean in the famous "benne masala dosa"?',
+                options: ['Butter', 'Crispy', 'Spicy'],
+                answer: 0,
+            },
+        ],
+    },
+    {
+        slug: 'sacred-bengaluru',
+        title: 'Sacred Bengaluru',
+        icon: 'fa-gopuram',
+        blurb: 'From the oldest Chola-era shrines to a modern landmark — the city\'s temples across eras and faiths.',
+        intro:
+            'Bengaluru\'s temples span nearly a thousand years, from Chola- and Vijayanagara-era stone ' +
+            'shrines to a soaring modern complex. Visited as a set, they trace how faith, dynasties and ' +
+            'the growing city left their mark in stone and ritual.',
+        members: ['temple:chokkanathaswamy', 'temple:halasuru-someshwara', 'temple:bull-temple', 'temple:banashankari', 'temple:iskcon'],
+    },
+];
+
+/*
+ * GLOSSARY — "know the terms" used across the guide, shown on a small reference page (#/glossary).
+ * Kept flat and simple; grouped loosely by theme in the copy.
+ */
+const GLOSSARY = [
+    { term: 'Aarti', meaning: 'The Hindu ritual of offering light (lit lamps) to a deity, often with singing.' },
+    { term: 'Darshan', meaning: 'The auspicious act of beholding a deity or holy person.' },
+    { term: 'Prasadam', meaning: 'Food first offered to a deity, then shared with devotees as a blessing.' },
+    { term: 'Gopura', meaning: 'The monumental, often ornately carved gateway tower of a South Indian temple.' },
+    { term: 'Mantapa', meaning: 'A pillared hall or pavilion within a temple complex.' },
+    { term: 'Linga', meaning: 'The aniconic, usually cylindrical symbol representing the god Shiva.' },
+    { term: 'Nandi', meaning: 'The sacred bull, the mount (vahana) and devotee of Shiva.' },
+    { term: 'Hoysala', meaning: 'A South Indian dynasty (10th–14th c.) famed for intricately carved soapstone temples.' },
+    { term: 'Vijayanagara', meaning: '"City of Victory" — a powerful medieval South Indian empire; its capital was Hampi.' },
+    { term: 'Pete', meaning: 'The old market town or commercial quarter at the historic core of Bengaluru.' },
+    { term: 'Tiffin', meaning: 'A light South Indian meal or snack, typically breakfast or an evening bite.' },
+    { term: 'Filter coffee', meaning: 'South Indian coffee brewed drip-style with chicory, served frothy in a steel tumbler.' },
+    { term: 'Benne', meaning: 'Butter (Kannada) — as in the famous "benne masala dosa".' },
+    { term: 'Khara bath', meaning: 'A savoury, spiced semolina (rava) breakfast dish.' },
+    { term: 'Kesari bath', meaning: 'A sweet, saffron-tinted semolina dish, often paired with khara bath.' },
+    { term: 'Ghat', meaning: 'A mountain pass or the stepped, winding roads of the Western Ghats.' },
+    { term: 'Kodava', meaning: 'The indigenous people of Coorg (Kodagu), with their own language and customs.' },
 ];

@@ -271,6 +271,9 @@
         // Ready-made itineraries teaser (top 3), linking to the full page.
         const itinTeaser = itinerariesData().slice(0, 3).map(itineraryCardHTML).join('');
 
+        // Themes / learning collections teaser (top 3).
+        const themeTeaser = themesData().slice(0, 3).map(themeCardHTML).join('');
+
         const emptyMsg = '<p class="grid-empty">Nothing matches those filters yet — try clearing one.</p>';
 
         // Filter, then sort, then render — and pass the shown/total counts into each bar.
@@ -358,13 +361,28 @@
                 <div class="container">
                     <div class="section-head section-head--row">
                         <div>
-                            <h2 class="section-title">Ready-made itineraries</h2>
+                            <h2 class="section-title">Ready-Made Itineraries</h2>
                             <p class="section-sub">Not sure where to start? Use a curated day plan as-is,
                                 or tweak it in the planner.</p>
                         </div>
                         <a class="near-btn" href="#/itineraries">All itineraries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                     </div>
                     <div class="grid itin-grid">${itinTeaser}</div>
+                </div>
+            </section>` : ''}
+
+            ${themeTeaser ? `
+            <section class="section section--themes" id="themes-teaser">
+                <div class="container">
+                    <div class="section-head section-head--row">
+                        <div>
+                            <h2 class="section-title">Learn by Theme</h2>
+                            <p class="section-sub">Understand Bengaluru through the threads that run through it —
+                                dynasties, faith, coffee and food.</p>
+                        </div>
+                        <a class="near-btn" href="#/themes">All themes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="grid itin-grid">${themeTeaser}</div>
                 </div>
             </section>` : ''}
 
@@ -704,6 +722,8 @@
 
                 <div class="container detail-body">
                     ${tagPillsHTML(d.tags)}
+                    ${bestForHTML(d)}
+                    ${listenBtnHTML(d)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(d.description)}</p>
@@ -724,6 +744,8 @@
                         <h2>Precautions &amp; tips</h2>
                         <ul class="cautions">${cautions}</ul>
                     </section>
+
+                    ${eduBlocksHTML(d)}
 
                     <section class="block book">
                         <h2>Book your trip</h2>
@@ -789,6 +811,8 @@
 
                 <div class="container detail-body">
                     ${tagPillsHTML(p.tags)}
+                    ${bestForHTML(p)}
+                    ${listenBtnHTML(p)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(p.description)}</p>
@@ -817,6 +841,8 @@
                         <h2>Tips</h2>
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
+
+                    ${eduBlocksHTML(p)}
 
                     ${nearbyHTML(key, p.slug, 'Nearby places')}
 
@@ -884,6 +910,8 @@
 
                 <div class="container detail-body">
                     ${tagPillsHTML(c.tags)}
+                    ${bestForHTML(c)}
+                    ${listenBtnHTML(c)}
                     <section class="block">
                         <h2>The vibe</h2>
                         <p>${esc(c.description)}</p>
@@ -900,6 +928,8 @@
                         <h2>Good to know</h2>
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
+
+                    ${eduBlocksHTML(c)}
 
                     ${nearbyHTML('cafe', c.slug, 'Nearby places')}
 
@@ -967,6 +997,8 @@
 
                 <div class="container detail-body">
                     ${tagPillsHTML(e.tags)}
+                    ${bestForHTML(e)}
+                    ${listenBtnHTML(e)}
                     <section class="block">
                         <h2>The story</h2>
                         <p>${esc(e.description)}</p>
@@ -983,6 +1015,8 @@
                         <h2>Good to know</h2>
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
+
+                    ${eduBlocksHTML(e)}
 
                     ${nearbyHTML('eat', e.slug, 'Nearby places')}
 
@@ -1050,6 +1084,8 @@
 
                 <div class="container detail-body">
                     ${tagPillsHTML(a.tags)}
+                    ${bestForHTML(a)}
+                    ${listenBtnHTML(a)}
                     <section class="block">
                         <h2>Overview</h2>
                         <p>${esc(a.description)}</p>
@@ -1066,6 +1102,8 @@
                         <h2>Good to know</h2>
                         <ul class="cautions">${tips}</ul>
                     </section>` : ''}
+
+                    ${eduBlocksHTML(a)}
 
                     ${nearbyHTML('do', a.slug, 'Nearby places')}
 
@@ -1087,6 +1125,149 @@
             </article>`;
 
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- educational modules (all optional, render only when data exists) ---------- */
+
+    /* "Did you know?" — 2-3 bite-sized, surprising facts. */
+    function didYouKnowHTML(facts) {
+        if (!Array.isArray(facts) || !facts.length) return '';
+        const cards = facts.map((f) =>
+            `<li class="fact-card"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i><span>${esc(f)}</span></li>`
+        ).join('');
+        return `
+            <section class="block">
+                <h2>Did you know?</h2>
+                <ul class="fact-grid">${cards}</ul>
+            </section>`;
+    }
+
+    /* History / timeline — array of { year, event } (year optional). Renders as a vertical timeline. */
+    function historyHTML(history) {
+        if (!Array.isArray(history) || !history.length) return '';
+        const rows = history.map((h) => `
+            <li class="timeline-item">
+                ${h.year ? `<span class="timeline-year">${esc(String(h.year))}</span>` : '<span class="timeline-year timeline-year--dot"></span>'}
+                <span class="timeline-event">${esc(h.event || h)}</span>
+            </li>`).join('');
+        return `
+            <section class="block">
+                <h2>A little history</h2>
+                <ol class="timeline">${rows}</ol>
+            </section>`;
+    }
+
+    /* Culture & etiquette — how to visit respectfully. */
+    function etiquetteHTML(notes) {
+        if (!Array.isArray(notes) || !notes.length) return '';
+        const items = notes.map((n) => `<li>${esc(n)}</li>`).join('');
+        return `
+            <section class="block block--etiquette">
+                <h2><i class="fa-solid fa-hands-praying" aria-hidden="true"></i> Visiting respectfully</h2>
+                <ul class="cautions cautions--etiquette">${items}</ul>
+            </section>`;
+    }
+
+    /* Local words — vocabulary of the place: array of { term, meaning }. */
+    function localWordsHTML(words) {
+        if (!Array.isArray(words) || !words.length) return '';
+        const rows = words.map((w) => `
+            <div class="word-card">
+                <span class="word-term">${esc(w.term)}</span>
+                <span class="word-meaning">${esc(w.meaning)}</span>
+            </div>`).join('');
+        return `
+            <section class="block">
+                <h2>Words to know</h2>
+                <div class="word-grid">${rows}</div>
+            </section>`;
+    }
+
+    /* Responsible / sustainable travel tips — "travel light, travel right". */
+    function responsibleHTML(tips) {
+        if (!Array.isArray(tips) || !tips.length) return '';
+        const items = tips.map((t) => `<li>${esc(t)}</li>`).join('');
+        return `
+            <section class="block block--responsible">
+                <h2><i class="fa-solid fa-leaf" aria-hidden="true"></i> Travel light, travel right</h2>
+                <ul class="cautions cautions--responsible">${items}</ul>
+            </section>`;
+    }
+
+    /* "Best for" + effort labels — an at-a-glance educational chip row. `bestFor` is an array of
+       short audience labels; `effort` is a single short label. */
+    function bestForHTML(item) {
+        const bestFor = Array.isArray(item.bestFor) ? item.bestFor : [];
+        const effort = item.effort;
+        if (!bestFor.length && !effort) return '';
+        const chips = bestFor.map((b) =>
+            `<span class="tag-pill"><i class="fa-solid fa-user-check" aria-hidden="true"></i> ${esc(b)}</span>`).join('');
+        const effortChip = effort
+            ? `<span class="tag-pill tag-pill--effort"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> ${esc(effort)}</span>`
+            : '';
+        return `
+            <section class="block block--bestfor">
+                <div class="bestfor-row">
+                    ${bestFor.length ? `<span class="bestfor-label">Good for</span> ${chips}` : ''}
+                    ${effortChip}
+                </div>
+            </section>`;
+    }
+
+    /* "Fun for kids" — age-appropriate notes and what children will enjoy. */
+    function forKidsHTML(notes) {
+        if (!Array.isArray(notes) || !notes.length) return '';
+        const items = notes.map((n) => `<li>${esc(n)}</li>`).join('');
+        return `
+            <section class="block block--kids">
+                <h2><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Fun for kids</h2>
+                <ul class="cautions cautions--kids">${items}</ul>
+            </section>`;
+    }
+
+    /* Further reading — credible external sources: array of { label, url }. */
+    function sourcesHTML(sources) {
+        if (!Array.isArray(sources) || !sources.length) return '';
+        const items = sources.map((s) =>
+            `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> ${esc(s.label)}
+            </a></li>`).join('');
+        return `
+            <section class="block block--sources">
+                <h2>Learn more</h2>
+                <ul class="sources-list">${items}</ul>
+            </section>`;
+    }
+
+    /* "Listen to this place" — narrates the description (plus a fact or two) via speech synthesis.
+       Renders nothing if the browser can't speak. The button toggles play/stop and is wired via
+       the delegated view click handler (data-listen carries the text). */
+    function listenBtnHTML(item) {
+        if (!F || !F.canSpeak() || !item || !item.description) return '';
+        // Build a short narration: name + description + up to 2 "did you know" facts.
+        let text = (item.name ? item.name + '. ' : '') + item.description;
+        if (Array.isArray(item.didYouKnow) && item.didYouKnow.length) {
+            text += ' Did you know? ' + item.didYouKnow.slice(0, 2).join(' ');
+        }
+        const enc = encodeURIComponent(text);
+        return `
+            <button class="listen-btn" type="button" data-listen="${enc}" aria-live="polite">
+                <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+                <span class="listen-label">Listen to this place</span>
+            </button>`;
+    }
+
+    /* Convenience: all educational blocks in a consistent order for a detail page. bestForHTML and
+       listenBtnHTML are rendered separately near the top of the page (see each detail view). */
+    function eduBlocksHTML(item) {
+        if (!item) return '';
+        return historyHTML(item.history)
+            + didYouKnowHTML(item.didYouKnow)
+            + localWordsHTML(item.localWords)
+            + forKidsHTML(item.forKids)
+            + etiquetteHTML(item.etiquette)
+            + responsibleHTML(item.responsible)
+            + sourcesHTML(item.sources);
     }
 
     /* Cross-linking block for detail pages: the closest few places to this one, across the whole
@@ -1253,12 +1434,155 @@
                 <div class="container">
                     <div class="section-head page-head">
                         <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
-                        <h1 class="section-title">Ready-made itineraries</h1>
+                        <h1 class="section-title">Ready-Made Itineraries</h1>
                         <p class="section-sub">Curated day plans you can use as-is or tweak. "Use this plan"
                             drops all the stops into your weekend planner, where you can reorder, share, or
                             open the whole route in Maps.</p>
                     </div>
                     ${body}
+                </div>
+            </section>`;
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* ---------- themes / learning collections ---------- */
+    function themesData() { return typeof THEMES !== 'undefined' ? THEMES : []; }
+    function bySlugTheme(slug) { return themesData().find((t) => t.slug === slug); }
+
+    function themeCardHTML(t) {
+        const members = (t.members || []).map((id) => {
+            const [key, slug] = id.split(':');
+            return F ? F.lookup(key, slug) : null;
+        }).filter(Boolean);
+        return `
+            <a class="itin-card theme-card" href="#/theme/${esc(t.slug)}">
+                <div class="itin-head">
+                    <span class="itin-icon"><i class="fa-solid ${esc(t.icon || 'fa-book-open')}" aria-hidden="true"></i></span>
+                    <div>
+                        <h3>${esc(t.title)}</h3>
+                        <span class="itin-meta">${members.length} places</span>
+                    </div>
+                </div>
+                <p class="itin-summary">${esc(t.blurb || '')}</p>
+                <span class="theme-link">Explore this theme <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>`;
+    }
+
+    function renderThemes() {
+        const list = themesData();
+        const body = list.length
+            ? `<div class="grid itin-grid">${list.map(themeCardHTML).join('')}</div>`
+            : `<div class="empty-state"><i class="fa-solid fa-book-open" aria-hidden="true"></i><h2>No themes yet</h2></div>`;
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Themes to Explore</h1>
+                        <p class="section-sub">Learn Bengaluru by the threads that run through it — dynasties,
+                            faith, coffee and food. Each theme groups places by what you'll understand,
+                            with a short primer and a curated list.</p>
+                    </div>
+                    ${body}
+                </div>
+            </section>`;
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    function renderThemeDetail(slug) {
+        const t = bySlugTheme(slug);
+        if (!t) { location.hash = '#/themes'; return; }
+        const members = (t.members || []).map((id) => {
+            const [key, s] = id.split(':');
+            return F ? F.lookup(key, s) : null;
+        }).filter(Boolean);
+        const cards = members.map((e) => entryCardHTML(e)).join('');
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/themes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All themes</a>
+                        <div class="theme-hero">
+                            <span class="itin-icon theme-hero-icon"><i class="fa-solid ${esc(t.icon || 'fa-book-open')}" aria-hidden="true"></i></span>
+                            <h1 class="section-title">${esc(t.title)}</h1>
+                        </div>
+                        <p class="theme-intro">${esc(t.intro || t.blurb || '')}</p>
+                    </div>
+                    <h2 class="theme-places-head">Places in this theme</h2>
+                    <div class="grid">${cards}</div>
+                    ${quizHTML(t)}
+                </div>
+            </section>`;
+        wireQuiz();
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* Per-theme "test what you learned" quiz. `quiz` is an array of { q, options, answer } where
+       answer is the index of the correct option. Interactive, no scoring backend. */
+    function quizHTML(t) {
+        const quiz = Array.isArray(t.quiz) ? t.quiz : [];
+        if (!quiz.length) return '';
+        const qs = quiz.map((item, qi) => {
+            const opts = item.options.map((o, oi) => `
+                <button class="quiz-opt" type="button" data-quiz-q="${qi}" data-quiz-opt="${oi}" data-quiz-answer="${item.answer}">
+                    ${esc(o)}
+                </button>`).join('');
+            return `
+                <li class="quiz-item" data-quiz-item="${qi}">
+                    <p class="quiz-q">${esc(item.q)}</p>
+                    <div class="quiz-opts">${opts}</div>
+                    <p class="quiz-feedback" role="status" aria-live="polite"></p>
+                </li>`;
+        }).join('');
+        return `
+            <section class="quiz" aria-label="Test what you learned">
+                <h2 class="theme-places-head"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Test what you learned</h2>
+                <ol class="quiz-list">${qs}</ol>
+            </section>`;
+    }
+
+    /* Wire quiz option clicks: mark correct/incorrect, lock the question once answered. */
+    function wireQuiz() {
+        view.querySelectorAll('.quiz-opt').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.quiz-item');
+                if (!item || item.classList.contains('is-answered')) return;
+                const chosen = Number(btn.dataset.quizOpt);
+                const answer = Number(btn.dataset.quizAnswer);
+                item.classList.add('is-answered');
+                const feedback = item.querySelector('.quiz-feedback');
+                item.querySelectorAll('.quiz-opt').forEach((o) => {
+                    const oi = Number(o.dataset.quizOpt);
+                    if (oi === answer) o.classList.add('is-correct');
+                    else if (oi === chosen) o.classList.add('is-wrong');
+                    o.disabled = true;
+                });
+                if (feedback) {
+                    feedback.textContent = chosen === answer ? 'Correct!' : 'Not quite — the highlighted answer is right.';
+                    feedback.classList.add(chosen === answer ? 'is-right' : 'is-wrong');
+                }
+            });
+        });
+    }
+
+    /* ---------- glossary ---------- */
+    function renderGlossary() {
+        const list = typeof GLOSSARY !== 'undefined' ? GLOSSARY : [];
+        const rows = list.slice().sort((a, b) => a.term.localeCompare(b.term)).map((g) => `
+            <div class="glossary-row">
+                <dt class="glossary-term">${esc(g.term)}</dt>
+                <dd class="glossary-meaning">${esc(g.meaning)}</dd>
+            </div>`).join('');
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">Know the terms</h1>
+                        <p class="section-sub">A quick reference for the words you'll meet across the guide —
+                            temple rituals, architecture and Bengaluru's food.</p>
+                    </div>
+                    <dl class="glossary">${rows}</dl>
                 </div>
             </section>`;
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
@@ -1383,6 +1707,9 @@
     function route() {
         const hash = location.hash || '#/';
 
+        // Stop any audio narration when navigating to a new view.
+        if (F && F.stopSpeech) F.stopSpeech();
+
         // In-page anchor while already on the home view: just scroll to the section.
         if (HOME_ANCHORS.includes(hash)) {
             if (currentView !== 'home') { renderHome(); currentView = 'home'; }
@@ -1397,6 +1724,10 @@
         if (hash === '#/map') { renderMap(); currentView = 'map'; return; }
         if (hash === '#/phrases') { renderPhrases(); currentView = 'phrases'; return; }
         if (hash === '#/itineraries') { renderItineraries(); currentView = 'itineraries'; return; }
+        if (hash === '#/themes') { renderThemes(); currentView = 'themes'; return; }
+        if (hash === '#/glossary') { renderGlossary(); currentView = 'glossary'; return; }
+        const themeMatch = hash.match(/^#\/theme\/(.+)$/);
+        if (themeMatch) { renderThemeDetail(themeMatch[1]); currentView = 'theme'; return; }
 
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
         const cityMatch = hash.match(/^#\/city\/(.+)$/);
@@ -1645,6 +1976,36 @@
                     e.preventDefault();
                     F.removeFromPlan(rmBtn.dataset.planId);
                     renderPlan();
+                    return;
+                }
+
+                // "Listen to this place": toggle speech narration of the description.
+                const listenBtn = e.target.closest('[data-listen]');
+                if (listenBtn && view.contains(listenBtn)) {
+                    e.preventDefault();
+                    const label = listenBtn.querySelector('.listen-label');
+                    const icon = listenBtn.querySelector('i');
+                    if (F.isSpeaking()) {
+                        F.stopSpeech();
+                        listenBtn.classList.remove('is-playing');
+                        if (label) label.textContent = 'Listen to this place';
+                        if (icon) icon.className = 'fa-solid fa-volume-high';
+                    } else {
+                        const text = decodeURIComponent(listenBtn.dataset.listen || '');
+                        const reset = () => {
+                            listenBtn.classList.remove('is-playing');
+                            if (label) label.textContent = 'Listen to this place';
+                            if (icon) icon.className = 'fa-solid fa-volume-high';
+                        };
+                        const started = F.speak(text, { onend: reset });
+                        if (started) {
+                            listenBtn.classList.add('is-playing');
+                            if (label) label.textContent = 'Stop';
+                            if (icon) icon.className = 'fa-solid fa-stop';
+                        } else {
+                            toast('Audio isn\'t available on this browser');
+                        }
+                    }
                     return;
                 }
 
