@@ -156,13 +156,15 @@
                 </div>
             </section>
 
-            <section class="section section--city container" id="city">
-                <div class="section-head">
-                    <h2 class="section-title">Inside Bengaluru</h2>
-                    <p class="section-sub">No trip needed — city sights you can do in a few hours.
-                        Tap any place for how to reach it, the best time to go, and travel tips.</p>
+            <section class="section section--city" id="city">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Inside Bengaluru</h2>
+                        <p class="section-sub">No trip needed — city sights you can do in a few hours.
+                            Tap any place for how to reach it, the best time to go, and travel tips.</p>
+                    </div>
+                    <div class="grid">${cityList}</div>
                 </div>
-                <div class="grid">${cityList}</div>
             </section>
 
             <section class="section section--cafes" id="cafes">
@@ -830,7 +832,11 @@
         const bar = document.getElementById('scroll-bar');
         function onScroll() {
             const y = window.scrollY;
-            if (header) header.classList.toggle('is-stuck', y > 8);
+            // Detail views (place/city/cafe/eat/do) open on a full-bleed photo that the fixed header
+            // sits over. A transparent header there makes the brand + hamburger illegible against the
+            // image, so force the solid treatment on every non-home view regardless of scroll.
+            const forceSolid = currentView && currentView !== 'home';
+            if (header) header.classList.toggle('is-stuck', forceSolid || y > 8);
             if (toTop) toTop.classList.toggle('is-visible', y > 500);
             if (bar) {
                 const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -839,7 +845,11 @@
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', onScroll, { passive: true });
-        onScroll();
+        // After a route change the view (and so the header treatment) may change even without scroll.
+        window.addEventListener('hashchange', () => requestAnimationFrame(onScroll));
+        // Defer the first run to the next frame: document's DOMContentLoaded handlers fire before
+        // window's, so route() (a window handler) hasn't set currentView yet on a direct detail load.
+        requestAnimationFrame(onScroll);
 
         if (toTop) {
             toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -883,16 +893,20 @@
          * Driving the scroll here makes every nav item work every time. The brand logo is Home too.
          */
         function goHome() {
-            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
+            const wasDetail = currentView !== 'home';
+            if (wasDetail) { renderHome(); currentView = 'home'; }
             if (location.hash !== '#/' && location.hash !== '') {
                 history.replaceState(null, '', location.pathname + location.search + '#/');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            // replaceState fires no hashchange, so refresh the header treatment ourselves.
+            requestAnimationFrame(onScroll);
         }
         function goSection(id) {
             if (currentView !== 'home') { renderHome(); currentView = 'home'; }
             const target = document.getElementById(id);
             if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            requestAnimationFrame(onScroll);
         }
 
         function handleNavClick(e, href) {
