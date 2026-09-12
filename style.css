@@ -133,10 +133,22 @@ img.img-fallback { visibility: hidden; }
     border: 1px solid var(--border); transition: color var(--dur-fast), border-color var(--dur-fast);
 }
 .icon-btn:hover { color: var(--text); border-color: var(--border-strong); }
-.theme-icon-sun { display: none; }
-.theme-icon-moon { display: inline; }
-[data-theme="light"] .theme-icon-sun { display: inline; }
-[data-theme="light"] .theme-icon-moon { display: none; }
+/*
+ * Theme toggle icon: sun in dark mode, moon in light mode.
+ * Driven off the <html data-theme> attribute and matched on the Font Awesome classes so it works
+ * whether FA leaves an <i> or swaps in an <svg>. The button is a grid cell, so both icons would
+ * stack on top of each other — we must hard-hide the inactive one.
+ */
+#theme-toggle .theme-icon-sun,
+#theme-toggle .theme-icon-moon { grid-area: 1 / 1; }
+
+[data-theme="dark"] #theme-toggle .theme-icon-moon,
+:root:not([data-theme="light"]) #theme-toggle .theme-icon-moon { display: none !important; }
+[data-theme="dark"] #theme-toggle .theme-icon-sun,
+:root:not([data-theme="light"]) #theme-toggle .theme-icon-sun { display: inline-block !important; }
+
+[data-theme="light"] #theme-toggle .theme-icon-sun { display: none !important; }
+[data-theme="light"] #theme-toggle .theme-icon-moon { display: inline-block !important; }
 
 /* ---------- hero ---------- */
 .hero { position: relative; padding: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 5vw, 3.5rem); overflow: hidden; }
@@ -154,6 +166,18 @@ img.img-fallback { visibility: hidden; }
 .hero-title { font-size: var(--step-4); max-width: 16ch; margin-bottom: 1rem; }
 .hero-lede { color: var(--text-muted); font-size: var(--step-1); max-width: 60ch; }
 
+/* ---------- jump nav (hero) ---------- */
+.jump-nav { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
+.jump-link {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding: 0.6rem 1.1rem; border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong); color: var(--text);
+    font-size: var(--step-0); font-weight: 500; background: var(--bg-elev);
+    transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
+}
+.jump-link i { color: var(--accent-ink); }
+.jump-link:hover { transform: translateY(-2px); border-color: var(--accent-ring); color: var(--accent-ink); }
+
 /* ---------- filters ---------- */
 .section { padding: clamp(1.5rem, 4vw, 2.5rem) 0 clamp(3rem, 7vw, 5rem); }
 .filters { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.75rem; }
@@ -168,6 +192,11 @@ img.img-fallback { visibility: hidden; }
 [data-theme="light"] .chip.is-active { color: #fff; }
 .chip-count { font-size: 0.72em; opacity: 0.7; font-variant-numeric: tabular-nums; }
 .chip.is-active .chip-count { opacity: 0.85; }
+
+/* ---------- section heads ---------- */
+.section-head { margin-bottom: 1.5rem; }
+.section-title { font-size: var(--step-3); }
+.section-sub { color: var(--text-muted); font-size: var(--step-0); max-width: 62ch; margin-top: 0.4rem; }
 
 /* ---------- grid + cards ---------- */
 .grid {
@@ -198,6 +227,17 @@ img.img-fallback { visibility: hidden; }
 .card-tag { color: var(--text-muted); font-size: var(--step-0); }
 .card-meta { color: var(--text-dim); font-size: var(--step--1); display: flex; align-items: center; gap: 0.5rem; }
 .card-meta i { color: var(--accent-ink); }
+
+/* Section anchors (#city, #nearby) should clear the sticky header when jumped to. */
+#city, #nearby { scroll-margin-top: calc(var(--header-h) + 1rem); }
+
+/* The "Inside Bengaluru" band sits above the getaways with a soft tinted background. */
+.section--city {
+    position: relative;
+    background:
+        radial-gradient(70% 60% at 100% 0%, var(--accent-soft), transparent 60%);
+    border-bottom: 1px solid var(--border);
+}
 
 /* ---------- detail ---------- */
 .detail-hero { position: relative; min-height: clamp(320px, 46vh, 460px); display: flex; align-items: flex-end; overflow: hidden; }
@@ -254,6 +294,10 @@ img.img-fallback { visibility: hidden; }
 .cautions li::before {
     content: "\f071"; font-family: "Font Awesome 6 Free"; font-weight: 900;
     position: absolute; left: 0; top: 0.15rem; color: var(--accent-ink); font-size: 0.85rem;
+}
+/* Plain list variant (e.g. "What to see") — a neutral marker instead of the warning triangle. */
+.cautions--plain li::before {
+    content: "\f00c"; /* check */ font-size: 0.8rem; top: 0.2rem;
 }
 
 /* ---------- booking ---------- */

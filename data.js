@@ -268,6 +268,262 @@ const DESTINATIONS = [
     },
 ];
 
+/*
+ * Places to visit INSIDE Bengaluru itself — city sights you can do in a few hours, not multi-day
+ * getaways. They share the photo-card + detail-page pattern of DESTINATIONS, but with a city model:
+ * no distance-from-Bengaluru and no flight/train booking. Each has a slug (for #/city/<slug>),
+ * an image, an overview, highlights, how to get there within the city, entry/timing notes, tips,
+ * and a Google Maps directions link.
+ */
+const CITY_ATTRACTIONS = [
+    {
+        slug: 'lalbagh',
+        name: 'Lalbagh Botanical Garden',
+        category: 'Garden',
+        area: 'Mavalli, South Bengaluru',
+        bestTime: 'Early morning, 6–9 am',
+        tagline: 'A 240-acre botanical garden with a glasshouse and a famous flower show.',
+        image: 'images/lalbagh.jpg',
+        description:
+            'Lalbagh is Bengaluru\'s best-loved green space, commissioned by Hyder Ali in the 1760s ' +
+            'and expanded by Tipu Sultan. Spread over about 240 acres, it holds India\'s largest ' +
+            'collection of tropical plants, a lake, an ancient rock said to be 3,000 million years ' +
+            'old, and the glass Crystal Palace modelled on London\'s Crystal Palace. Morning walkers ' +
+            'flock here; the twice-yearly flower shows are the big draw.',
+        highlights: [
+            'The glass house and its Republic Day and Independence Day flower shows',
+            'The Lalbagh Rock and the Kempegowda watchtower on it',
+            'The lake, aquarium and the huge silk-cotton and mahogany trees',
+        ],
+        gettingThere: {
+            metro: 'Lalbagh has its own Namma Metro station on the Green Line, right at the west gate.',
+            road: 'Autos and cabs reach all four gates; the Double Road and Siddapura gates are handy for parking.',
+        },
+        entry: 'Small entry ticket (free very early morning for walkers). Open roughly 6 am–7 pm daily.',
+        tips: [
+            'The biannual flower show is spectacular but very crowded — go on a weekday morning.',
+            'It is large and open — carry water and sun cover if you visit late morning.',
+            'Enter from the Metro-side west gate to reach the glass house fastest.',
+        ],
+        maps: 'Lalbagh Botanical Garden, Bengaluru',
+    },
+    {
+        slug: 'cubbon-park',
+        name: 'Cubbon Park',
+        category: 'Park',
+        area: 'Sampangi Rama Nagar, Central Bengaluru',
+        bestTime: 'Morning, or weekend car-free hours',
+        tagline: 'A 300-acre green lung in the heart of the city, laid out in 1884.',
+        image: 'images/cubbon-park.jpg',
+        description:
+            'Cubbon Park, officially Sri Chamarajendra Park, is the green heart of central Bengaluru, ' +
+            'created in 1884 by Richard Sankey. Its roughly 300 acres of lawns and old-growth trees ' +
+            'sit among some of the city\'s grandest buildings — the red Gothic State Central Library, ' +
+            'the High Court (Attara Kacheri) and museums. It is the city\'s go-to spot for a morning ' +
+            'walk, a run, or a lazy afternoon under the trees.',
+        highlights: [
+            'The red-brick State Central Library and the Attara Kacheri High Court',
+            'The bamboo grove, bandstand and the toy train for kids',
+            'Government Museum and the Visvesvaraya Industrial and Technological Museum nearby',
+        ],
+        gettingThere: {
+            metro: 'Cubbon Park and Dr. BR Ambedkar stations (Purple Line) sit right by the park.',
+            road: 'Central and easy to reach from MG Road; parking is limited, so the Metro is easiest.',
+        },
+        entry: 'Free and open all day; the internal roads close to traffic on weekends and holidays.',
+        tips: [
+            'Come on a weekend or holiday morning, when the roads shut to cars — the best time to walk or run.',
+            'Pair it with the museums or the library for a half-day in the centre of town.',
+            'Early morning is quietest; it gets busy with groups by mid-morning.',
+        ],
+        maps: 'Cubbon Park, Bengaluru',
+    },
+    {
+        slug: 'bangalore-palace',
+        name: 'Bangalore Palace',
+        category: 'Heritage',
+        area: 'Vasanth Nagar, Central Bengaluru',
+        bestTime: 'Late morning to afternoon',
+        tagline: 'An 1878 Tudor-style royal palace of the Wodeyar dynasty.',
+        image: 'images/bangalore-palace.jpg',
+        description:
+            'Built in 1878 and inspired by England\'s Windsor Castle, Bangalore Palace is a Tudor-style ' +
+            'residence of the Wodeyar royal family, spread across about 45,000 square feet. Inside are ' +
+            'ornate wooden interiors, Gothic windows, turrets and a large collection of family ' +
+            'portraits and period furniture. An audio guide walks you through the halls, and the ' +
+            'grounds host concerts and events through the year.',
+        highlights: [
+            'The Tudor and Scottish-Gothic architecture, turrets and grand durbar hall',
+            'The audio-guided tour of the royal interiors and portrait collection',
+            'The sprawling grounds, a frequent venue for big-name concerts',
+        ],
+        gettingThere: {
+            metro: 'Nearest Metro is around Cantonment / Sivan Chetty Garden; take an auto or cab for the last stretch.',
+            road: 'Easily reached by cab or auto in Vasanth Nagar, off Jayamahal Road.',
+        },
+        entry: 'Ticketed entry with an audio guide; a separate, steep camera fee applies. Open roughly 10 am–5:30 pm.',
+        tips: [
+            'Check the camera fee before you start shooting inside — it is charged on top of entry.',
+            'Confirm timings on event days, when parts of the grounds may be closed for concerts.',
+            'Allow about 60–90 minutes for the full audio-guided tour.',
+        ],
+        maps: 'Bangalore Palace, Bengaluru',
+    },
+    {
+        slug: 'vidhana-soudha',
+        name: 'Vidhana Soudha',
+        category: 'Landmark',
+        area: 'Ambedkar Veedhi, Central Bengaluru',
+        bestTime: 'Evening, especially Sunday and holidays',
+        tagline: 'Karnataka\'s grand granite legislative building, floodlit on holidays.',
+        image: 'images/vidhana-soudha.jpg',
+        description:
+            'Vidhana Soudha, completed in 1956, is the seat of Karnataka\'s legislature and one of the ' +
+            'most imposing buildings in the country. Built in a Neo-Dravidian granite style, it stands ' +
+            'at the north end of Cubbon Park facing the Gothic High Court. It is most striking after ' +
+            'dark on Sundays and public holidays, when the whole façade is floodlit.',
+        highlights: [
+            'The floodlit granite façade on Sunday and holiday evenings',
+            'The Neo-Dravidian domes and the grand central steps',
+            'The contrast with the red Attara Kacheri High Court across the road',
+        ],
+        gettingThere: {
+            metro: 'Dr. BR Ambedkar and Cubbon Park stations (Purple Line) are a short walk away.',
+            road: 'Central location on Ambedkar Veedhi; easy by auto or cab.',
+        },
+        entry: 'A working government building — no public entry. You can view and photograph it from outside.',
+        tips: [
+            'Come on a Sunday or holiday evening for the illumination; weekdays it is not lit.',
+            'Photograph from across the road for the full façade in frame.',
+            'Pair it with a Cubbon Park walk, since it sits right at the park\'s edge.',
+        ],
+        maps: 'Vidhana Soudha, Bengaluru',
+    },
+    {
+        slug: 'iskcon-temple',
+        name: 'ISKCON Temple',
+        category: 'Temple',
+        area: 'Rajajinagar, West Bengaluru',
+        bestTime: 'Morning, or evening aarti',
+        tagline: 'A hilltop Krishna temple, one of the largest ISKCON complexes in the world.',
+        image: 'images/iskcon.jpg',
+        description:
+            'The Sri Radha Krishna Temple in Rajajinagar, run by ISKCON, is one of the largest Krishna ' +
+            'temples in the world. Opened in 1997 and set on a small hill, it blends modern glass-and-' +
+            'steel construction with traditional temple form. Beyond the main shrine there are ' +
+            'multimedia exhibits on Vedic culture, a large hall, and a well-known prasadam and ' +
+            'food-court area.',
+        highlights: [
+            'The main Radha-Krishna shrine and the gold-topped towers',
+            'The evening aarti and devotional singing',
+            'Prasadam counters and the temple\'s vegetarian food court',
+        ],
+        gettingThere: {
+            metro: 'Mahalakshmi station (Green Line) is the nearest; then a short auto ride up to the temple.',
+            road: 'On Hare Krishna Hill in Rajajinagar, well signposted and easy by cab or auto.',
+        },
+        entry: 'Free entry. Open in two windows, morning and evening; timings extend on festival days.',
+        tips: [
+            'Weekends and festival days see long queues — go early on a weekday if you can.',
+            'Phones, footwear and bags are deposited before entering; carry as little as possible.',
+            'Dress modestly, as it is an active place of worship.',
+        ],
+        maps: 'ISKCON Temple Rajajinagar, Bengaluru',
+    },
+    {
+        slug: 'bannerghatta',
+        name: 'Bannerghatta Biological Park',
+        category: 'Wildlife',
+        area: 'Bannerghatta, South Bengaluru',
+        bestTime: 'Morning; opens around 9:30 am',
+        tagline: 'A zoo, safari and butterfly park on the city\'s southern edge.',
+        image: 'images/bannerghatta.jpg',
+        description:
+            'On the southern fringe of the city, Bannerghatta Biological Park combines a zoo, a bus ' +
+            'safari through forested enclosures, a butterfly park and a rescue centre. The safari is ' +
+            'the highlight, passing herbivore, tiger, lion and bear zones, including the well-known ' +
+            'white tigers. It makes an easy half- to full-day outing for families without leaving ' +
+            'Bengaluru.',
+        highlights: [
+            'The bus safari past tigers (including white tigers), lions and bears',
+            'India\'s first butterfly park, with a walk-through conservatory',
+            'The zoo and the animal rescue and rehabilitation centre',
+        ],
+        gettingThere: {
+            metro: 'No Metro nearby; take a cab, or a BMTC bus toward Bannerghatta from the city.',
+            road: 'About 22 km south of the centre on Bannerghatta Road; roughly an hour by cab.',
+        },
+        entry: 'Ticketed, with separate safari and butterfly-park tickets. Closed on Tuesdays; opens around 9:30 am.',
+        tips: [
+            'Book safari tickets online ahead and arrive early — the safari fills up, and it is closed Tuesdays.',
+            'Leave enough travel time; south-city traffic on Bannerghatta Road can be heavy.',
+            'Carry water and sun cover; the zoo section involves a fair bit of walking.',
+        ],
+        maps: 'Bannerghatta Biological Park, Bengaluru',
+    },
+    {
+        slug: 'tipu-summer-palace',
+        name: 'Tipu Sultan\'s Summer Palace',
+        category: 'Heritage',
+        area: 'Chamrajpet, South Bengaluru',
+        bestTime: 'Morning',
+        tagline: 'An ornate 18th-century teakwood palace built for Tipu Sultan.',
+        image: 'images/tipu-palace.jpg',
+        description:
+            'This two-storey teakwood palace, completed in 1791 within the old Bangalore Fort, was ' +
+            'Tipu Sultan\'s summer retreat. An elegant example of Indo-Islamic architecture, it is ' +
+            'built almost entirely of wood, with carved pillars, arches and painted ceilings, and a ' +
+            'small museum on Tipu and the Mysore kingdom. It is compact and best combined with the ' +
+            'nearby fort and market.',
+        highlights: [
+            'The carved teakwood pillars, balconies and painted interiors',
+            'The small museum on Tipu Sultan and the Mysore dynasty',
+            'The adjoining Bangalore Fort remains and the KR Market area',
+        ],
+        gettingThere: {
+            metro: 'KR Market and City Railway Station (Green Line) are nearby; then a short auto ride.',
+            road: 'In Chamrajpet near KR Market; easy by auto or cab, though the area is congested.',
+        },
+        entry: 'Small entry ticket. Open roughly 8:30 am–5:30 pm; a protected monument, so no defacing or littering.',
+        tips: [
+            'It is compact — pair it with the fort, KR Market and Bangalore Fort for a half-day.',
+            'Go in the morning before the surrounding market traffic builds up.',
+            'Wooden floors and stairs are old and narrow; tread gently.',
+        ],
+        maps: 'Tipu Sultan Summer Palace, Bengaluru',
+    },
+    {
+        slug: 'ulsoor-lake',
+        name: 'Ulsoor Lake',
+        category: 'Lake',
+        area: 'Ulsoor, East Bengaluru',
+        bestTime: 'Evening',
+        tagline: 'One of the city\'s largest lakes, with boating and a lakeside promenade.',
+        image: 'images/ulsoor-lake.jpg',
+        description:
+            'Ulsoor Lake, also called Halasuru Lake, is one of the largest lakes in the city, close to ' +
+            'MG Road on the eastern side. Dotted with small islands and ringed by a walking promenade, ' +
+            'it offers pedal- and row-boating and is a calm break from the traffic just outside. A ' +
+            'Ganesha temple and the Someshwara temple sit nearby, making an easy evening loop.',
+        highlights: [
+            'Boating among the lake\'s small wooded islands',
+            'The lakeside promenade for an evening walk',
+            'The nearby Someshwara and Ulsoor Ganesha temples',
+        ],
+        gettingThere: {
+            metro: 'Halasuru and Trinity stations (Purple Line) are a short walk or auto ride away.',
+            road: 'Just off MG Road in Ulsoor; central and easy by auto or cab.',
+        },
+        entry: 'Free to walk the promenade; boating is ticketed with limited, weather-dependent hours.',
+        tips: [
+            'Boating hours are limited and weather-dependent; the promenade is pleasant year-round.',
+            'Evenings are the nicest, when it cools down and the lake catches the sunset.',
+            'It is a city lake — swimming is not allowed.',
+        ],
+        maps: 'Ulsoor Lake, Bengaluru',
+    },
+];
+
 // Filterable "type" values, with readable labels for the filter bar.
 const TYPES = [
     { id: 'all', label: 'All places' },

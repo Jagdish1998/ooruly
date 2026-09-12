@@ -15,11 +15,20 @@
     <meta property="og:description"
         content="Where to go, how to reach, best months, precautions, and one-tap booking. Starting near Bengaluru.">
 
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='6' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Ey%3C/text%3E%3Ccircle cx='23' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308080a'/%3E%3Ctext x='6' y='23' font-family='Segoe UI, Arial, sans-serif' font-size='18' font-weight='700' fill='%23f4f4f5'%3Ey%3C/text%3E%3Ccircle cx='23' cy='20' r='3.4' fill='%23ff004f'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- keepOriginalSource/keep classes so our .theme-icon-* selectors survive FA's SVG swap -->
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+    </script>
     <script src="https://kit.fontawesome.com/5ad0b15baf.js" crossorigin="anonymous" async></script>
 
     <script>
@@ -59,8 +68,9 @@
     </header>
 
     <main id="main">
-        <!-- Views are swapped in by app.js based on the URL hash: #/ is the home grid,
-             #/place/<slug> is a destination. Server-free, refresh-safe on GitHub Pages. -->
+        <!-- Views are swapped in by app.js based on the URL hash: #/ is home,
+             #/place/<slug> is a getaway, #/city/<slug> is a Bengaluru sight.
+             Server-free, refresh-safe on GitHub Pages. -->
         <div id="view"></div>
     </main>
 

@@ -1,8 +1,10 @@
 /*
  * Yatra front-end: a tiny hash router over the DESTINATIONS data.
  *
- *   #/                 -> home: hero, type filters, destination grid
- *   #/place/<slug>     -> one destination: overview, how to reach, best months, precautions, booking
+ *   #/                 -> home: hero, jump nav, "Inside Bengaluru" grid, "Nearby Bengaluru" grid
+ *   #/place/<slug>     -> one getaway: overview, how to reach, best months, precautions, booking
+ *   #/city/<slug>      -> one city sight: overview, what to see, getting there, timings, tips, map
+ *   #city / #nearby    -> scroll to a section of the home view
  *
  * There is no framework and no build step. Everything renders from data.js, so the site is entirely
  * content-driven: add a destination there and it appears here with no code change.
@@ -32,6 +34,11 @@
         return DESTINATIONS.find((d) => d.slug === slug);
     }
 
+    function byCitySlug(slug) {
+        const list = typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : [];
+        return list.find((p) => p.slug === slug);
+    }
+
     function typeLabel(id) {
         const t = TYPES.find((x) => x.id === id);
         return t ? t.label : id;
@@ -56,29 +63,58 @@
             .map(cardHTML)
             .join('');
 
+        const cityList = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : [])
+            .map(cityCardHTML)
+            .join('');
+
         view.innerHTML = `
             <section class="hero">
                 <div class="hero-aura" aria-hidden="true"></div>
                 <div class="container hero-inner">
-                    <p class="eyebrow">Getaways near Bengaluru</p>
+                    <p class="eyebrow">Travel guide to Bengaluru &amp; around</p>
                     <h1 class="hero-title">Where to go, <span class="accent">how to reach</span>,
                         and when it's worth it.</h1>
-                    <p class="hero-lede">A practical travel guide to India's getaways — the places, the
-                        best months, the precautions that actually matter, and one tap to book the
-                        flight, train, bus or hotel. Starting with the trips that are easy from
-                        Bengaluru.</p>
+                    <p class="hero-lede">A practical travel guide — the places, the best time to go,
+                        the precautions that actually matter, and one tap to reach or book. From day
+                        trips inside Bengaluru to weekend getaways around it.</p>
+                    <nav class="jump-nav" aria-label="Jump to section">
+                        <a class="jump-link" href="#city">
+                            <i class="fa-solid fa-city" aria-hidden="true"></i> Inside Bengaluru
+                        </a>
+                        <a class="jump-link" href="#nearby">
+                            <i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Nearby Bengaluru
+                        </a>
+                    </nav>
                 </div>
             </section>
 
-            <section class="section container">
-                <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
-                <div class="grid" id="grid">${list}</div>
+            <section class="section section--city container" id="city">
+                <div class="section-head">
+                    <h2 class="section-title">Inside Bengaluru</h2>
+                    <p class="section-sub">No trip needed — city sights you can do in a few hours.
+                        Tap any place for how to reach it, the best time to go, and travel tips.</p>
+                </div>
+                <div class="grid">${cityList}</div>
+            </section>
+
+            <section class="section" id="nearby">
+                <div class="container">
+                    <div class="section-head">
+                        <h2 class="section-title">Nearby Bengaluru</h2>
+                        <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
+                    </div>
+                    <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
+                    <div class="grid" id="grid">${list}</div>
+                </div>
             </section>`;
 
         view.querySelectorAll('.chip').forEach((btn) => {
             btn.addEventListener('click', () => {
                 activeType = btn.dataset.type;
                 renderHome();
+                // keep the user anchored at the getaways section after re-render
+                const nearby = document.getElementById('nearby');
+                if (nearby) nearby.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
             });
         });
     }
@@ -101,6 +137,28 @@
                     <p class="card-meta">
                         <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
                         Best: ${esc(d.bestMonths)}
+                    </p>
+                </div>
+            </a>`;
+    }
+
+    function cityCardHTML(p) {
+        return `
+            <a class="card" href="#/city/${p.slug}">
+                <div class="card-media">
+                    <img src="${esc(p.image)}" alt="${esc(p.name)}, Bengaluru"
+                        loading="lazy" decoding="async"
+                        onerror="this.classList.add('img-fallback')">
+                    <span class="card-type">${esc(p.category)}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-head">
+                        <h3>${esc(p.name)}</h3>
+                    </div>
+                    <p class="card-tag">${esc(p.tagline)}</p>
+                    <p class="card-meta">
+                        <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                        Best: ${esc(p.bestTime)}
                     </p>
                 </div>
             </a>`;
@@ -191,15 +249,126 @@
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
+    /* ---------- city detail view ---------- */
+
+    function renderCityDetail(slug) {
+        const p = byCitySlug(slug);
+        if (!p) { location.hash = '#/'; return; }
+
+        const mapsUrl = 'https://www.google.com/maps/search/?api=1&query='
+            + encodeURIComponent(p.maps || `${p.name}, Bengaluru`);
+
+        const highlights = (p.highlights || []).map((h) => `<li>${esc(h)}</li>`).join('');
+
+        const reach = [
+            { icon: 'fa-train-subway', label: 'By Metro', text: p.gettingThere && p.gettingThere.metro },
+            { icon: 'fa-car', label: 'By road', text: p.gettingThere && p.gettingThere.road },
+        ].filter((r) => r.text).map((r) => `
+            <li>
+                <i class="fa-solid ${r.icon}" aria-hidden="true"></i>
+                <div><strong>${r.label}</strong><span>${esc(r.text)}</span></div>
+            </li>`).join('');
+
+        const tips = (p.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
+
+        view.innerHTML = `
+            <article class="detail">
+                <div class="detail-hero">
+                    <img src="${esc(p.image)}" alt="${esc(p.name)}, Bengaluru"
+                        decoding="async" onerror="this.classList.add('img-fallback')">
+                    <div class="detail-hero-overlay"></div>
+                    <div class="container detail-hero-inner">
+                        <a class="back" href="#city"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Inside Bengaluru</a>
+                        <span class="detail-type">${esc(p.category)}</span>
+                        <h1>${esc(p.name)}</h1>
+                        <p class="detail-tag">${esc(p.tagline)}</p>
+                        <ul class="detail-facts">
+                            <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${esc(p.area)}</li>
+                            <li><i class="fa-solid fa-clock" aria-hidden="true"></i> Best time: ${esc(p.bestTime)}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="container detail-body">
+                    <section class="block">
+                        <h2>Overview</h2>
+                        <p>${esc(p.description)}</p>
+                    </section>
+
+                    ${highlights ? `
+                    <section class="block">
+                        <h2>What to see</h2>
+                        <ul class="cautions cautions--plain">${highlights}</ul>
+                    </section>` : ''}
+
+                    ${reach ? `
+                    <section class="block">
+                        <h2>Getting there</h2>
+                        <ul class="reach">${reach}</ul>
+                    </section>` : ''}
+
+                    ${p.entry ? `
+                    <section class="block">
+                        <h2>Entry &amp; timings</h2>
+                        <p class="best-line">${esc(p.entry)}</p>
+                    </section>` : ''}
+
+                    ${tips ? `
+                    <section class="block">
+                        <h2>Tips</h2>
+                        <ul class="cautions">${tips}</ul>
+                    </section>` : ''}
+
+                    <section class="block book">
+                        <h2>Get directions</h2>
+                        <p class="book-intro">Open the location in Google Maps for live directions
+                            from wherever you are in the city.</p>
+                        <div class="book-grid">
+                            <a class="book-btn" href="${esc(mapsUrl)}" target="_blank" rel="noopener noreferrer">
+                                <span class="book-btn-top">
+                                    <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i> Directions
+                                    <i class="fa-solid fa-arrow-up-right-from-square book-ext" aria-hidden="true"></i>
+                                </span>
+                                <span class="book-note">Open ${esc(p.name)} in Google Maps</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </article>`;
+
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
     /* ---------- router ---------- */
+
+    // Section anchors on the home page (#city, #nearby) should scroll, not re-render the home view.
+    const HOME_ANCHORS = ['#city', '#nearby'];
+
+    let currentView = null; // 'home' | 'place' | 'city'
 
     function route() {
         const hash = location.hash || '#/';
+
+        // In-page anchor while already on the home view: just scroll to the section.
+        if (HOME_ANCHORS.includes(hash)) {
+            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
+            const target = document.getElementById(hash.slice(1));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+
         const placeMatch = hash.match(/^#\/place\/(.+)$/);
+        const cityMatch = hash.match(/^#\/city\/(.+)$/);
+
         if (placeMatch) {
             renderDetail(placeMatch[1]);
+            currentView = 'place';
+        } else if (cityMatch) {
+            renderCityDetail(cityMatch[1]);
+            currentView = 'city';
         } else {
             renderHome();
+            currentView = 'home';
         }
     }
 
