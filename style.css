@@ -608,6 +608,14 @@ img.img-fallback { visibility: hidden; }
     /* One clean column of cards, comfortable gutters */
     .grid { grid-template-columns: 1fr; gap: 1rem; }
 
+    /* Custom grids (itineraries, themes, facts, words, nearby, quiz options) also collapse to a
+       single column so their min-widths can't cause horizontal overflow on narrow phones. */
+    .itin-grid,
+    .fact-grid,
+    .word-grid,
+    .near-list,
+    .quiz-opts { grid-template-columns: 1fr; }
+
     /* Hero: tighter, but still clears the fixed header */
     .hero { padding: calc(var(--header-h) + 1.5rem) 0 1.5rem; }
     .hero-title { max-width: 100%; }
@@ -790,8 +798,9 @@ img.img-fallback { visibility: hidden; }
 .grid-empty { color: var(--text-muted); padding: 1.5rem 0; }
 
 @media (max-width: 560px) {
-    /* Two dropdowns side by side, each taking half the row; clear drops below full-width. */
-    .filters--select { gap: 0.6rem 0.6rem; }
+    /* Two dropdowns side by side, each taking half the row; clear + count drop below full-width.
+       Override the generic .filters nowrap/overflow (meant for the chip row) so these can wrap. */
+    .filters--select { flex-wrap: wrap; overflow: visible; gap: 0.6rem 0.6rem; }
     .filter-select { flex: 1 1 45%; min-width: 0; }
     .select { min-width: 0; width: 100%; }
     .filter-clear { flex: 1 1 100%; justify-content: center; }
@@ -1136,7 +1145,8 @@ img.img-fallback { visibility: hidden; }
 .onboard-skip:hover { color: var(--text); }
 @media (max-width: 560px) {
     .onboard-panel { margin-top: auto; margin-bottom: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        position: fixed; left: 0; right: 0; bottom: 0; width: 100%; }
+        position: fixed; left: 0; right: 0; bottom: 0; width: 100%;
+        max-height: 88dvh; overflow-y: auto; }
     .onboard-overlay { display: flex; align-items: flex-end; }
 }
 
