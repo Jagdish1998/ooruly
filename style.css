@@ -175,8 +175,10 @@ img.img-fallback { visibility: hidden; }
 /* Hamburger + drawer close are hidden on desktop, shown on mobile. */
 .nav-open, .nav-close { display: none; }
 
+/* Backdrop sits ABOVE the fixed header (z 110) so opening the drawer dims the whole
+   page — header included — instead of leaving the header lit on top of the overlay. */
 .nav-backdrop {
-    position: fixed; inset: 0; z-index: 105;
+    position: fixed; inset: 0; z-index: 130;
     background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(2px);
     opacity: 0; transition: opacity var(--dur-base) var(--ease);
 }
@@ -538,11 +540,13 @@ img.img-fallback { visibility: hidden; }
     .nav-open { display: grid; }
     .nav-portfolio { display: none; }
 
+    /* Drawer sits above the backdrop (130) and the header (110): it's a full overlay
+       with its own close button, so the header no longer obscures its top. */
     #primary-nav {
-        position: fixed; top: 0; right: 0; z-index: 106;
+        position: fixed; top: 0; right: 0; z-index: 140;
         height: 100%; width: min(84vw, 320px);
         display: flex; flex-direction: column; gap: 0.4rem;
-        padding: calc(var(--header-h) + 1rem) 1.4rem 2rem;
+        padding: calc(var(--header-h) + 0.5rem) 1.4rem 2rem;
         background: var(--bg-elev); border-left: 1px solid var(--border);
         box-shadow: var(--shadow-lg);
         transform: translateX(100%);
