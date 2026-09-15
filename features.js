@@ -266,6 +266,38 @@
         return DAY_IDS[new Date().getDay()] !== String(item.closedOn).toLowerCase();
     }
 
+    /* ---------- preview ordering (home page previews) ---------- */
+    /* Order a collection for a home preview without mutating the input:
+         1. in-season / open-today first, off-season / closed last, unknown in between;
+         2. within a rank, nearest-first when a position is supplied (missing coords sort last);
+         3. finally stable — preserve the original input order.
+       `opts.pos` is {lat,lng} or null. Returns a new array. */
+    function previewOrder(list, opts) {
+        const pos = opts && opts.pos;
+        const idx = new Map(list.map((x, i) => [x, i]));
+        const rank = (x) => {
+            // 0 = in-season or open today; 2 = off-season / closed; 1 = unknown
+            const s = isInSeason(x.seasons); // null if no seasons
+            const o = isOpenToday(x);        // null if no hours
+            if (s === true || o === true) return 0;
+            if (s === false || o === false) return 2;
+            return 1;
+        };
+        return list.slice().sort((a, b) => {
+            const ra = rank(a), rb = rank(b);
+            if (ra !== rb) return ra - rb;
+            if (pos) {
+                const da = typeof a.lat === 'number' ? haversineKm(pos, { lat: a.lat, lng: a.lng }) : Infinity;
+                const db = typeof b.lat === 'number' ? haversineKm(pos, { lat: b.lat, lng: b.lng }) : Infinity;
+                if (da !== db) return da - db;
+            }
+            return idx.get(a) - idx.get(b); // stable: original order
+        });
+    }
+    function previewItems(list, opts) {
+        return previewOrder(list, opts).slice(0, (opts && opts.limit) || 6);
+    }
+
     /* ---------- share ---------- */
     async function share(data) {
         const payload = {
@@ -442,6 +474,8 @@
         getPosition, haversineKm, get lastPos() { return lastPos; },
         // season / open
         isInSeason, currentMonthId, isOpenToday,
+        // preview ordering
+        previewOrder, previewItems,
         // share
         share,
         // audio narration

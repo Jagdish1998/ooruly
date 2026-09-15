@@ -3,13 +3,17 @@
    read as siblings. Same accent, type scale, radii and themes.
    ============================================================ */
 :root {
-    --accent: #ff004f;
-    --accent-strong: #e50048;
-    --accent-hover: #c70040;
-    --accent-ink: var(--accent);
-    --accent-2: #5a3cff;
-    --accent-soft: rgba(255, 0, 79, 0.12);
-    --accent-ring: rgba(255, 0, 79, 0.35);
+    /* Travel-grade palette: a warm coral primary (Airbnb-like — warmth + trust) balanced by a calm
+       teal secondary for wayfinding and hierarchy. Accent = primary actions/highlights only. */
+    --accent: #ff5a5f;          /* coral */
+    --accent-strong: #f0484d;   /* coral, for solid buttons */
+    --accent-hover: #e13840;
+    --accent-ink: #e5484d;      /* text/icon coral that reads on light too */
+    --accent-2: #0f8a8a;        /* teal secondary */
+    --accent-2-ink: #0d7d7d;
+    --accent-soft: rgba(255, 90, 95, 0.12);
+    --accent-ring: rgba(255, 90, 95, 0.38);
+    --teal-soft: rgba(15, 138, 138, 0.12);
 
     --bg: #08080a;
     --bg-elev: #16161d;
@@ -46,24 +50,31 @@
 
     --max-width: 1160px;
     --header-h: 72px;
+
+    /* Type: Fraunces (warm display serif) for headings, Inter for body/UI. */
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
 
 [data-theme="light"] {
-    --bg: #fbfbfd;
+    /* Warm, sunlit-neutral light theme (sandy cream rather than cold grey) — a common travel look. */
+    --bg: #fcfbf9;
     --bg-elev: #ffffff;
-    --bg-elev-2: #f2f2f6;
-    --bg-alt: #f5f5f8;
-    --text: #14141a;
-    --text-muted: #55555f;
-    --text-dim: #6b6b78;
-    --accent-ink: #e50048;
+    --bg-elev-2: #f3f1ec;
+    --bg-alt: #f6f4f0;
+    --text: #1b1a18;
+    --text-muted: #5a564f;
+    --text-dim: #726d64;
+    --accent-ink: #d83a40;      /* coral that clears AA on cream */
+    --accent-2-ink: #0c7373;    /* teal that clears AA on cream */
     --edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0);
-    --border: rgba(10, 10, 20, 0.1);
-    --border-strong: rgba(10, 10, 20, 0.18);
-    --header-bg: rgba(251, 251, 253, 0.94);
-    --shadow-lg: 0 24px 60px -24px rgba(20, 20, 40, 0.22);
-    --shadow-sm: 0 6px 18px -8px rgba(20, 20, 40, 0.18);
-    --accent-soft: rgba(255, 0, 79, 0.08);
+    --border: rgba(20, 16, 10, 0.1);
+    --border-strong: rgba(20, 16, 10, 0.18);
+    --header-bg: rgba(252, 251, 249, 0.94);
+    --shadow-lg: 0 24px 60px -24px rgba(40, 30, 20, 0.18);
+    --shadow-sm: 0 6px 18px -8px rgba(40, 30, 20, 0.14);
+    --accent-soft: rgba(255, 90, 95, 0.10);
+    --teal-soft: rgba(15, 138, 138, 0.10);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -74,11 +85,11 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: var(--step-0);
-    line-height: 1.7;
+    line-height: 1.62;
     overflow-x: hidden;
     transition: background var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
 }
@@ -87,7 +98,10 @@ img { display: block; max-width: 100%; height: auto; }
 ul, ol { list-style: none; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-h1, h2, h3 { line-height: 1.18; font-weight: 600; letter-spacing: -0.02em; }
+/* Headings use the warm display serif; slightly looser leading suits serif display type. */
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.14; font-weight: 600; letter-spacing: -0.015em; }
+/* Long-form paragraphs keep a comfortable reading measure. */
+p { line-height: 1.68; }
 
 :focus-visible {
     outline: 2px solid var(--accent);
@@ -210,8 +224,8 @@ img.img-fallback { visibility: hidden; }
 .hero-aura {
     position: absolute; inset: 0; z-index: 0; pointer-events: none;
     background:
-        radial-gradient(60% 55% at 12% -10%, rgba(255, 0, 79, 0.20), transparent 60%),
-        radial-gradient(50% 45% at 100% 0%, rgba(90, 60, 255, 0.14), transparent 55%);
+        radial-gradient(60% 55% at 12% -10%, rgba(255, 90, 95, 0.18), transparent 60%),
+        radial-gradient(52% 48% at 100% 0%, rgba(15, 138, 138, 0.16), transparent 58%);
 }
 /* Two columns on desktop: copy on the left, an image mosaic filling the right. */
 .hero-inner {
@@ -322,6 +336,13 @@ img.img-fallback { visibility: hidden; }
 .card:hover { transform: translateY(-4px); border-color: var(--border-strong); box-shadow: var(--shadow-lg); }
 .card-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--bg-elev-2); }
 .card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-base) var(--ease); }
+/* A subtle top+bottom scrim so the corner controls (heart, badges, tick) stay legible on any photo. */
+.card-media::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(8, 8, 10, 0.28) 0%, transparent 26%),
+        linear-gradient(0deg, rgba(8, 8, 10, 0.28) 0%, transparent 24%);
+}
 .card:hover .card-media img { transform: scale(1.05); }
 .card-type {
     position: absolute; top: 0.7rem; left: 0.7rem;
@@ -369,7 +390,7 @@ img.img-fallback { visibility: hidden; }
 .cafe-initial {
     font-size: clamp(3.2rem, 12vw, 4.6rem); font-weight: 700; line-height: 1;
     color: var(--text); opacity: 0.14; letter-spacing: -0.04em;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-display);
 }
 .cafe-cup {
     position: absolute; font-size: 1.6rem; color: var(--accent-ink);
@@ -385,13 +406,13 @@ img.img-fallback { visibility: hidden; }
 .cafe-hero-art {
     position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden;
     background:
-        radial-gradient(60% 80% at 80% 0%, rgba(255, 0, 79, 0.16), transparent 60%),
-        radial-gradient(50% 70% at 0% 100%, rgba(90, 60, 255, 0.18), transparent 60%);
+        radial-gradient(60% 80% at 80% 0%, rgba(255, 90, 95, 0.16), transparent 60%),
+        radial-gradient(50% 70% at 0% 100%, rgba(15, 138, 138, 0.18), transparent 60%);
 }
 .cafe-hero-initial {
     font-size: clamp(9rem, 40vw, 20rem); font-weight: 700; line-height: 1;
     color: #fff; opacity: 0.07; letter-spacing: -0.05em;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-display);
 }
 .cafe-hero-art > i {
     position: absolute; font-size: clamp(3rem, 10vw, 5rem); color: var(--accent-ink);
@@ -399,12 +420,8 @@ img.img-fallback { visibility: hidden; }
 }
 
 /* ---------- authentic eats ---------- */
-.section--eats {
-    position: relative;
-    background:
-        radial-gradient(65% 55% at 100% 0%, rgba(255, 0, 79, 0.08), transparent 60%);
-    border-bottom: 1px solid var(--border);
-}
+/* Content band kept plain for a calm scroll rhythm (only the teaser interlude carries a tint). */
+.section--eats { position: relative; }
 /* "Since YYYY" heritage badge on the eatery card tile. */
 .card-type--since {
     background: var(--accent-strong); color: #fff;
@@ -412,19 +429,16 @@ img.img-fallback { visibility: hidden; }
 }
 
 /* ---------- things to do ---------- */
-.section--do {
-    position: relative;
-    background:
-        radial-gradient(60% 55% at 0% 0%, rgba(90, 60, 255, 0.10), transparent 60%);
-    border-bottom: 1px solid var(--border);
-}
+.section--do { position: relative; }
 
 /* ---------- detail ---------- */
 .detail-hero { position: relative; min-height: clamp(320px, 46vh, 460px); display: flex; align-items: flex-end; overflow: hidden; }
 .detail-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .detail-hero-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(8, 8, 10, 0.15) 0%, rgba(8, 8, 10, 0.55) 55%, rgba(8, 8, 10, 0.92) 100%);
+    /* Grade both ends so the top-left back link and the bottom title block stay legible on any photo. */
+    background:
+        linear-gradient(180deg, rgba(8, 8, 10, 0.45) 0%, rgba(8, 8, 10, 0.1) 22%, rgba(8, 8, 10, 0.55) 60%, rgba(8, 8, 10, 0.94) 100%);
 }
 /* Top padding clears the fixed header so the "All places" back link never tucks under the navbar,
    even on a short hero where the bottom-aligned content block reaches the top. */
@@ -1305,22 +1319,27 @@ img.img-fallback { visibility: hidden; }
    Compare, scrollytelling story mode, and micro-interactions.
    ============================================================ */
 
-/* ---------- compare toggle on getaway cards ---------- */
+/* ---------- card footer row (tags + compare) ---------- */
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-top: 0.15rem; }
+.card-foot .tag-pills { margin-top: 0; }
+.card-cat { color: var(--accent-2-ink); font-weight: 600; }
+.card-meta-sep { color: var(--text-dim); margin: 0 0.15rem; }
+
+/* Compare toggle now lives in the card body (decluttered off the image), styled in the calm teal. */
 .compare-toggle {
-    position: absolute; left: 0.6rem; bottom: 0.6rem; z-index: 5;
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.35rem 0.7rem; border-radius: var(--radius-pill);
-    font-size: 0.72rem; font-weight: 600; color: #fff;
-    background: rgba(8, 8, 10, 0.6); border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    transition: transform var(--dur-fast) var(--ease), background var(--dur-fast);
+    display: inline-flex; align-items: center; gap: 0.4rem; flex: 0 0 auto;
+    padding: 0.4rem 0.75rem; border-radius: var(--radius-pill);
+    font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+    background: var(--bg-elev-2); border: 1px solid var(--border);
+    transition: color var(--dur-fast), border-color var(--dur-fast), background var(--dur-fast);
 }
-.compare-toggle:hover { transform: translateY(-2px); }
-.compare-toggle.is-on { background: var(--accent-strong); border-color: transparent; }
-/* Let clicks always land on the button, never on the icon/label or a FontAwesome-swapped SVG. */
+.compare-toggle:hover { color: var(--accent-2-ink); border-color: var(--accent-2-ink); }
+.compare-toggle.is-on { background: var(--accent-2); color: #fff; border-color: transparent; }
+.compare-toggle i { font-size: 0.9em; }
+/* Clicks always land on the button, never the icon/label or a FontAwesome-swapped SVG. */
 .compare-toggle * { pointer-events: none; }
-/* The compare toggle sits bottom-left; lift the season/open badges above it so they never overlap. */
-.card-media .card-badges { bottom: 3rem; }
+/* Season/open badge sits alone at the bottom-left of the image now. */
+.card-media .card-badges { bottom: 0.6rem; }
 
 /* ---------- floating compare bar ---------- */
 .compare-bar {
@@ -1557,3 +1576,76 @@ img.img-fallback { visibility: hidden; }
 .wiz-summary p { color: var(--text-muted); }
 .wiz-summary p i { color: var(--accent-ink); margin-right: 0.4rem; }
 .wiz-summary strong { color: var(--text); }
+
+/* ============================================================
+   Refinements: hero search, display-serif tuning, teal accents.
+   ============================================================ */
+
+/* ---------- in-hero search entry ---------- */
+.hero-search {
+    display: inline-flex; align-items: center; gap: 0.7rem; width: min(100%, 460px);
+    margin-top: 1.6rem; padding: 0.85rem 1.1rem; text-align: left;
+    background: var(--bg-elev); border: 1px solid var(--border-strong); border-radius: var(--radius-pill);
+    color: var(--text-dim); font-size: var(--step-0);
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast);
+}
+.hero-search:hover { border-color: var(--accent-ring); transform: translateY(-2px); }
+.hero-search > i { color: var(--accent-ink); }
+.hero-search > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hero-search-kbd {
+    flex: 0 0 auto; font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
+    color: var(--text-muted); background: var(--bg-elev-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.05rem 0.5rem; line-height: 1.4;
+}
+@media (max-width: 560px) {
+    .hero-search { width: 100%; }
+    .hero-search-kbd { display: none; }
+}
+
+/* ---------- display-serif tuning ---------- */
+/* Fraunces has a tall x-height; nudge optical size + weight so big headlines feel editorial. */
+.hero-title { font-weight: 600; letter-spacing: -0.02em; }
+.section-title { font-weight: 600; }
+/* The lowercase wordmark stays in the sans for a clean, modern mark. */
+.brand-mark { font-family: var(--font-body); }
+/* Card titles: keep them tight and confident. */
+.card-head h3 { line-height: 1.2; }
+
+/* ---------- teal secondary accents (wayfinding + calm balance) ---------- */
+/* Intent (vibe) chips lean teal so the coral accent stays reserved for primary actions/highlights;
+   "good to go"/open badges keep their green semantic (positive = go). */
+.chip--intent.is-active { background: var(--accent-2); border-color: transparent; color: #fff; }
+.chip--intent.is-active i { color: #fff; }
+
+/* ============================================================
+   Section pages, home previews & card refinement (spec)
+   ============================================================ */
+
+/* Card tagline: clamp to 2 lines and meta to 1, so heights stay consistent within a row. */
+.card-tag {
+    display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.card-meta { flex-wrap: wrap; }
+.card-body { gap: 0.45rem; }
+
+/* Section title as a link (home previews): inherits heading style, accent on hover. */
+.section-title-link { color: inherit; }
+.section-title-link:hover { color: var(--accent-ink); }
+
+/* Getaways section: type-chip row + Near me on one line, count below. */
+.section-head--row-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.section-head--row-controls .filters { margin-bottom: 0; }
+
+/* "View all" preview link uses the calm near-btn style already defined; keep it aligned. */
+.section-head--row .near-btn { align-self: flex-end; }
+
+/* Consistent vertical rhythm: section pages reuse the standard section spacing. */
+.section--page .section-head { margin-bottom: 1.25rem; }
+
+@media (max-width: 560px) {
+    /* Preview headers stack: title/desc then the View-all link on its own line. */
+    .section-head--row { gap: 0.6rem; }
+    .section-head--row .near-btn { align-self: flex-start; }
+}

@@ -34,6 +34,72 @@
         do: { area: 'all', intent: 'all', sort: 'default' },
     };
 
+    /* Single source of truth for the six browsable collections. Section pages, home previews,
+       filters, and card rendering all read from this registry so every collection stays
+       consistent (Req 1.9, 4.1). `card` renderers are arrow-wrapped so they resolve lazily at
+       call time — the underlying functions are defined later in this IIFE, and this avoids any
+       temporal-dead-zone issues regardless of definition order. `data` getters use the same
+       `typeof` guard the rest of app.js uses, so a missing collection degrades to []. */
+    const COLLECTIONS = {
+        city: {
+            key: 'city', route: '#/city', legacy: '#city', title: 'Inside Bengaluru',
+            sub: 'No trip needed — city sights you can do in a few hours. '
+                + 'Tap any place for how to reach it, the best time to go, and travel tips.',
+            icon: 'fa-city',
+            data: () => (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []),
+            card: (...a) => cityCardHTML(...a), detailKey: 'city',
+            filters: true, filterSec: 'city', compare: false,
+        },
+        temples: {
+            key: 'temple', route: '#/temples', legacy: '#temples', title: 'Temples',
+            sub: 'Famous temples across the city — from the oldest '
+                + 'Chola-era shrines and a 16th-century cave temple to a modern landmark. '
+                + 'Tap one for its story, how to reach it, timings and tips.',
+            icon: 'fa-gopuram',
+            data: () => (typeof TEMPLES !== 'undefined' ? TEMPLES : []),
+            card: (...a) => templeCardHTML(...a), detailKey: 'temple',
+            filters: true, filterSec: 'temples', compare: false,
+        },
+        cafes: {
+            key: 'cafe', route: '#/cafes', legacy: '#cafes', title: 'Hidden cafes',
+            sub: "Independent, under-the-radar cafes tucked across the "
+                + "city — Indiranagar, Jayanagar, Koramangala and beyond. Tap one for what it's "
+                + "known for, what to order, and directions.",
+            icon: 'fa-mug-saucer',
+            data: () => (typeof CAFES !== 'undefined' ? CAFES : []),
+            card: (...a) => cafeCardHTML(...a), detailKey: 'cafe',
+            filters: true, filterSec: 'cafes', compare: false,
+        },
+        eats: {
+            key: 'eat', route: '#/eats', legacy: '#eats', title: 'Authentic eats',
+            sub: 'The legendary, decades-old institutions locals grew up '
+                + 'on — tiffin rooms, benne-dosa joints and colonial-era cafes. Tap one for '
+                + 'what to order, the story behind it, and directions.',
+            icon: 'fa-utensils',
+            data: () => (typeof EATERIES !== 'undefined' ? EATERIES : []),
+            card: (...a) => eatCardHTML(...a), detailKey: 'eat',
+            filters: true, filterSec: 'eats', compare: false,
+        },
+        do: {
+            key: 'do', route: '#/do', legacy: '#do', title: 'Things to do',
+            sub: 'Hands-on experiences to fill a weekend — pottery and '
+                + 'candle workshops, pizza classes, lake kayaking, heritage cycling and '
+                + 'go-karting. Tap one for what to expect and where to find it.',
+            icon: 'fa-person-hiking',
+            data: () => (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []),
+            card: (...a) => activityCardHTML(...a), detailKey: 'do',
+            filters: true, filterSec: 'do', compare: false,
+        },
+        getaways: {
+            key: 'place', route: '#/getaways', legacy: '#nearby', title: 'Nearby Bengaluru',
+            sub: 'Weekend and long-weekend getaways, sorted by distance from the city.',
+            icon: 'fa-mountain-sun',
+            data: () => DESTINATIONS,
+            card: (...a) => cardHTML(...a), detailKey: 'place',
+            filters: true, filterSec: null, typeChips: true, nearMe: true, compare: true,
+        },
+    };
+
     /* Sort a filtered collection per the chosen mode. 'near' uses geolocation if available. */
     function applySort(list, mode) {
         const arr = list.slice();
@@ -251,29 +317,37 @@
 
     /* ---------- home view ---------- */
 
+    /* Home preview block for one collection: title, description, up to 6 cards (ordered
+       in-season/open-first then nearest), and a "View all N" link to the section route. */
+    function sectionPreviewHTML(collId) {
+        const c = COLLECTIONS[collId];
+        if (!c) return '';
+        const all = c.data();
+        if (!all.length) return '';
+        const pos = F && F.lastPos ? F.lastPos : null;
+        const items = F ? F.previewItems(all, { pos, limit: 6 }) : all.slice(0, 6);
+        const cards = items.map((item) => c.card(item)).join('');
+        const viewAll = all.length > 6
+            ? `<a class="near-btn" href="${c.route}">View all ${all.length} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`
+            : '';
+        return `
+            <section class="section" id="${collId}">
+                <div class="container">
+                    <div class="section-head section-head--row">
+                        <div>
+                            <h2 class="section-title"><a href="${c.route}" class="section-title-link">${esc(c.title)}</a></h2>
+                            <p class="section-sub">${esc(c.sub)}</p>
+                        </div>
+                        ${viewAll}
+                    </div>
+                    <div class="grid">${cards}</div>
+                </div>
+            </section>`;
+    }
+
+    /* ---------- home view ---------- */
+
     function renderHome() {
-        const filters = TYPES.map((t) => {
-            const count = t.id === 'all'
-                ? DESTINATIONS.length
-                : DESTINATIONS.filter((d) => d.type === t.id).length;
-            return `<button class="chip ${t.id === activeType ? 'is-active' : ''}"
-                        type="button" data-type="${t.id}">
-                        ${esc(t.label)} <span class="chip-count">${count}</span>
-                    </button>`;
-        }).join('');
-
-        const list = DESTINATIONS
-            .filter((d) => activeType === 'all' || d.type === activeType)
-            .sort((a, b) => a.distanceKm - b.distanceKm)
-            .map(cardHTML)
-            .join('');
-
-        const cityAll = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []);
-        const templeAll = (typeof TEMPLES !== 'undefined' ? TEMPLES : []);
-        const cafeAll = (typeof CAFES !== 'undefined' ? CAFES : []);
-        const eatAll = (typeof EATERIES !== 'undefined' ? EATERIES : []);
-        const doAll = (typeof ACTIVITIES !== 'undefined' ? ACTIVITIES : []);
-
         // Daily "learn something new" fact + streak nudge.
         const dailyFact = dailyFactHTML();
 
@@ -283,26 +357,13 @@
         // Themes / learning collections teaser (top 3).
         const themeTeaser = themesData().slice(0, 3).map(themeCardHTML).join('');
 
-        const emptyMsg = '<p class="grid-empty">Nothing matches those filters yet — try clearing one.</p>';
-
-        // Filter, then sort, then render — and pass the shown/total counts into each bar.
-        const cityFiltered = applySort(applyFilter(cityAll, collFilter.city), collFilter.city.sort);
-        const templeFiltered = applySort(applyFilter(templeAll, collFilter.temples), collFilter.temples.sort);
-        const cafeFiltered = applySort(applyFilter(cafeAll, collFilter.cafes), collFilter.cafes.sort);
-        const eatFiltered = applySort(applyFilter(eatAll, collFilter.eats), collFilter.eats.sort);
-        const doFiltered = applySort(applyFilter(doAll, collFilter.do), collFilter.do.sort);
-
-        const cityBar = filterBarHTML('city', cityAll, cityFiltered.length, cityAll.length);
-        const templeBar = filterBarHTML('temples', templeAll, templeFiltered.length, templeAll.length);
-        const cafeBar = filterBarHTML('cafes', cafeAll, cafeFiltered.length, cafeAll.length);
-        const eatBar = filterBarHTML('eats', eatAll, eatFiltered.length, eatAll.length);
-        const doBar = filterBarHTML('do', doAll, doFiltered.length, doAll.length);
-
-        const cityList = cityFiltered.length ? cityFiltered.map(cityCardHTML).join('') : emptyMsg;
-        const templeList = templeFiltered.length ? templeFiltered.map(templeCardHTML).join('') : emptyMsg;
-        const cafeList = cafeFiltered.length ? cafeFiltered.map(cafeCardHTML).join('') : emptyMsg;
-        const eatList = eatFiltered.length ? eatFiltered.map(eatCardHTML).join('') : emptyMsg;
-        const doList = doFiltered.length ? doFiltered.map(activityCardHTML).join('') : emptyMsg;
+        // Six collection previews (6 cards each, no inline filters — full lists live on section pages).
+        const cityPrev = sectionPreviewHTML('city');
+        const getawayPrev = sectionPreviewHTML('getaways');
+        const templePrev = sectionPreviewHTML('temples');
+        const cafePrev = sectionPreviewHTML('cafes');
+        const eatPrev = sectionPreviewHTML('eats');
+        const doPrev = sectionPreviewHTML('do');
 
         // Counts for the hero stat row (proof of how much is inside).
         const cityCount = (typeof CITY_ATTRACTIONS !== 'undefined' ? CITY_ATTRACTIONS : []).length;
@@ -323,11 +384,16 @@
                         <p class="hero-lede">A practical travel guide — the places, the best time to go,
                             the precautions that actually matter, and one tap to reach or book. From day
                             trips inside Bengaluru to weekend getaways around it.</p>
+                        <button class="hero-search" id="hero-search" type="button" aria-label="Search places">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <span>Search ${totalCount}+ places — cafes, temples, getaways…</span>
+                            <kbd class="hero-search-kbd">/</kbd>
+                        </button>
                         <div class="hero-cta">
-                            <a class="btn btn-primary" href="#nearby">
+                            <a class="btn btn-primary" href="#/getaways">
                                 Explore getaways <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                             </a>
-                            <a class="btn btn-ghost" href="#city">
+                            <a class="btn btn-ghost" href="#/city">
                                 <i class="fa-solid fa-city" aria-hidden="true"></i> Inside Bengaluru
                             </a>
                         </div>
@@ -367,35 +433,10 @@
 
             ${dailyFact ? `<div class="container">${dailyFact}</div>` : ''}
 
-            <section class="section section--city" id="city">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Inside Bengaluru</h2>
-                        <p class="section-sub">No trip needed — city sights you can do in a few hours.
-                            Tap any place for how to reach it, the best time to go, and travel tips.</p>
-                    </div>
-                    ${cityBar}
-                    <div class="grid" id="grid-city">${cityList}</div>
-                </div>
-            </section>
+            ${cityPrev}
+            ${getawayPrev}
 
-            <section class="section" id="nearby">
-                <div class="container">
-                    <div class="section-head section-head--row">
-                        <div>
-                            <h2 class="section-title">Nearby Bengaluru</h2>
-                            <p class="section-sub">Weekend and long-weekend getaways, sorted by distance from the city.</p>
-                        </div>
-                        <button class="near-btn" id="near-me-inline" type="button">
-                            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Near me
-                        </button>
-                    </div>
-                    <div class="filters" role="tablist" aria-label="Filter by type">${filters}</div>
-                    <div class="grid" id="grid">${list}</div>
-                </div>
-            </section>
-
-            <!-- "Ways to explore" interlude: after two headline content bands, offer the tools. -->
+            <!-- "Ways to explore" interlude: after the headline content, offer the tools. -->
             ${itinTeaser ? `
             <section class="section section--itin" id="itineraries">
                 <div class="container">
@@ -426,118 +467,172 @@
                 </div>
             </section>` : ''}
 
-            <section class="section section--temples" id="temples">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Temples</h2>
-                        <p class="section-sub">Famous temples across the city — from the oldest
-                            Chola-era shrines and a 16th-century cave temple to a modern landmark.
-                            Tap one for its story, how to reach it, timings and tips.</p>
-                    </div>
-                    ${templeBar}
-                    <div class="grid" id="grid-temples">${templeList}</div>
-                </div>
-            </section>
-
-            <section class="section section--cafes" id="cafes">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Hidden cafes</h2>
-                        <p class="section-sub">Independent, under-the-radar cafes tucked across the
-                            city — Indiranagar, Jayanagar, Koramangala and beyond. Tap one for what it's
-                            known for, what to order, and directions.</p>
-                    </div>
-                    ${cafeBar}
-                    <div class="grid" id="grid-cafes">${cafeList}</div>
-                </div>
-            </section>
-
-            <section class="section section--eats" id="eats">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Authentic eats</h2>
-                        <p class="section-sub">The legendary, decades-old institutions locals grew up
-                            on — tiffin rooms, benne-dosa joints and colonial-era cafes. Tap one for
-                            what to order, the story behind it, and directions.</p>
-                    </div>
-                    ${eatBar}
-                    <div class="grid" id="grid-eats">${eatList}</div>
-                </div>
-            </section>
-
-            <section class="section section--do" id="do">
-                <div class="container">
-                    <div class="section-head">
-                        <h2 class="section-title">Things to do</h2>
-                        <p class="section-sub">Hands-on experiences to fill a weekend — pottery and
-                            candle workshops, pizza classes, lake kayaking, heritage cycling and
-                            go-karting. Tap one for what to expect and where to find it.</p>
-                    </div>
-                    ${doBar}
-                    <div class="grid" id="grid-do">${doList}</div>
-                </div>
-            </section>`;
+            ${templePrev}
+            ${cafePrev}
+            ${eatPrev}
+            ${doPrev}`;
 
         // Micro-interactions: reveal section heads on scroll, and count up the hero stats.
         view.querySelectorAll('.section .section-head').forEach((el) => el.classList.add('reveal'));
         wireScrollReveal();
         countUpStats();
-
-        // Getaway type chips (existing behaviour).
-        view.querySelectorAll('.chip[data-type]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                activeType = btn.dataset.type;
-                renderHome();
-                const nearby = document.getElementById('nearby');
-                if (nearby) nearby.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
-            });
-        });
-
-        // Per-collection area + intent filters (native dropdowns). Re-render in place, keep anchored.
-        function anchorTo(sec) {
-            const target = document.getElementById(sec);
-            if (target) target.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
-        }
-        view.querySelectorAll('.select[data-filter-sec]').forEach((sel) => {
-            sel.addEventListener('change', () => {
-                const sec = sel.dataset.filterSec;
-                const kind = sel.dataset.filterKind; // 'area' | 'intent'
-                collFilter[sec][kind] = sel.value;
-                renderHome();
-                anchorTo(sec);
-            });
-        });
-        view.querySelectorAll('.filter-clear[data-filter-sec]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const sec = btn.dataset.filterSec;
-                collFilter[sec] = { area: 'all', intent: 'all', sort: 'default' };
-                renderHome();
-                anchorTo(sec);
-            });
-        });
+        currentView = 'home';
     }
 
-    function cardHTML(d) {
+    /* ---------- section page (one collection, full grid) ---------- */
+
+    /* Shared renderer for a single collection's dedicated page (Req 1.1–1.6, 1.9). Reads everything
+       from the COLLECTIONS registry so all six pages share layout, controls, headings, counts and
+       empty states by construction. Getaways keep their type chips + "Near me"; the other five use
+       the standard area/vibe/sort filter bar. Routing (task 4) and home recompose (task 6) come
+       later — this renderer stands alone and re-renders itself in place. */
+    function renderSection(collId) {
+        const c = COLLECTIONS[collId];
+        if (!c) { location.hash = '#/'; return; }
+
+        const all = c.data();
+        const emptyMsg = '<p class="grid-empty">Nothing matches those filters yet — try clearing one.</p>';
+
+        let filtered;
+        let controls;
+        if (c.typeChips) {
+            // Getaways variant: type chips + "Near me", same logic renderHome uses today.
+            filtered = all
+                .filter((d) => activeType === 'all' || d.type === activeType)
+                .sort((a, b) => a.distanceKm - b.distanceKm);
+
+            const chips = TYPES.map((t) => {
+                const count = t.id === 'all'
+                    ? all.length
+                    : all.filter((d) => d.type === t.id).length;
+                return `<button class="chip ${t.id === activeType ? 'is-active' : ''}"
+                        type="button" data-type="${t.id}">
+                        ${esc(t.label)} <span class="chip-count">${count}</span>
+                    </button>`;
+            }).join('');
+
+            const countLine = `<p class="filter-count" role="status" aria-live="polite">${
+                activeType === 'all'
+                    ? `${all.length} places`
+                    : `Showing <strong>${filtered.length}</strong> of ${all.length}`
+            }</p>`;
+
+            controls = `
+                <div class="section-head--row section-head--row-controls">
+                    <div class="filters" role="tablist" aria-label="Filter by type">${chips}</div>
+                    <button class="near-btn" id="near-me-inline" type="button">
+                        <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Near me
+                    </button>
+                </div>
+                ${countLine}`;
+        } else {
+            // The five filtered collections: area + vibe + sort, exactly as renderHome does.
+            const f = collFilter[c.filterSec];
+            filtered = applySort(applyFilter(all, f), f.sort);
+            controls = filterBarHTML(c.filterSec, all, filtered.length, all.length);
+        }
+
+        const cardOpts = c.compare ? { compare: true } : undefined;
+        const cards = filtered.length ? filtered.map((item) => c.card(item, cardOpts)).join('') : emptyMsg;
+
+        view.innerHTML = `
+            <section class="section section--page">
+                <div class="container">
+                    <div class="section-head page-head">
+                        <a class="back back--inline" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</a>
+                        <h1 class="section-title">${esc(c.title)}</h1>
+                        <p class="section-sub">${esc(c.sub)}</p>
+                    </div>
+                    ${controls}
+                    <div class="grid" id="grid-section">${cards}</div>
+                </div>
+            </section>`;
+
+        // Set the active view to this collection so back-links / active-state resolve later
+        // (routing in task 4, nav active-state in task 8).
+        currentView = collId;
+
+        // Keep scroll at the top of the grid after an in-place re-render.
+        function anchorGrid() {
+            const grid = document.getElementById('grid-section');
+            if (grid) grid.scrollIntoView({ behavior: 'instant' in window ? 'instant' : 'auto', block: 'start' });
+        }
+
+        if (c.typeChips) {
+            // Getaway type chips — re-render this section (not home) and stay anchored.
+            view.querySelectorAll('.chip[data-type]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    activeType = btn.dataset.type;
+                    renderSection(collId);
+                    anchorGrid();
+                });
+            });
+            // "Near me" — get the user's location, then re-render this section by distance.
+            const nearBtn = view.querySelector('#near-me-inline');
+            if (nearBtn && F) {
+                nearBtn.addEventListener('click', async () => {
+                    nearBtn.classList.add('is-loading');
+                    try {
+                        await F.getPosition();
+                        toast('Sorted by distance from you');
+                        renderSection(collId);
+                        anchorGrid();
+                    } catch (err) {
+                        toast('Couldn\'t get your location');
+                        nearBtn.classList.remove('is-loading');
+                    }
+                });
+            }
+        } else {
+            // Area + vibe + sort dropdowns and the clear button — re-render this section in place.
+            view.querySelectorAll('.select[data-filter-sec]').forEach((sel) => {
+                sel.addEventListener('change', () => {
+                    const sec = sel.dataset.filterSec;
+                    const kind = sel.dataset.filterKind; // 'area' | 'intent' | 'sort'
+                    collFilter[sec][kind] = sel.value;
+                    renderSection(collId);
+                    anchorGrid();
+                });
+            });
+            view.querySelectorAll('.filter-clear[data-filter-sec]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const sec = btn.dataset.filterSec;
+                    collFilter[sec] = { area: 'all', intent: 'all', sort: 'default' };
+                    renderSection(collId);
+                    anchorGrid();
+                });
+            });
+        }
+
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    function cardHTML(d, opts) {
         const dist = F && F.lastPos && typeof d.lat === 'number'
             ? `<span class="card-dist">${Math.round(F.haversineKm(F.lastPos, { lat: d.lat, lng: d.lng }))} km away</span>`
             : `<span class="card-dist">${d.distanceKm} km</span>`;
         const cmpOn = F && F.inCompare(d.slug);
+        // Compare control renders ONLY on the getaways section page (opts.compare), never in previews.
+        const compareBtn = (opts && opts.compare)
+            ? `<button class="compare-toggle ${cmpOn ? 'is-on' : ''}" type="button"
+                    data-compare="${esc(d.slug)}" aria-pressed="${cmpOn ? 'true' : 'false'}"
+                    aria-label="${cmpOn ? 'Remove from compare' : 'Add to compare'}">
+                    <i class="fa-solid ${cmpOn ? 'fa-check' : 'fa-scale-balanced'}" aria-hidden="true"></i>
+                    <span>${cmpOn ? 'Comparing' : 'Compare'}</span>
+                </button>`
+            : '';
+        const foot = compareBtn
+            ? `<div class="card-foot">${tagPillsHTML(d.tags)}${compareBtn}</div>`
+            : tagPillsHTML(d.tags);
         return `
             <a class="card" href="#/place/${d.slug}">
                 <div class="card-media">
                     <img src="${esc(d.image)}" alt="${esc(d.name)}, ${esc(d.state)}"
                         loading="lazy" decoding="async"
                         onerror="this.classList.add('img-fallback')">
-                    <span class="card-type">${esc(typeLabel(d.type))}</span>
                     ${favBtnHTML('place', d.slug)}
                     ${exploredTickHTML('place', d.slug)}
                     <span class="card-badges">${seasonBadgeHTML(d.seasons)}</span>
-                    <button class="compare-toggle ${cmpOn ? 'is-on' : ''}" type="button"
-                        data-compare="${esc(d.slug)}" aria-pressed="${cmpOn ? 'true' : 'false'}"
-                        aria-label="${cmpOn ? 'Remove from compare' : 'Add to compare'}">
-                        <i class="fa-solid ${cmpOn ? 'fa-check' : 'fa-scale-balanced'}" aria-hidden="true"></i>
-                        <span>Compare</span>
-                    </button>
                 </div>
                 <div class="card-body">
                     <div class="card-head">
@@ -546,26 +641,45 @@
                     </div>
                     <p class="card-tag">${esc(d.tagline)}</p>
                     <p class="card-meta">
-                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
-                        Best: ${esc(d.bestMonths)}
+                        <span class="card-cat">${esc(typeLabel(d.type))}</span>
+                        <span class="card-meta-sep">·</span>
+                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i> ${esc(d.bestMonths)}
                     </p>
-                    ${tagPillsHTML(d.tags)}
+                    ${foot}
                 </div>
             </a>`;
     }
 
+    /* Card media that shows a real photo when present, or a distinct branded monogram tile (the
+       place's initial + an icon) when no verified photo exists — so no two places share a literal
+       image and unphotographed places still look intentional. `icon` is a FontAwesome glyph. */
+    function cardMediaHTML(item, name, icon, overlays) {
+        const initial = esc((name || '?').trim().charAt(0).toUpperCase());
+        const img = item.image;
+        if (img) {
+            return `<div class="card-media">
+                    <img src="${esc(img)}" alt="${esc(name)}, Bengaluru"
+                        loading="lazy" decoding="async" onerror="this.classList.add('img-fallback')">
+                    ${overlays}
+                </div>`;
+        }
+        return `<div class="card-media cafe-media">
+                    <span class="cafe-fallback" aria-hidden="true">
+                        <span class="cafe-initial">${initial}</span>
+                        <i class="fa-solid ${esc(icon || 'fa-location-dot')} cafe-cup"></i>
+                    </span>
+                    ${overlays}
+                </div>`;
+    }
+
     function cityCardHTML(p) {
-        return `
-            <a class="card" href="#/city/${p.slug}">
-                <div class="card-media">
-                    <img src="${esc(p.image)}" alt="${esc(p.name)}, Bengaluru"
-                        loading="lazy" decoding="async"
-                        onerror="this.classList.add('img-fallback')">
-                    <span class="card-type">${esc(p.category)}</span>
+        const overlays = `<span class="card-type">${esc(p.category)}</span>
                     ${favBtnHTML('city', p.slug)}
                     ${exploredTickHTML('city', p.slug)}
-                    <span class="card-badges">${openBadgeHTML(p)}</span>
-                </div>
+                    <span class="card-badges">${openBadgeHTML(p)}</span>`;
+        return `
+            <a class="card" href="#/city/${p.slug}">
+                ${cardMediaHTML(p, p.name, 'fa-monument', overlays)}
                 <div class="card-body">
                     <div class="card-head">
                         <h3>${esc(p.name)}</h3>
@@ -581,16 +695,12 @@
     }
 
     function templeCardHTML(t) {
+        const overlays = `<span class="card-type">${esc(t.category)}</span>
+                    ${favBtnHTML('temple', t.slug)}
+                    ${exploredTickHTML('temple', t.slug)}`;
         return `
             <a class="card" href="#/temple/${t.slug}">
-                <div class="card-media">
-                    <img src="${esc(t.image)}" alt="${esc(t.name)}, Bengaluru"
-                        loading="lazy" decoding="async"
-                        onerror="this.classList.add('img-fallback')">
-                    <span class="card-type">${esc(t.category)}</span>
-                    ${favBtnHTML('temple', t.slug)}
-                    ${exploredTickHTML('temple', t.slug)}
-                </div>
+                ${cardMediaHTML(t, t.name, 'fa-gopuram', overlays)}
                 <div class="card-body">
                     <div class="card-head">
                         <h3>${esc(t.name)}</h3>
@@ -738,7 +848,7 @@
                         decoding="async" onerror="this.classList.add('img-fallback')">
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
-                        <a class="back" href="#/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All places</a>
+                        <a class="back" href="#/getaways"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Getaways</a>
                         <span class="detail-type">${esc(typeLabel(d.type))}</span>
                         <h1>${esc(d.name)}${d.also ? ` <small>(${esc(d.also)})</small>` : ''}</h1>
                         <p class="detail-tag">${esc(d.tagline)}</p>
@@ -795,11 +905,11 @@
        backHref / backLabel point the back link at whichever section the item came from. */
 
     function renderCityDetail(slug) {
-        renderAttractionDetail(byCitySlug(slug), '#city', 'Inside Bengaluru', 'city');
+        renderAttractionDetail(byCitySlug(slug), '#/city', 'Inside Bengaluru', 'city');
     }
 
     function renderTempleDetail(slug) {
-        renderAttractionDetail(byTempleSlug(slug), '#temples', 'Temples', 'temple');
+        renderAttractionDetail(byTempleSlug(slug), '#/temples', 'Temples', 'temple');
     }
 
     function renderAttractionDetail(p, backHref, backLabel, key) {
@@ -822,11 +932,17 @@
 
         const tips = (p.tips || []).map((t) => `<li>${esc(t)}</li>`).join('');
 
+        const pInitial = esc((p.name || '?').trim().charAt(0).toUpperCase());
+        const heroMedia = p.image
+            ? `<img src="${esc(p.image)}" alt="${esc(p.name)}, Bengaluru" decoding="async" onerror="this.classList.add('img-fallback')">`
+            : `<div class="cafe-hero-art" aria-hidden="true">
+                    <span class="cafe-hero-initial">${pInitial}</span>
+                    <i class="fa-solid ${key === 'temple' ? 'fa-gopuram' : 'fa-monument'}"></i>
+                </div>`;
         view.innerHTML = `
             <article class="detail">
-                <div class="detail-hero">
-                    <img src="${esc(p.image)}" alt="${esc(p.name)}, Bengaluru"
-                        decoding="async" onerror="this.classList.add('img-fallback')">
+                <div class="detail-hero ${p.image ? '' : 'detail-hero--cafe'}">
+                    ${heroMedia}
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
                         <a class="back" href="${esc(backHref)}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(backLabel)}</a>
@@ -932,7 +1048,7 @@
                         onerror="this.style.display='none'">` : ''}
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
-                        <a class="back" href="#cafes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Hidden cafes</a>
+                        <a class="back" href="#/cafes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Hidden cafes</a>
                         <span class="detail-type">Cafe</span>
                         <h1>${esc(c.name)}</h1>
                         <p class="detail-tag">${esc(c.tagline)}</p>
@@ -1020,7 +1136,7 @@
                         onerror="this.style.display='none'">` : ''}
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
-                        <a class="back" href="#eats"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Authentic eats</a>
+                        <a class="back" href="#/eats"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Authentic eats</a>
                         <span class="detail-type">Iconic eatery</span>
                         <h1>${esc(e.name)}</h1>
                         <p class="detail-tag">${esc(e.tagline)}</p>
@@ -1108,7 +1224,7 @@
                         onerror="this.style.display='none'">` : ''}
                     <div class="detail-hero-overlay"></div>
                     <div class="container detail-hero-inner">
-                        <a class="back" href="#do"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Things to do</a>
+                        <a class="back" href="#/do"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Things to do</a>
                         <span class="detail-type">${esc(a.category)}</span>
                         <h1>${esc(a.name)}</h1>
                         <p class="detail-tag">${esc(a.tagline)}</p>
@@ -2248,13 +2364,13 @@
         // Stop any audio narration when navigating to a new view.
         if (F && F.stopSpeech) F.stopSpeech();
 
-        // In-page anchor while already on the home view: just scroll to the section.
-        if (HOME_ANCHORS.includes(hash)) {
-            if (currentView !== 'home') { renderHome(); currentView = 'home'; }
-            const target = document.getElementById(hash.slice(1));
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
-        }
+        // Legacy section anchors redirect to their explicit section routes (backward compat).
+        const LEGACY = { '#city': '#/city', '#temples': '#/temples', '#cafes': '#/cafes', '#eats': '#/eats', '#do': '#/do', '#nearby': '#/getaways' };
+        if (LEGACY[hash]) { location.replace(LEGACY[hash]); return; }
+
+        // Explicit section pages (one collection each).
+        const SECTION_ROUTES = { '#/city': 'city', '#/temples': 'temples', '#/cafes': 'cafes', '#/eats': 'eats', '#/do': 'do', '#/getaways': 'getaways' };
+        if (SECTION_ROUTES[hash]) { renderSection(SECTION_ROUTES[hash]); return; }
 
         // Standalone pages.
         if (hash === '#/saved') { renderSaved(); currentView = 'saved'; return; }
@@ -2662,23 +2778,7 @@
 
         /* ---------- "near me" — sort getaways by real distance (button lives in the Getaways
            section now, and is re-created on each home render, so it's wired via delegation). ---- */
-        if (F) {
-            document.addEventListener('click', async (e) => {
-                const nearBtn = e.target.closest('#near-me-inline');
-                if (!nearBtn) return;
-                nearBtn.classList.add('is-loading');
-                try {
-                    await F.getPosition();
-                    toast('Sorted by distance from you');
-                    if (currentView !== 'home') { location.hash = '#nearby'; }
-                    else { renderHome(); const n = document.getElementById('nearby'); if (n) n.scrollIntoView({ behavior: 'smooth' }); }
-                } catch (err) {
-                    toast('Couldn\'t get your location');
-                } finally {
-                    nearBtn.classList.remove('is-loading');
-                }
-            });
-        }
+        /* "Near me" is wired locally inside renderSection (getaways page), so no global handler. */
 
         /* ---------- global search palette ---------- */
         const overlay = document.getElementById('search-overlay');
@@ -2759,6 +2859,10 @@
         }
 
         if (searchOpen) searchOpen.addEventListener('click', openSearch);
+        // The hero search bar is re-rendered with the home view, so open it via delegation.
+        if (view) view.addEventListener('click', (e) => {
+            if (e.target.closest('#hero-search')) { e.preventDefault(); openSearch(); }
+        });
         if (searchClose) searchClose.addEventListener('click', closeSearch);
         if (searchBackdrop) searchBackdrop.addEventListener('click', closeSearch);
         if (searchInput) {

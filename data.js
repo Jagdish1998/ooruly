@@ -598,7 +598,7 @@ const DESTINATIONS = [
         seasons: ['oct', 'nov', 'dec', 'jan', 'feb', 'mar'],
         bestMonths: 'October to March',
         tagline: 'A riverside nature retreat on the Cauvery — coracles, angling and forest walks.',
-        image: 'images/coorg.jpg',
+        image: 'images/bheemeshwari.jpg',
         description:
             'Bheemeshwari is a peaceful nature and adventure camp on the banks of the Cauvery, set in ' +
             'the Cauvery Wildlife Sanctuary. Known for its riverside calm, it offers coracle rides, ' +
@@ -1244,7 +1244,7 @@ const CITY_ATTRACTIONS = [
         area: 'Palace Road, Central Bengaluru',
         bestTime: 'Late morning to afternoon',
         tagline: 'India\'s modern-art collection, set in a restored early-1900s manor.',
-        image: 'images/bangalore-palace.jpg',
+        image: '',
         description:
             'The Bengaluru wing of the National Gallery of Modern Art is housed in the elegant ' +
             'Manikyavelu Mansion, a restored early-20th-century building set in leafy grounds. Its ' +
@@ -1278,7 +1278,7 @@ const CITY_ATTRACTIONS = [
         area: 'JP Nagar, South Bengaluru',
         bestTime: 'Late morning to afternoon',
         tagline: 'India\'s first interactive music museum — themed galleries and listening stations.',
-        image: 'images/vitm.jpg',
+        image: '',
         description:
             'The Indian Music Experience is India\'s first interactive music museum, taking visitors ' +
             'through themed galleries — from classical and devotional to folk, film and indie music. ' +
@@ -1354,7 +1354,7 @@ const CITY_ATTRACTIONS = [
         area: 'Bellary Road, North Bengaluru',
         bestTime: 'Afternoon to evening',
         tagline: 'A free, contemporary science-and-society gallery for curious minds.',
-        image: 'images/cubbon-park.jpg',
+        image: 'images/science-gallery.jpg',
         description:
             'Science Gallery Bengaluru is a free public space where science meets art and society, ' +
             'part of a global network of Science Galleries. Its changing, months-long exhibitions ' +
@@ -1962,7 +1962,7 @@ const CAFES = [
         priceHint: '₹₹ · card & UPI',
         bestTime: 'Weekday breakfast',
         tagline: 'A snug, no-frills spot famous for all-day breakfast and big pancakes.',
-        image: 'images/food-dosa-sambar.jpg',
+        image: '',
         description:
             'A long-running favourite that started small and stayed unpretentious, The Hole in the ' +
             'Wall is best known for its all-day breakfast — pancakes, waffles, big skillets and ' +
@@ -2200,7 +2200,7 @@ const EATERIES = [
         signature: 'Filter coffee under the trees',
         priceHint: '₹₹ · veg',
         tagline: 'Bengaluru\'s classic open-air drive-in — coffee and dosas under old trees.',
-        image: 'images/cafe-coffee.jpg',
+        image: '',
         description:
             'Airlines Hotel on Lavelle Road is a beloved open-air, drive-in restaurant where you sit ' +
             'under a canopy of old rain trees with a tumbler of filter coffee. Long a Bengaluru ' +
@@ -2226,7 +2226,7 @@ const EATERIES = [
         signature: 'Idli-vada & chutney',
         priceHint: '₹ · veg',
         tagline: 'A tiny counter legend for soft idlis and a chutney people crave.',
-        image: 'images/food-idli-vada.jpg',
+        image: '',
         description:
             'Brahmin\'s Coffee Bar is a tiny, standing-room Basavanagudi institution that has done a ' +
             'short, perfect menu since the 1960s: pillow-soft idlis, crisp vadas, khara bath and a ' +
@@ -2251,7 +2251,7 @@ const EATERIES = [
         signature: 'Idli & vada',
         priceHint: '₹ · veg',
         tagline: 'A tiny Malleswaram counter famous for pillowy idlis and long morning queues.',
-        image: 'images/food-idli-vada.jpg',
+        image: '',
         description:
             'Veena Stores is a hole-in-the-wall Malleswaram legend that has served some of the city\'s ' +
             'softest idlis for decades. The menu is short — idli, vada, khara bath, kesari bath and ' +
@@ -2301,7 +2301,7 @@ const EATERIES = [
         signature: 'Death by Chocolate',
         priceHint: '₹₹ · veg',
         tagline: 'The homegrown ice-cream parlour behind the city\'s beloved Death by Chocolate.',
-        image: 'images/cafe-latte.jpg',
+        image: '',
         description:
             'Corner House is a Bengaluru institution that has been serving generous sundaes since the ' +
             '1980s, most famously the legendary "Death by Chocolate" — brownie, ice cream, nuts and ' +
@@ -2501,7 +2501,7 @@ const ACTIVITIES = [
         duration: 'An evening',
         priceHint: '21+ · varies',
         tagline: 'Bengaluru is India\'s craft-beer capital — go tasting at its microbreweries.',
-        image: 'images/cafe-coffee.jpg',
+        image: '',
         description:
             'Bengaluru is widely called the craft-beer capital of India, with a dense scene of ' +
             'microbreweries pouring fresh, house-brewed ales, lagers and wheat beers. Institutions ' +
@@ -2529,7 +2529,7 @@ const ACTIVITIES = [
         duration: '2–3 hours (evening)',
         priceHint: 'Budget · veg',
         tagline: 'Graze your way down Bengaluru\'s most famous evening snack street.',
-        image: 'images/food-masala-dosa-vada.jpg',
+        image: '',
         description:
             'A self-guided (or guided) evening food walk down VV Puram\'s Thindi Beedi is one of the ' +
             'tastiest things to do in the city. Over a couple of unhurried hours you graze stall to ' +
